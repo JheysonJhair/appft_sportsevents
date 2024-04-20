@@ -1,0 +1,27 @@
+[
+    {
+      "horainicio": "06:00:00",
+      "horafin": "19:00:00",
+      "usuario": "Walter A. Serrano",
+      "area": "OPERACIONES MINA",
+      "laboratorio": "Anta Wasi",
+      "dia": "lunes"
+    },
+    {
+      "horainicio": "07:00:00",
+      "horafin": "20:00:00",
+      "usuario": "Juan Perez",
+      "area": "OPERACIONES MINA",
+      "laboratorio": "Anta Wasi",
+      "dia": "martes"
+    },
+    {
+      "horainicio": "08:00:00",
+      "horafin": "21:00:00",
+      "usuario": "Maria Rodriguez",
+      "area": "OPERACIONES MINA",
+      "laboratorio": "Anta Wasi",
+      "dia": "miércoles"
+    }
+  ]
+  
