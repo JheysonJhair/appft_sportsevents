@@ -1,0 +1,24 @@
+/* Estilos de plugins */
+@import url('../src/assets/plugins/simplebar/css/simplebar.css');
+@import url('../src/assets/plugins/perfect-scrollbar/css/perfect-scrollbar.css');
+@import url('../src/assets/plugins/metismenu/css/metisMenu.min.css');
+
+/* Estilos del loader */
+@import url('../src/assets/css/pace.min.css');
+
+/* Estilos de Bootstrap */
+@import url('../src/assets/css/bootstrap.min.css');
+@import url('../src/assets/css/bootstrap-extended.css');
+
+
+/* Estilos de la aplicación */
+@import url('../src/assets/css/app.css');
+@import url('../src/assets/css/icons.css');
+
+@import url('../src/assets/plugins/datatable/css/dataTables.bootstrap5.min.css');
+
+/* Estilos de la aplicación */
+@import url('../src/assets/plugins/vectormap/jquery-jvectormap-2.0.2.css');
+
+
+
