@@ -4,6 +4,7 @@ import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import esLocale from "@fullcalendar/core/locales/es";
+import { useAuth } from "../hooks/AuthContext";
 
 interface EventData {
   title: string;
@@ -16,6 +17,9 @@ interface EventData {
 
 export function HomePage() {
   const [events, setEvents] = useState<EventData[]>([]);
+  const [selectedEvent, setSelectedEvent] = useState<EventData | null>(null);
+  const [showModal, setShowModal] = useState(false);
+  const { user } = useAuth();
 
   useEffect(() => {
     const data = [
@@ -51,7 +55,7 @@ export function HomePage() {
       laboratorio: event.laboratorio,
       start: `${event.dia}T${event.horainicio}`,
       end: `${event.dia}T${event.horafin}`,
-      color: "#3788d8",
+      color: "#43b27b",
     }));
 
     setEvents(initialEvents);
@@ -71,6 +75,26 @@ export function HomePage() {
         </div>
       </div>
     );
+  }
+
+  function handleSelectEvent(event: any) {
+    setSelectedEvent(event);
+    console.log(selectedEvent);
+    setShowModal(true);
+  }
+
+  function handleCloseModal() {
+    setSelectedEvent(null);
+    setShowModal(false);
+  }
+  function formatHour(dateTimeString: any) {
+    const date = new Date(dateTimeString);
+    const hours = date.getHours();
+    const minutes = date.getMinutes();
+    const ampm = hours >= 12 ? "pm" : "am";
+    const formattedHours = hours % 12 || 12;
+    const formattedMinutes = minutes < 10 ? "0" + minutes : minutes;
+    return `${formattedHours}:${formattedMinutes}${ampm}`;
   }
 
   return (
@@ -105,6 +129,7 @@ export function HomePage() {
                 selectOverlap={false}
                 events={events}
                 eventContent={renderEventContent}
+                select={handleSelectEvent}
               />
             </div>
             <h5 className="card-title mt-3">Turno tarde</h5>
@@ -134,11 +159,58 @@ export function HomePage() {
                 selectOverlap={false}
                 events={events}
                 eventContent={renderEventContent}
+                select={handleSelectEvent}
               />
             </div>
           </div>
         </div>
       </div>
+
+      {selectedEvent && (
+        <div
+          className="modal fade show"
+          id="exampleModal"
+          tabIndex={-1}
+          aria-labelledby="exampleModalLabel"
+          aria-hidden="true"
+          style={{ display: "block" }}
+        >
+          <div className="modal-dialog">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5 className="modal-title" id="exampleModalLabel">
+                  Reservar Horario
+                </h5>
+                <button
+                  type="button"
+                  className="btn-close"
+                  onClick={handleCloseModal}
+                  aria-label="Close"
+                ></button>
+              </div>
+
+              <div className="modal-body">
+                <p>Usuario: {user?.FirstName}</p>
+                <p>Área: {user?.LastName}</p>
+                <p>
+                  Horario: {selectedEvent && formatHour(selectedEvent.start)} a{" "}
+                  {selectedEvent && formatHour(selectedEvent.end)}
+                </p>
+              </div>
+              <div className="modal-footer">
+                <button
+                  type="button"
+                  className="btn btn-secondary"
+                  onClick={handleCloseModal}
+                >
+                  Cerrar
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+      {selectedEvent && <div className="modal-backdrop fade show"></div>}
     </div>
   );
 }

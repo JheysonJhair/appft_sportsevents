@@ -1,8 +1,37 @@
 import { Outlet } from "react-router-dom";
 import { NavLink } from "react-router-dom";
 import { useAuth } from "../hooks/AuthContext";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 function AppLayout() {
+  const [currentDate, setCurrentDate] = useState<string>("");
+  const [currentTemp, setCurrentTemp] = useState<string>("");
+  const [tomorrowTemp, setTomorrowTemp] = useState<string>("");
+  useEffect(() => {
+    const options: Intl.DateTimeFormatOptions = {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    };
+    const formattedDate = new Date().toLocaleDateString("es-ES", options);
+    setCurrentDate(formattedDate);
+  }, []);
+  useEffect(() => {
+    // Hacer una solicitud a la API para obtener los datos meteorológicos
+    fetch("https://api.openweathermap.org/data/2.5/weather?q=London&appid=your_api_key&units=metric")
+      .then((response) => response.json())
+      .then((data) => {
+        // Extraer la temperatura actual de los datos
+        setCurrentTemp(data.main.temp.toFixed(0));
+      });
+
+    // Hacer una solicitud a la API para obtener el pronóstico del tiempo para mañana
+    fetch("https://api.openweathermap.org/data/2.5/forecast?q=London&appid=your_api_key&units=metric")
+      .then((response) => response.json())
+      .then((data) => {
+        // Extraer la temperatura para mañana de los datos
+        setTomorrowTemp(data.list[8].main.temp.toFixed(0)); // Esto depende de cómo está estructurada la respuesta de la API
+      });
+  }, []);
   useEffect(() => {
     const scriptPaths = [
       "../assets/js/jquery.min.js",
@@ -57,27 +86,32 @@ function AppLayout() {
               />
             </div>
             <div>
-              <h4 className="logo-text red-text">DEPORTE</h4>
+              <h4
+                className="logo-text text-danger"
+                style={{ fontWeight: "bold" }}
+              >
+                GAMETIME
+              </h4>
             </div>
             <div className="toggle-icon ms-auto">
-              <i className="bx bx-arrow-back red-text" />
+              <i className="bx bx-arrow-back text-danger" />
             </div>
           </div>
           <ul className="metismenu" id="menu">
             <li className="">
               <NavLink to="/">
                 <div className="parent-icon">
-                  <i className="bx bx-home-alt" />
+                  <i className="bx bx-grid-alt" />
                 </div>
                 <div className="menu-title">PANEL PRINCIPAL</div>
               </NavLink>
             </li>
 
-            <li className="menu-label">USUARIOS</li>
+            <li className="menu-label">PANEL DE CONTROL</li>
             <li>
               <NavLink to="/operaciones/membresiaspagos/">
                 <div className="parent-icon">
-                  <i className="bx bx-credit-card" />
+                  <i className="bx bx-calendar" />
                 </div>
                 <div className="menu-title">Horarios</div>
               </NavLink>
@@ -85,7 +119,7 @@ function AppLayout() {
             <li>
               <a className="has-arrow" href="#">
                 <div className="parent-icon">
-                  <i className="bx bx-basket" />
+                  <i className="bx bx-group" />
                 </div>
                 <div className="menu-title">Trabajadores</div>
               </a>
@@ -108,7 +142,7 @@ function AppLayout() {
             <li>
               <NavLink to="/operaciones/membresiaspagos/">
                 <div className="parent-icon">
-                  <i className="bx bx-credit-card" />
+                  <i className="bx bx-basketball" />
                 </div>
                 <div className="menu-title">Área de juego</div>
               </NavLink>
@@ -157,25 +191,32 @@ function AppLayout() {
               <div className="mobile-toggle-menu">
                 <i className="bx bx-menu" />
               </div>
-              <h5>09 de abril de 2024</h5>
+              <h5>{currentDate}</h5>
               <div className="top-menu ms-auto">
                 <ul className="navbar-nav align-items-center gap-1">
                   <i
                     className="bx bxs-sun"
-                    style={{ fontSize: "29px", marginLeft: "20px" }}
+                    style={{
+                      fontSize: "29px",
+                      marginLeft: "20px",
+                      color: "#edae25",
+                    }}
                   ></i>
                   <div
                     className="col text-center"
                     style={{ marginRight: "50px" }}
                   >
                     <h6 className="m-0" style={{ fontSize: "13px" }}>
-                      Mañana
+                      Hoy día
                     </h6>
                     <h6 className="m-0" style={{ fontSize: "13px" }}>
                       78ºF/75ºF
                     </h6>
                   </div>
-                  <i className="bx bxs-moon" style={{ fontSize: "24px" }}></i>
+                  <i
+                    className="bx bxs-moon"
+                    style={{ fontSize: "24px", color: "#2C3E50" }}
+                  ></i>
                   <div
                     className="col text-center"
                     style={{ marginRight: "20px" }}
@@ -198,7 +239,7 @@ function AppLayout() {
                   aria-expanded="false"
                 >
                   <img
-                    src="../../assets/images/avatars/avatar-11.png"
+                    src="../../assets/images/avatars/avatar-1.png"
                     className="user-img"
                     alt="user avatar"
                   />
@@ -213,16 +254,7 @@ function AppLayout() {
                   <li>
                     <a
                       className="dropdown-item d-flex align-items-center"
-                      href="#"
-                    >
-                      <i className="bx bx-user fs-5" />
-                      <span>Perfil</span>
-                    </a>
-                  </li>
-                  <li>
-                    <a
-                      className="dropdown-item d-flex align-items-center"
-                      href="#"
+                      href="/"
                     >
                       <i className="bx bx-cog fs-5" />
                       <span>Configuracion</span>
@@ -235,7 +267,7 @@ function AppLayout() {
                   <li>
                     <a
                       className="dropdown-item d-flex align-items-center"
-                      href="#"
+                      href="/"
                     >
                       <i className="bx bx-log-out-circle" />
                       <span>Cerrar sesión</span>
