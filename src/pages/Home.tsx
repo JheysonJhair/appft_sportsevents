@@ -6,6 +6,14 @@ import interactionPlugin from "@fullcalendar/interaction";
 import esLocale from "@fullcalendar/core/locales/es";
 import { useAuth } from "../hooks/AuthContext";
 import { EventData } from "../types/Eventos";
+import {
+  obtenerHorarioCancha1,
+  obtenerHorarioCancha2,
+  crearHorarioCancha1,
+  crearHorarioCancha2,
+} from "../services/Horario";
+import { Horario } from "../types/Horarios";
+import Swal from "sweetalert2";
 
 export function HomePage() {
   const { user } = useAuth();
@@ -13,46 +21,37 @@ export function HomePage() {
   const [selectedEvent, setSelectedEvent] = useState<EventData | null>(null);
 
   useEffect(() => {
-    const data = [
-      {
-        horainicio: "06:00:00",
-        horafin: "07:00:00",
-        usuario: "Walter A. Serrano",
-        area: "OPERACIONES MINA",
-        laboratorio: "Anta Wasi",
-        dia: "2024-04-17",
-      },
-      {
-        horainicio: "07:00:00",
-        horafin: "09:00:00",
-        usuario: "Juan Perez",
-        area: "OPERACIONES MINA",
-        laboratorio: "Anta Wasi",
-        dia: "2024-04-17",
-      },
-      {
-        horainicio: "18:00:00",
-        horafin: "19:00:00",
-        usuario: "Maria Rodriguez",
-        area: "OPERACIONES MINA",
-        laboratorio: "Anta Wasi",
-        dia: "2024-04-20",
-      },
-    ];
+    const intervalId = setInterval(fetchEvents, 1000);
 
-    const initialEvents: EventData[] = data.map(event => ({
-      title: event.usuario,
-      area: event.area,
-      laboratorio: event.laboratorio,
-      start: `${event.dia}T${event.horainicio}`,
-      end: `${event.dia}T${event.horafin}`,
-      color: "#44a7ea",
-    }));
-
-    setEvents(initialEvents);
+    return () => clearInterval(intervalId);
   }, []);
 
-  function renderEventContent(eventInfo:any) {
+  async function fetchEvents() {
+    try {
+      let horario;
+      if (user?.Rol === 1) {
+        horario = await obtenerHorarioCancha1();
+      } else if (user?.Rol === 2) {
+        horario = await obtenerHorarioCancha2();
+      } else {
+        throw new Error("Rol de usuario no válido");
+      }
+      const initialEvents: EventData[] = horario.map((event) => ({
+        title: "Usuario",
+        area: "Area",
+        laboratorio: "Laboratorio",
+        start: `${event.Date.split("T")[0]}T${event.StartTime}`,
+        end: `${event.Date.split("T")[0]}T${event.EndTime}`,
+        color: "#44a7ea",
+      }));
+
+      setEvents(initialEvents);
+    } catch (error) {
+      console.error("Error al obtener el horario:", error);
+    }
+  }
+
+  function renderEventContent(eventInfo: any) {
     return (
       <div>
         <div className="fc-event-title">{eventInfo.event.title}</div>
@@ -63,22 +62,53 @@ export function HomePage() {
     );
   }
 
-  function handleSelectEvent(event:any) {
+  function handleSelectEvent(event: any) {
     setSelectedEvent(event);
   }
 
   function handleCloseModal() {
     setSelectedEvent(null);
   }
+  async function handleConfirmReservation() {
+    try {
+      if (!selectedEvent) return;
 
-  function formatHour(dateTimeString:any) {
+      let horario: Partial<Horario> = {
+        IdUser: user?.IdUser || 0,
+        StartTime: selectedEvent.start,
+        EndTime: selectedEvent.end,
+      };
+
+      if (user?.Rol === 1) {
+        await crearHorarioCancha1(horario);
+        Swal.fire({
+          title: "CANCHA 1!",
+          text: "El horario se registró correctamente!",
+          icon: "success",
+          confirmButtonText: "Aceptar",
+        });
+      } else if (user?.Rol === 2) {
+        await crearHorarioCancha2(horario);
+        Swal.fire({
+          title: "CANCHA 2!",
+          text: "El horario se registró correctamente!",
+          icon: "success",
+          confirmButtonText: "Aceptar",
+        });
+      } else {
+        throw new Error("Rol de usuario no válido");
+      }
+    } catch (error) {
+      console.error("Error al confirmar reserva:", error);
+    } finally {
+      handleCloseModal();
+    }
+  }
+  function formatHour(dateTimeString: any) {
     const date = new Date(dateTimeString);
     const hours = date.getHours();
     const minutes = date.getMinutes();
-    const ampm = hours >= 12 ? "pm" : "am";
-    const formattedHours = hours % 12 || 12;
-    const formattedMinutes = minutes < 10 ? "0" + minutes : minutes;
-    return `${formattedHours}:${formattedMinutes}${ampm}`;
+    return `${hours}:${minutes}`;
   }
 
   return (
@@ -86,7 +116,7 @@ export function HomePage() {
       <div className="page-content">
         <div className="card">
           <div className="card-body">
-            <div className={user && user.Shift === "Night" ? "disabled" : ""}>
+            <div className={user && user.Shift === "Morning" ? "disabled" : ""}>
               <h5 className="card-title">Turno mañana</h5>
               <hr />
               <div className="table-responsive">
@@ -104,7 +134,7 @@ export function HomePage() {
                   nowIndicator={true}
                   dayMaxEvents={true}
                   editable={false}
-                  selectable={user && user.Shift === "Night" ? false : true}
+                  selectable={user && user.Shift === "Morning" ? false : true}
                   slotMinTime="06:00:00"
                   slotMaxTime="09:00:00"
                   contentHeight="auto"
@@ -118,7 +148,7 @@ export function HomePage() {
                 />
               </div>
             </div>
-            <div className={user && user.Shift === "Morning" ? "disabled" : ""}>
+            <div className={user && user.Shift === "Night" ? "disabled" : ""}>
               <h5 className="card-title mt-3">Turno tarde</h5>
               <hr />
               <div className="table-responsive">
@@ -136,7 +166,7 @@ export function HomePage() {
                   nowIndicator={true}
                   dayMaxEvents={true}
                   editable={false}
-                  selectable={user && user.Shift === "Morning" ? false : true}
+                  selectable={user && user.Shift === "Night" ? false : true}
                   slotMinTime="18:00:00"
                   slotMaxTime="21:00:00"
                   contentHeight="auto"
@@ -186,6 +216,13 @@ export function HomePage() {
                 </p>
               </div>
               <div className="modal-footer">
+                <button
+                  type="button"
+                  className="btn btn-primary"
+                  onClick={handleConfirmReservation}
+                >
+                  Confirmar reserva
+                </button>
                 <button
                   type="button"
                   className="btn btn-secondary"

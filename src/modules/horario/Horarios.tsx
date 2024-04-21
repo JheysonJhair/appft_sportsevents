@@ -5,59 +5,52 @@ import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import esLocale from "@fullcalendar/core/locales/es";
 import { EventData } from "../../types/Eventos";
+import {
+  obtenerHorarioCancha1,
+  obtenerHorarioCancha2,
+} from "../../services/Horario";
 
 export function Horarios() {
-  const [events, setEvents] = useState<EventData[]>([]);
-  const [eventsW, setEventsW] = useState<EventData[]>([]);
+  const [eventsCancha1, setEventsCancha1] = useState<EventData[]>([]);
+  const [eventsCancha2, setEventsCancha2] = useState<EventData[]>([]);
 
   useEffect(() => {
-    const data = [
-      {
-        horainicio: "06:00:00",
-        horafin: "07:00:00",
-        usuario: "Walter A. Serrano",
-        area: "OPERACIONES MINA",
-        laboratorio: "Anta Wasi",
-        dia: "2024-04-17",
-      },
-      {
-        horainicio: "07:00:00",
-        horafin: "09:00:00",
-        usuario: "Juan Perez",
-        area: "OPERACIONES MINA",
-        laboratorio: "Anta Wasi",
-        dia: "2024-04-17",
-      },
-      {
-        horainicio: "18:00:00",
-        horafin: "19:00:00",
-        usuario: "Maria Rodriguez",
-        area: "OPERACIONES MINA",
-        laboratorio: "Anta Wasi",
-        dia: "2024-04-20",
-      },
-    ];
+    async function fetchEventsCancha1() {
+      try {
+        const horarioCancha1 = await obtenerHorarioCancha1();
+        const initialEventsCancha1: EventData[] = horarioCancha1.map((event) => ({
+          title: "Usuario",
+          area: "Area",
+          laboratorio: "Laboratorio",
+          start: `${event.Date.split("T")[0]}T${event.StartTime}`,
+          end: `${event.Date.split("T")[0]}T${event.EndTime}`,
+          color: "#44a7ea",
+        }));
+        setEventsCancha1(initialEventsCancha1);
+      } catch (error) {
+        console.error("Error al obtener el horario de la Cancha 1:", error);
+      }
+    }
 
-    const initialEvents: EventData[] = data.map((event) => ({
-      title: event.usuario,
-      area: event.area,
-      laboratorio: event.laboratorio,
-      start: `${event.dia}T${event.horainicio}`,
-      end: `${event.dia}T${event.horafin}`,
-      color: "#44a7ea",
-    }));
+    async function fetchEventsCancha2() {
+      try {
+        const horarioCancha2 = await obtenerHorarioCancha2();
+        const initialEventsCancha2: EventData[] = horarioCancha2.map((event) => ({
+          title: "Usuario",
+          area: "Area",
+          laboratorio: "Laboratorio",
+          start: `${event.Date.split("T")[0]}T${event.StartTime}`,
+          end: `${event.Date.split("T")[0]}T${event.EndTime}`,
+          color: "#fd3550",
+        }));
+        setEventsCancha2(initialEventsCancha2);
+      } catch (error) {
+        console.error("Error al obtener el horario de la Cancha 2:", error);
+      }
+    }
 
-    const initialEventsWork: EventData[] = data.map((event) => ({
-      title: event.usuario,
-      area: event.area,
-      laboratorio: event.laboratorio,
-      start: `${event.dia}T${event.horainicio}`,
-      end: `${event.dia}T${event.horafin}`,
-      color: "#fd3550",
-    }));
-
-    setEvents(initialEvents);
-    setEventsW(initialEventsWork);
+    fetchEventsCancha1();
+    fetchEventsCancha2();
   }, []);
 
   function renderEventContent(eventInfo: any) {
@@ -71,7 +64,7 @@ export function Horarios() {
     );
   }
 
-  function renderCalendar(slotMinTime: any, slotMaxTime: any, eventsData: any) {
+  function renderCalendar(slotMinTime: any, slotMaxTime: any, eventsData: EventData[]) {
     return (
       <div className="table-responsive">
         <FullCalendar
@@ -108,14 +101,14 @@ export function Horarios() {
       <div className="page-content">
         <div className="card">
           <div className="card-body">
-            <h5 className="card-title">EXCLUSIVOS</h5>
+            <h5 className="card-title">Horario Cancha 1 (Exclusivos)</h5>
             <hr />
-            {renderCalendar("06:00:00", "09:00:00", events)}
-            {renderCalendar("18:00:00", "21:00:00", events)}
-            <h5 className="card-title mt-3">TRABAJADORES</h5>
+            {renderCalendar("06:00:00", "09:00:00", eventsCancha1)}
+            {renderCalendar("18:00:00", "21:00:00", eventsCancha1)}
+            <h5 className="card-title mt-3">Horario Cancha 2 (Trabajadores)</h5>
             <hr />
-            {renderCalendar("06:00:00", "09:00:00", eventsW)}
-            {renderCalendar("18:00:00", "21:00:00", eventsW)}
+            {renderCalendar("06:00:00", "09:00:00", eventsCancha2)}
+            {renderCalendar("18:00:00", "21:00:00", eventsCancha2)}
           </div>
         </div>
       </div>
