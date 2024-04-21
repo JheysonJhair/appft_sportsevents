@@ -204,6 +204,31 @@ function AppLayout() {
                       78ºF/75ºF
                     </h6>
                   </div>
+
+                  <i
+                    className="bx bx-time"
+                    style={{ fontSize: "24px", color: "#2C3E50" }}
+                  ></i>
+                  <div
+                    className="col text-center"
+                    style={{ marginRight: "20px" }}
+                  >
+                    <h6 className="m-0" style={{ fontSize: "13px" }}>
+                      Turno: {user?.Shift == "Night" ? "Tarde" : "Mañana"}
+                    </h6>
+                  </div>
+                  <i
+                    className="bx bx-user-circle"
+                    style={{ fontSize: "24px", color: "#2C3E50" }}
+                  ></i>
+                  <div
+                    className="col text-center"
+                    style={{ marginRight: "20px" }}
+                  >
+                    <h6 className="m-0" style={{ fontSize: "13px" }}>
+                      Laboratorio: {user?.Area}
+                    </h6>
+                  </div>
                 </ul>
               </div>
               <div className="user-box dropdown px-3">

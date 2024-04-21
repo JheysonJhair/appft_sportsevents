@@ -20,5 +20,12 @@
 /* Estilos de la aplicación */
 @import url('../src/assets/plugins/vectormap/jquery-jvectormap-2.0.2.css');
 
+.disabled {
+    cursor: not-allowed; 
+    pointer-events: none; 
+    opacity: 0.5; 
 
+  }
+  
+  
 
