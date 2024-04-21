@@ -8,7 +8,7 @@ interface ApiResponse {
 
 export async function obtenerUsuarios(): Promise<Usuario[]> {
   try {
-    const response = await fetch("https://zonafitbk.ccontrolz.com/api/user");
+    const response = await fetch("https://esappsoccer.ccontrolz.com/api/user");
     if (!response.ok) {
       throw new Error("Error al obtener los datos");
     }
@@ -25,7 +25,7 @@ export async function obtenerUsuarios(): Promise<Usuario[]> {
 
 export async function crearUsuario(usuario: Partial<Usuario>): Promise<void> {
   try {
-    const response = await fetch("https://zonafitbk.ccontrolz.com/api/user", {
+    const response = await fetch("https://esappsoccer.ccontrolz.com/api/user/insert", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -40,9 +40,45 @@ export async function crearUsuario(usuario: Partial<Usuario>): Promise<void> {
   }
 }
 
+export async function actualizarUsuario(usuario: Partial<Usuario>): Promise<void> {
+  try {
+    const url = `https://esappsoccer.ccontrolz.com/api/user/update`;
+    const response = await fetch(url, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(usuario),
+    });
+    if (!response.ok) {
+      throw new Error("Error al actualizar el usuario");
+    }
+  } catch (error) {
+    throw new Error("Error al actualizar el usuario: " + error);
+  }
+}
+
+export async function obtenerUsuarioPorId(usuarioId: number): Promise<Usuario | null> {
+  try {
+    const url = `https://esappsoccer.ccontrolz.com/api/user/${usuarioId}`;
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error("Error al obtener el usuario");
+    }
+    const responseData: ApiResponse = await response.json();
+    if (!responseData.success) {
+      throw new Error(responseData.msg);
+    }
+    return responseData.data[0] || null;
+  } catch (error) {
+    console.error("Error:", error);
+    return null;
+  }
+}
+
 export async function eliminarUsuario(usuarioId: number): Promise<void> {
   try {
-    const url = `https://zonafitbk.ccontrolz.com//api/users/${usuarioId}`;
+    const url = `https://esappsoccer.ccontrolz.com/api/user/${usuarioId}`;
     const response = await fetch(url, {
       method: "DELETE",
     });

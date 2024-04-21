@@ -4,8 +4,7 @@ import { useAuth } from "../hooks/AuthContext";
 import { useEffect, useState } from "react";
 function AppLayout() {
   const [currentDate, setCurrentDate] = useState<string>("");
-  const [currentTemp, setCurrentTemp] = useState<string>("");
-  const [tomorrowTemp, setTomorrowTemp] = useState<string>("");
+
   useEffect(() => {
     const options: Intl.DateTimeFormatOptions = {
       year: "numeric",
@@ -15,29 +14,15 @@ function AppLayout() {
     const formattedDate = new Date().toLocaleDateString("es-ES", options);
     setCurrentDate(formattedDate);
   }, []);
-  useEffect(() => {
-    // Hacer una solicitud a la API para obtener los datos meteorológicos
-    fetch("https://api.openweathermap.org/data/2.5/weather?q=London&appid=your_api_key&units=metric")
-      .then((response) => response.json())
-      .then((data) => {
-        // Extraer la temperatura actual de los datos
-        setCurrentTemp(data.main.temp.toFixed(0));
-      });
 
-    // Hacer una solicitud a la API para obtener el pronóstico del tiempo para mañana
-    fetch("https://api.openweathermap.org/data/2.5/forecast?q=London&appid=your_api_key&units=metric")
-      .then((response) => response.json())
-      .then((data) => {
-        // Extraer la temperatura para mañana de los datos
-        setTomorrowTemp(data.list[8].main.temp.toFixed(0)); // Esto depende de cómo está estructurada la respuesta de la API
-      });
-  }, []);
   useEffect(() => {
     const scriptPaths = [
       "../assets/js/jquery.min.js",
       "../assets/plugins/simplebar/js/simplebar.min.js",
       "../assets/plugins/datatable/js/jquery.dataTables.min.js",
       "../assets/plugins/metismenu/js/metisMenu.min.js",
+      "../assets/plugins/apexcharts-bundle/js/apexcharts.min.js",
+      "../assets/plugins/apexcharts-bundle/js/apex-custom.js",
       "../assets/plugins/perfect-scrollbar/js/perfect-scrollbar.js",
       "../assets/plugins/vectormap/jquery-jvectormap-2.0.2.min.js",
       "../assets/plugins/vectormap/jquery-jvectormap-world-mill-en.js",
@@ -108,48 +93,38 @@ function AppLayout() {
             </li>
 
             <li className="menu-label">PANEL DE CONTROL</li>
-            <li>
-              <NavLink to="/operaciones/membresiaspagos/">
-                <div className="parent-icon">
-                  <i className="bx bx-calendar" />
-                </div>
-                <div className="menu-title">Horarios</div>
-              </NavLink>
-            </li>
-            <li>
-              <a className="has-arrow" href="#">
-                <div className="parent-icon">
-                  <i className="bx bx-group" />
-                </div>
-                <div className="menu-title">Trabajadores</div>
-              </a>
-
-              <ul>
+            {user?.Rol === 1 && (
+              <>
                 <li>
-                  <NavLink to="/area/productos/">
-                    <i className="bx bx-radio-circle" />
-                    Areas
+                  <NavLink to="/horarios/">
+                    <div className="parent-icon">
+                      <i className="bx bx-calendar" />
+                    </div>
+                    <div className="menu-title">Horarios</div>
                   </NavLink>
                 </li>
-                <li>
-                  <NavLink to="/area/detailproducto/">
-                    <i className="bx bx-radio-circle" />
-                    Detalle de producto
-                  </NavLink>
-                </li>
-              </ul>
-            </li>
+              </>
+            )}
             <li>
-              <NavLink to="/operaciones/membresiaspagos/">
+              <NavLink to="/areadejuego/">
                 <div className="parent-icon">
                   <i className="bx bx-basketball" />
                 </div>
                 <div className="menu-title">Área de juego</div>
               </NavLink>
             </li>
-            {user?.RoleId === 1 && (
+
+            <li className="menu-label">Configuración</li>
+            {user?.Rol === 1 && (
               <>
-                <li className="menu-label">Configuración</li>
+                <li className="">
+                  <NavLink to="/reportes">
+                    <div className="parent-icon">
+                      <i className="bx bx-bar-chart" />
+                    </div>
+                    <div className="menu-title">Reportes</div>
+                  </NavLink>
+                </li>
                 <li>
                   <a className="has-arrow" href="#">
                     <div className="parent-icon">
@@ -160,13 +135,13 @@ function AppLayout() {
 
                   <ul>
                     <li>
-                      <NavLink to="/area/usuarios/">
+                      <NavLink to="/usuarios/">
                         <i className="bx bx-radio-circle" />
                         Todos
                       </NavLink>
                     </li>
                     <li>
-                      <NavLink to="/area/newusuario/">
+                      <NavLink to="/nuevousuario/">
                         <i className="bx bx-radio-circle" />
                         Nuevo usuario
                       </NavLink>
@@ -175,8 +150,9 @@ function AppLayout() {
                 </li>
               </>
             )}
+
             <li>
-              <a href="https://themeforest.net/user/codervent" target="_blank">
+              <a href="https://jheysonjhairpro.ccontrolz.com/" target="_blank">
                 <div className="parent-icon">
                   <i className="bx bx-support" />
                 </div>
@@ -244,9 +220,9 @@ function AppLayout() {
                     alt="user avatar"
                   />
                   <div className="user-info">
-                    <p className="user-name mb-0">{user?.Username}</p>
+                    <p className="user-name mb-0">{user?.FirstName}</p>
                     <p className="designattion mb-0">
-                      {user?.RoleId === 1 ? "Usuario supremo" : "Usuario"}
+                      {user?.Rol === 1 ? "EXCLUSIVO" : "TRABAJADOR"}
                     </p>
                   </div>
                 </a>
@@ -285,7 +261,7 @@ function AppLayout() {
         </a>
         <footer className="page-footer">
           <p className="mb-0">
-            Copyright © DRAGON'S GYM 2024. Todos los derechos reservados.
+            Copyright © GAMETIME 2024. Todos los derechos reservados.
           </p>
         </footer>
       </div>

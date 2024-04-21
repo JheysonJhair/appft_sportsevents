@@ -1,13 +1,13 @@
 export interface Usuario {
-    IdUser?: number;
-    Code?: string;
-    Username: string;
-    Password: string;
-    FirstName: string;
-    LastName: string;
-    PhoneNumber: string;
-    Dni: string;
-    Access: boolean;
-    RoleId:string;
-    Mail: string;
-  }
+  IdUser?: number;
+  FirstName: string;
+  LastName: string;
+  Password: string;
+  Dni: string;
+  EmployeeCode: string;
+  Area: string;
+  Shift: string;
+  PhoneNumber: string;
+  Mail: string;
+  Rol: number;
+}

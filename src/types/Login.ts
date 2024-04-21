@@ -1,22 +1,19 @@
 export interface User {
-  IdUser?: string;
-  Code: string;
-  Username: string;
-  Password: string;
+  IdUser?: number;
   FirstName: string;
   LastName: string;
-  PhoneNumber: string;
+  Password: string;
   Dni: string;
-  Access: boolean;
-  RoleId: number;
-  Email: string;
-  Birdhate: string;
-  Note: string;
-  Image: string;
+  EmployeeCode: string;
+  Area: string;
+  Shift: string;
+  PhoneNumber: string;
+  Mail: string;
+  Rol: number;
 }
 export interface Login {
-  username: string;
-  password: string;
+  UserRequest: string;
+  Password: string;
 }
 
 export interface AuthContextType {

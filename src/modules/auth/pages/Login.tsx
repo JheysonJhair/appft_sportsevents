@@ -14,7 +14,10 @@ export default function Login() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const response = await login({ username: username, password: password });
+      const response = await login({
+        UserRequest: username,
+        Password: password,
+      });
       if (response.success) {
         Swal.fire({
           position: "top-end",

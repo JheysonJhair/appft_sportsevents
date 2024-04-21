@@ -3,7 +3,7 @@ import { Login } from "../types/Login";
 
 export const login = async (loginData: Login) => {
   try {
-    const response = await axios.post('https://zonafitbk.ccontrolz.com/api/user/login', loginData);
+    const response = await axios.post('https://esappsoccer.ccontrolz.com/api/user/login', loginData);
     
     return response.data;
   } catch (error) {
