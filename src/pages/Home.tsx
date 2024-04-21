@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import  { useState, useEffect } from "react";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
@@ -18,7 +18,7 @@ interface EventData {
 export function HomePage() {
   const [events, setEvents] = useState<EventData[]>([]);
   const [selectedEvent, setSelectedEvent] = useState<EventData | null>(null);
-  const [showModal, setShowModal] = useState(false);
+  const [, setShowModal] = useState(false);
   const { user } = useAuth();
 
   useEffect(() => {
@@ -55,7 +55,7 @@ export function HomePage() {
       laboratorio: event.laboratorio,
       start: `${event.dia}T${event.horainicio}`,
       end: `${event.dia}T${event.horafin}`,
-      color: "#43b27b",
+      color: "#44a7ea",
     }));
 
     setEvents(initialEvents);

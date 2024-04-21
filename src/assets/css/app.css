@@ -126,7 +126,7 @@ a {
 
 	letter-spacing: 1px;
 
-	color: #008cff;
+	color: #fd3550;
 
 }
 
@@ -138,7 +138,7 @@ a {
 
 	cursor: pointer;
 
-	color: #008cff
+	color: #fd3550
 
 }
 
@@ -444,7 +444,7 @@ a {
 
 .sidebar-wrapper .metismenu a:hover {
 
-	color: #008cff;
+	color: #fd3550;
 
     text-decoration: none;
 
@@ -688,7 +688,7 @@ a {
 
 	right: 12px;
 
-	background-color: #008cff;
+	background-color: #fd3550;
 
 	z-index: 5
 
@@ -1084,7 +1084,7 @@ a {
 
 .fm-menu .list-group a:hover {
 
-	background: #008cff;
+	background: #fd3550;
 
 	color: #fff;
 
@@ -1844,7 +1844,7 @@ form select.error:focus {
 
 	margin-bottom: 20px;
 
-	border-bottom: 1px solid #008cff
+	border-bottom: 1px solid #fd3550
 
 }
 
@@ -1906,7 +1906,7 @@ form select.error:focus {
 
 	margin-top: 0;
 
-	color: #008cff
+	color: #fd3550
 
 }
 
@@ -1936,7 +1936,7 @@ form select.error:focus {
 
 	padding-left: 6px;
 
-	border-left: 6px solid #008cff;
+	border-left: 6px solid #fd3550;
 
 	background: #e7f2ff;
 
@@ -2000,7 +2000,7 @@ form select.error:focus {
 
 	font-weight: 400;
 
-	color: #008cff;
+	color: #fd3550;
 
 	font-size: 1.2em
 
@@ -2028,7 +2028,7 @@ form select.error:focus {
 
 	font-size: 1.6em;
 
-	background: #008cff
+	background: #fd3550
 
 }
 
@@ -2044,7 +2044,7 @@ form select.error:focus {
 
 .invoice table .total {
 
-	background: #008cff;
+	background: #fd3550;
 
 	color: #fff
 
@@ -2090,11 +2090,11 @@ form select.error:focus {
 
 .invoice table tfoot tr:last-child td {
 
-	color: #008cff;
+	color: #fd3550;
 
 	font-size: 1.4em;
 
-	border-top: 1px solid #008cff
+	border-top: 1px solid #fd3550
 
 }
 
@@ -2418,7 +2418,7 @@ form select.error:focus {
 
 .chat-tab-menu .nav-pills .show>.nav-link {
 
-	color: #008cff;
+	color: #fd3550;
 
 	background-color: rgb(0 123 255 / 0%)
 
@@ -3008,9 +3008,9 @@ form select.error:focus {
 
 .nav-primary.nav-tabs .nav-link.active {
 
-	color: #008cff;
+	color: #fd3550;
 
-	border-color: #008cff #008cff #fff
+	border-color: #fd3550 #fd3550 #fff
 
 }
 
@@ -3718,7 +3718,7 @@ form select.error:focus {
 
 .btn-inverse-primary {
 
-	color: #008cff;
+	color: #fd3550;
 
     background-color: rgba(0, 140, 255, 0.18);
 
@@ -3730,7 +3730,7 @@ form select.error:focus {
 
 .btn-inverse-primary:hover {
 
-	color: #008cff;
+	color: #fd3550;
 
     background-color: rgba(0, 140, 255, 0.18);
 
@@ -3742,7 +3742,7 @@ form select.error:focus {
 
 .btn-inverse-primary:focus {
 
-	color: #008cff;
+	color: #fd3550;
 
     background-color: rgba(0, 140, 255, 0.18);
 
@@ -4202,7 +4202,7 @@ input::placeholder {
 
 	background-color: #f2f9ff;
 
-    color: #008cff;
+    color: #fd3550;
 
 }
 
@@ -4492,7 +4492,7 @@ input::placeholder {
 
 	background-color: rgb(0 140 255 / 12%);
 
-    color: #008cff;
+    color: #fd3550;
 
     padding: 2px 8px;
 
@@ -4949,7 +4949,7 @@ input::placeholder {
 
 	font-size: 24px;
 
-	background: #008cff;
+	background: #fd3550;
 
 	box-shadow: 0 .3rem .6rem rgba(0, 0, 0, .13);
 

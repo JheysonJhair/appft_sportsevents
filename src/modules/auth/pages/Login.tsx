@@ -85,7 +85,7 @@ export default function Login() {
                   className="form-select w-100 p-3"
                   style={{ backgroundColor: "#eff0f4", textAlign: "center" }}
                 >
-                  <option value="">DRAGON'S GYM</option>
+                  <option value="">GAMETIME</option>
                 </select>
               </div>
 
