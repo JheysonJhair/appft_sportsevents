@@ -15,43 +15,47 @@ export function Horarios() {
   const [eventsCancha2, setEventsCancha2] = useState<EventData[]>([]);
 
   useEffect(() => {
-    async function fetchEventsCancha1() {
-      try {
-        const horarioCancha1 = await obtenerHorarioCancha1();
-        const initialEventsCancha1: EventData[] = horarioCancha1.map((event) => ({
-          title: event.FirstName,
-          area: event.Area,
-          laboratorio: event.Laboratory,  
-          start: `${event.DateDay.split("T")[0]}T${formatHour(event.StartTime)}`,
-          end: `${event.DateDay.split("T")[0]}T${formatHour(event.EndTime)}`,
-          color: "#44a7ea",
-        }));
-        setEventsCancha1(initialEventsCancha1);
-      } catch (error) {
-        console.error("Error al obtener el horario de la Cancha 1:", error);
-      }
-    }
+    const interval = setInterval(() => {
+      fetchEventsCancha1();
+      fetchEventsCancha2();
+    }, 1000);
 
-    async function fetchEventsCancha2() {
-      try {
-        const horarioCancha2 = await obtenerHorarioCancha2();
-        const initialEventsCancha2: EventData[] = horarioCancha2.map((event) => ({
-          title: event.FirstName,
-          area: event.Area,
-          laboratorio: event.Laboratory,  
-          start: `${event.DateDay.split("T")[0]}T${formatHour(event.StartTime)}`,
-          end: `${event.DateDay.split("T")[0]}T${formatHour(event.EndTime)}`,
-          color: "#fd3550",
-        }));
-        setEventsCancha2(initialEventsCancha2);
-      } catch (error) {
-        console.error("Error al obtener el horario de la Cancha 2:", error);
-      }
-    }
-
-    fetchEventsCancha1();
-    fetchEventsCancha2();
+    return () => clearInterval(interval);
   }, []);
+
+  async function fetchEventsCancha1() {
+    try {
+      const horarioCancha1 = await obtenerHorarioCancha1();
+      const initialEventsCancha1: EventData[] = horarioCancha1.map((event) => ({
+        title: event.FirstName,
+        area: event.Area,
+        laboratorio: event.Laboratory,
+        start: `${event.DateDay}T${event.StartTime}`,
+        end: `${event.DateDay}T${event.EndTime}`,
+        color: "#44a7ea",
+      }));
+      setEventsCancha1(initialEventsCancha1);
+    } catch (error) {
+      console.error("Error al obtener el horario de la Cancha 1:", error);
+    }
+  }
+
+  async function fetchEventsCancha2() {
+    try {
+      const horarioCancha2 = await obtenerHorarioCancha2();
+      const initialEventsCancha2: EventData[] = horarioCancha2.map((event) => ({
+        title: event.FirstName,
+        area: event.Area,
+        laboratorio: event.Laboratory,
+        start: `${event.DateDay}T${event.StartTime}`,
+        end: `${event.DateDay}T${event.EndTime}`,
+        color: "#fd3550",
+      }));
+      setEventsCancha2(initialEventsCancha2);
+    } catch (error) {
+      console.error("Error al obtener el horario de la Cancha 2:", error);
+    }
+  }
 
   function renderEventContent(eventInfo: any) {
     return (
@@ -63,13 +67,12 @@ export function Horarios() {
       </div>
     );
   }
-  function formatHour(dateTimeString: string) {
-    const date = new Date(dateTimeString);
-    const hours = date.getHours();
-    const minutes = date.getMinutes();
-    return `${hours}:${minutes < 10 ? '0' + minutes : minutes}`;
-  }
-  function renderCalendar(slotMinTime: any, slotMaxTime: any, eventsData: EventData[]) {
+
+  function renderCalendar(
+    slotMinTime: any,
+    slotMaxTime: any,
+    eventsData: EventData[]
+  ) {
     return (
       <div className="table-responsive">
         <FullCalendar

@@ -20,8 +20,10 @@ export function HomePage() {
   const [events, setEvents] = useState<EventData[]>([]);
   const [selectedEvent, setSelectedEvent] = useState<EventData | null>(null);
   const selectedDate = selectedEvent && new Date(selectedEvent.start).getDate();
-  const selectedMonth = selectedEvent && new Date(selectedEvent.start).getMonth() + 1; 
-  const selectedYear = selectedEvent && new Date(selectedEvent.start).getFullYear();
+  const selectedMonth =
+    selectedEvent && new Date(selectedEvent.start).getMonth() + 1;
+  const selectedYear =
+    selectedEvent && new Date(selectedEvent.start).getFullYear();
   const formattedDate = `${selectedYear}-${selectedMonth}-${selectedDate}`;
   useEffect(() => {
     const intervalId = setInterval(fetchEvents, 1000);
@@ -32,7 +34,7 @@ export function HomePage() {
   async function fetchEvents() {
     try {
       let horario;
-      console.log(user?.Rol)
+      console.log(user?.Rol);
       if (user?.Rol === 1) {
         horario = await obtenerHorarioCancha1();
       } else if (user?.Rol === 2) {
@@ -40,17 +42,15 @@ export function HomePage() {
       } else {
         throw new Error("Rol de usuario no válido");
       }
-      
       const initialEvents: EventData[] = horario.map((event) => ({
         title: event.FirstName,
         area: event.Area,
-        laboratorio: event.Laboratory,  
-        start: `${event.DateDay.split("T")[0]}T${formatHour(event.StartTime)}`,
-        end: `${event.DateDay.split("T")[0]}T${formatHour(event.EndTime)}`,
+        laboratorio: event.Laboratory,
+        start: `${event.DateDay}T${event.StartTime}`,
+        end: `${event.DateDay}T${event.EndTime}`,
         color: "#44a7ea",
       }));
 
-      
       setEvents(initialEvents);
     } catch (error) {
       console.error("Error al obtener el horario:", error);
@@ -78,18 +78,18 @@ export function HomePage() {
   async function handleConfirmReservation() {
     try {
       if (!selectedEvent) return;
-  
+
       let horario: Partial<Horario> = {
         IdUser: user?.IdUser || 0,
-        StartTime: selectedEvent.start,
-        EndTime: selectedEvent.end,
-        DateDay: formattedDate,
+        StartTime: `${formatHour(selectedEvent.start)}:00`,
+        EndTime: `${formatHour(selectedEvent.end)}:00`,
+        DateDay: formatDate(formattedDate),
       };
-  
+
       let respuesta: { msg: string; success: boolean };
-  
+
       if (user?.Rol === 1) {
-        console.log("1",horario)
+        console.log("1", horario);
         respuesta = await crearHorarioCancha1(horario);
         if (respuesta.success) {
           Swal.fire({
@@ -100,7 +100,7 @@ export function HomePage() {
           });
         }
       } else if (user?.Rol === 2) {
-        console.log("2",horario)
+        console.log("2", horario);
         respuesta = await crearHorarioCancha2(horario);
         if (respuesta.success) {
           Swal.fire({
@@ -119,24 +119,28 @@ export function HomePage() {
       handleCloseModal();
     }
   }
-  
-
-
 
   function formatHour(dateTimeString: string) {
     const date = new Date(dateTimeString);
-    const hours = date.getHours();
-    const minutes = date.getMinutes();
-    return `${hours}:${minutes < 10 ? '0' + minutes : minutes}`;
+    const hours = date.getHours().toString().padStart(2, "0");
+    const minutes = date.getMinutes().toString().padStart(2, "0");
+    return `${hours}:${minutes}`;
   }
-  
+
+  function formatDate(dateString: string) {
+    const dateParts = dateString.split("-");
+    const year = dateParts[0];
+    const month = dateParts[1].padStart(2, "0");
+    const day = dateParts[2].padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  }
 
   return (
     <div className="page-wrapper">
       <div className="page-content">
         <div className="card">
           <div className="card-body">
-             <div className={user && user.Shift === "Morning" ? "disabled" : ""}> 
+            <div className={user && user.Shift === "Morning" ? "disabled" : ""}>
               <h5 className="card-title">Turno mañana</h5>
               <hr />
               <div className="table-responsive">
@@ -166,9 +170,9 @@ export function HomePage() {
                   eventContent={renderEventContent}
                   select={handleSelectEvent}
                 />
-            </div> 
+              </div>
             </div>
-            <div className={user && user.Shift === "Night" ? "disabled" : ""}> 
+            <div className={user && user.Shift === "Night" ? "disabled" : ""}>
               <h5 className="card-title mt-3">Turno tarde</h5>
               <hr />
               <div className="table-responsive">
@@ -186,7 +190,7 @@ export function HomePage() {
                   nowIndicator={true}
                   dayMaxEvents={true}
                   editable={false}
-                  selectable={ true}
+                  selectable={true}
                   slotMinTime="18:00:00"
                   slotMaxTime="21:00:00"
                   contentHeight="auto"
@@ -199,7 +203,7 @@ export function HomePage() {
                   select={handleSelectEvent}
                 />
               </div>
-             </div> 
+            </div>
           </div>
         </div>
       </div>
@@ -234,7 +238,11 @@ export function HomePage() {
                   Horario: {selectedEvent && formatHour(selectedEvent.start)} a{" "}
                   {selectedEvent && formatHour(selectedEvent.end)}
                 </p>
-                <p>Día: {selectedEvent && new Date(selectedEvent.start).toLocaleDateString()}</p>
+                <p>
+                  Día:{" "}
+                  {selectedEvent &&
+                    new Date(selectedEvent.start).toLocaleDateString()}
+                </p>
               </div>
               <div className="modal-footer">
                 <button

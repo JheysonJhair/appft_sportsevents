@@ -25,7 +25,7 @@ export function NewUser() {
     Area: "",
     Laboratory: "",
   });
-  const [showAdditionalFields, setShowAdditionalFields] = useState(false); 
+  const [showAdditionalFields, setShowAdditionalFields] = useState(false);
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -33,7 +33,7 @@ export function NewUser() {
     const { name, value } = e.target;
 
     if (name === "Rol") {
-      setShowAdditionalFields(value === "1" || value === "2"); 
+      setShowAdditionalFields(value === "1" || value === "2");
     }
 
     setNuevoUsuario((prevUsuario) => ({
@@ -77,17 +77,23 @@ export function NewUser() {
         "Mail",
         "Rol",
       ];
-  
+
       if (showAdditionalFields) {
         requiredFields.push("Area", "Laboratory", "Shift");
       }
-  
-      const missingFields = requiredFields.filter(field => !nuevoUsuario[field]);
-      
+
+      const missingFields = requiredFields.filter(
+        (field) => !nuevoUsuario[field]
+      );
+
       if (missingFields.length > 0) {
-        throw new Error(`Por favor complete los siguientes campos obligatorios: ${missingFields.join(", ")}`);
+        throw new Error(
+          `Por favor complete los siguientes campos obligatorios: ${missingFields.join(
+            ", "
+          )}`
+        );
       }
-  
+
       console.log(nuevoUsuario);
       await crearUsuario(nuevoUsuario);
       Swal.fire({
@@ -107,8 +113,7 @@ export function NewUser() {
       console.error("Error al registrar el nuevo usuario:", error);
     }
   };
-  
-  
+
   return (
     <div className="page-wrapper">
       <div className="page-content">
