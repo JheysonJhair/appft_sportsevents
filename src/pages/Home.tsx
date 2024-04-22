@@ -40,6 +40,7 @@ export function HomePage() {
       } else {
         throw new Error("Rol de usuario no válido");
       }
+      
       const initialEvents: EventData[] = horario.map((event) => ({
         title: event.FirstName,
         area: event.Area,
@@ -49,6 +50,7 @@ export function HomePage() {
         color: "#44a7ea",
       }));
 
+      
       setEvents(initialEvents);
     } catch (error) {
       console.error("Error al obtener el horario:", error);
@@ -76,30 +78,38 @@ export function HomePage() {
   async function handleConfirmReservation() {
     try {
       if (!selectedEvent) return;
-
+  
       let horario: Partial<Horario> = {
         IdUser: user?.IdUser || 0,
         StartTime: selectedEvent.start,
         EndTime: selectedEvent.end,
         DateDay: formattedDate,
       };
-
+  
+      let respuesta: { msg: string; success: boolean };
+  
       if (user?.Rol === 1) {
-        await crearHorarioCancha1(horario);
-        Swal.fire({
-          title: "CANCHA 1!",
-          text: "El horario se registró correctamente!",
-          icon: "success",
-          confirmButtonText: "Aceptar",
-        });
+        console.log("1",horario)
+        respuesta = await crearHorarioCancha1(horario);
+        if (respuesta.success) {
+          Swal.fire({
+            title: "CANCHA 1!",
+            text: "El horario se registró correctamente!",
+            icon: "success",
+            confirmButtonText: "Aceptar",
+          });
+        }
       } else if (user?.Rol === 2) {
-        await crearHorarioCancha2(horario);
-        Swal.fire({
-          title: "CANCHA 2!",
-          text: "El horario se registró correctamente!",
-          icon: "success",
-          confirmButtonText: "Aceptar",
-        });
+        console.log("2",horario)
+        respuesta = await crearHorarioCancha2(horario);
+        if (respuesta.success) {
+          Swal.fire({
+            title: "CANCHA 2!",
+            text: "El horario se registró correctamente!",
+            icon: "success",
+            confirmButtonText: "Aceptar",
+          });
+        }
       } else {
         throw new Error("Rol de usuario no válido");
       }
@@ -109,6 +119,10 @@ export function HomePage() {
       handleCloseModal();
     }
   }
+  
+
+
+
   function formatHour(dateTimeString: string) {
     const date = new Date(dateTimeString);
     const hours = date.getHours();
@@ -122,7 +136,7 @@ export function HomePage() {
       <div className="page-content">
         <div className="card">
           <div className="card-body">
-            <div className={user && user.Shift === "Morning" ? "disabled" : ""}>
+             <div className={user && user.Shift === "Morning" ? "disabled" : ""}> 
               <h5 className="card-title">Turno mañana</h5>
               <hr />
               <div className="table-responsive">
@@ -140,7 +154,7 @@ export function HomePage() {
                   nowIndicator={true}
                   dayMaxEvents={true}
                   editable={false}
-                  selectable={user && user.Shift === "Morning" ? false : true}
+                  selectable={true}
                   slotMinTime="06:00:00"
                   slotMaxTime="09:00:00"
                   contentHeight="auto"
@@ -152,9 +166,9 @@ export function HomePage() {
                   eventContent={renderEventContent}
                   select={handleSelectEvent}
                 />
-              </div>
+            </div> 
             </div>
-            <div className={user && user.Shift === "Night" ? "disabled" : ""}>
+            <div className={user && user.Shift === "Night" ? "disabled" : ""}> 
               <h5 className="card-title mt-3">Turno tarde</h5>
               <hr />
               <div className="table-responsive">
@@ -172,7 +186,7 @@ export function HomePage() {
                   nowIndicator={true}
                   dayMaxEvents={true}
                   editable={false}
-                  selectable={user && user.Shift === "Night" ? false : true}
+                  selectable={ true}
                   slotMinTime="18:00:00"
                   slotMaxTime="21:00:00"
                   contentHeight="auto"
@@ -185,7 +199,7 @@ export function HomePage() {
                   select={handleSelectEvent}
                 />
               </div>
-            </div>
+             </div> 
           </div>
         </div>
       </div>

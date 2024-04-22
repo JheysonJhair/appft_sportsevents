@@ -113,8 +113,6 @@ export function User() {
             <thead>
               <tr>
                 <th>Area</th>
-                <th>Laboratorio</th>
-                <th>Código</th>
                 <th>Nombres</th>
                 <th>Apellidos</th>
                 <th>Contraseña</th>
@@ -129,9 +127,7 @@ export function User() {
             <tbody>
               {filteredUsuarios.map((usuario, index) => (
                 <tr key={index}>
-                  <td>{usuario.Area}</td>
-                  <td>{usuario.Laboratory}</td>
-                  <td>{usuario.EmployeeCode}</td>
+                  <td>{usuario.Area ? usuario.Area : "Administrador"}</td>
                   <td>{usuario.FirstName}</td>
                   <td>{usuario.LastName}</td>
                   <td>{usuario.Password}</td>
@@ -139,7 +135,13 @@ export function User() {
                   <td>{usuario.PhoneNumber}</td>
                   <td>{usuario.Mail}</td>
                   <td>{usuario.Shift}</td>
-                  <td>{usuario.Rol === 1 ? "EXCLUSIVO" : "TRABAJADOR"}</td>
+                  <td>
+                    {usuario.Rol === 1 && "EXCLUSIVO"}
+                    {usuario.Rol === 2 && "TRABAJADOR"}
+                    {usuario.Rol === 3 && "ADMINISTRADOR DE CANCHA"}
+                    {usuario.Rol === 4 && "ADMINISTRADOR"}
+                  </td>
+
                   <td>
                     <button
                       className="btn btn-primary btn-sm"

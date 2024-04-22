@@ -25,7 +25,7 @@ export async function obtenerHorarioCancha1(): Promise<Horario[]> {
 
 export async function crearHorarioCancha1(
   horario: Partial<Horario>
-): Promise<void> {
+): Promise<{ msg: string; success: boolean }> {
   try {
     const response = await fetch(
       "https://esappsoccer.ccontrolz.com/api/field1",
@@ -40,6 +40,8 @@ export async function crearHorarioCancha1(
     if (!response.ok) {
       throw new Error("Error al crear el horario para la cancha 1");
     }
+    const responseData: { msg: string; success: boolean } = await response.json();
+    return responseData;
   } catch (error) {
     throw new Error("Error al crear la cancha 1: " + error);
   }
@@ -79,7 +81,7 @@ export async function obtenerHorarioCancha2(): Promise<Horario[]> {
 
 export async function crearHorarioCancha2(
   horario: Partial<Horario>
-): Promise<void> {
+): Promise<{ msg: string; success: boolean }> {
   try {
     const response = await fetch(
       "https://esappsoccer.ccontrolz.com/api/field2",
@@ -94,6 +96,8 @@ export async function crearHorarioCancha2(
     if (!response.ok) {
       throw new Error("Error al crear el horario para la cancha 2");
     }
+    const responseData: { msg: string; success: boolean } = await response.json();
+    return responseData;
   } catch (error) {
     throw new Error("Error al crear la cancha 2: " + error);
   }

@@ -25,11 +25,16 @@ export function NewUser() {
     Area: "",
     Laboratory: "",
   });
+  const [showAdditionalFields, setShowAdditionalFields] = useState(false); 
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
+
+    if (name === "Rol") {
+      setShowAdditionalFields(value === "1" || value === "2"); 
+    }
 
     setNuevoUsuario((prevUsuario) => ({
       ...prevUsuario,
@@ -70,17 +75,19 @@ export function NewUser() {
         "Dni",
         "PhoneNumber",
         "Mail",
-        "Shift",
         "Rol",
-        "Area",
-        "Laboratory",
       ];
-      const invalidFields = requiredFields.filter(
-        (field) => !nuevoUsuario[field]
-      );
-      if (invalidFields.length > 0) {
-        throw new Error("Por favor complete todos los campos obligatorios.");
+  
+      if (showAdditionalFields) {
+        requiredFields.push("Area", "Laboratory", "Shift");
       }
+  
+      const missingFields = requiredFields.filter(field => !nuevoUsuario[field]);
+      
+      if (missingFields.length > 0) {
+        throw new Error(`Por favor complete los siguientes campos obligatorios: ${missingFields.join(", ")}`);
+      }
+  
       console.log(nuevoUsuario);
       await crearUsuario(nuevoUsuario);
       Swal.fire({
@@ -93,13 +100,15 @@ export function NewUser() {
     } catch (error) {
       Swal.fire({
         title: "Error!",
-        text: "Complete todos los campos",
+        text: "Opps, algo salio mal!",
         icon: "error",
         confirmButtonText: "Aceptar",
       });
       console.error("Error al registrar el nuevo usuario:", error);
     }
   };
+  
+  
   return (
     <div className="page-wrapper">
       <div className="page-content">
@@ -261,64 +270,6 @@ export function NewUser() {
             </div>
             <div className="col-sm-6">
               <div className="row mb-3">
-                <label htmlFor="input06" className="col-sm-4 col-form-label">
-                  Area
-                </label>
-                <div className="col-sm-8">
-                  <div className="input-group">
-                    <span className="input-group-text">
-                      <i className="bx bx-user-circle" />
-                    </span>
-                    <select
-                      className={`form-select ${
-                        errorMessages.Area && "is-invalid"
-                      }`}
-                      name="Area"
-                      onChange={handleInputChange}
-                      id="input06"
-                    >
-                      <option>Seleccionar Area</option>
-                      <option value="Marketing">Marketing</option>
-                      <option value="Recursos humanos">Recursos humanos</option>
-                    </select>
-                    {errorMessages.Area && (
-                      <div className="invalid-feedback">
-                        {errorMessages.Area}
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </div>
-              <div className="row mb-3">
-                <label htmlFor="input07" className="col-sm-4 col-form-label">
-                  Laboratorio
-                </label>
-                <div className="col-sm-8">
-                  <div className="input-group">
-                    <span className="input-group-text">
-                      <i className="bx bx-user-circle" />
-                    </span>
-                    <select
-                      className={`form-select ${
-                        errorMessages.Laboratory && "is-invalid"
-                      }`}
-                      name="Laboratory"
-                      onChange={handleInputChange}
-                      id="input07"
-                    >
-                      <option>Seleccionar Laboratorio</option>
-                      <option value="Lab 01">Lab 01</option>
-                      <option value="Labl 02">Lab 02</option>
-                    </select>
-                    {errorMessages.Laboratory && (
-                      <div className="invalid-feedback">
-                        {errorMessages.Laboratory}
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </div>
-              <div className="row mb-3">
                 <label htmlFor="input08" className="col-sm-4 col-form-label">
                   Rol
                 </label>
@@ -336,8 +287,10 @@ export function NewUser() {
                       id="input08"
                     >
                       <option>Seleccionar rol</option>
-                      <option value={1}>Administrador</option>
-                      <option value={2}>Vendedor</option>
+                      <option value={1}>Exclusivo</option>
+                      <option value={2}>Trabajador</option>
+                      <option value={3}>Administrador de cancha</option>
+                      <option value={4}>Administrador</option>
                     </select>
                     {errorMessages.Rol && (
                       <div className="invalid-feedback">
@@ -347,35 +300,109 @@ export function NewUser() {
                   </div>
                 </div>
               </div>
-              <div className="row mb-3">
-                <label htmlFor="input09" className="col-sm-4 col-form-label">
-                  Turno
-                </label>
-                <div className="col-sm-8">
-                  <div className="input-group">
-                    <span className="input-group-text">
-                      <i className="bx bx-log-in" />
-                    </span>
-                    <select
-                      className={`form-select ${
-                        errorMessages.Shift && "is-invalid"
-                      }`}
-                      name="Shift"
-                      onChange={handleInputChange}
-                      id="input09"
+              {showAdditionalFields && (
+                <>
+                  <div className="row mb-3">
+                    <label
+                      htmlFor="input06"
+                      className="col-sm-4 col-form-label"
                     >
-                      <option>Seleccionar acceso</option>
-                      <option value="morning">Mañana</option>
-                      <option value="night">Noche</option>
-                    </select>
-                    {errorMessages.Shift && (
-                      <div className="invalid-feedback">
-                        {errorMessages.Shift}
+                      Area
+                    </label>
+                    <div className="col-sm-8">
+                      <div className="input-group">
+                        <span className="input-group-text">
+                          <i className="bx bx-user-circle" />
+                        </span>
+                        <select
+                          className={`form-select ${
+                            errorMessages.Area && "is-invalid"
+                          }`}
+                          name="Area"
+                          onChange={handleInputChange}
+                          id="input06"
+                        >
+                          <option>Seleccionar Area</option>
+                          <option value="Marketing">Marketing</option>
+                          <option value="Recursos humanos">
+                            Recursos humanos
+                          </option>
+                        </select>
+                        {errorMessages.Area && (
+                          <div className="invalid-feedback">
+                            {errorMessages.Area}
+                          </div>
+                        )}
                       </div>
-                    )}
+                    </div>
                   </div>
-                </div>
-              </div>
+                  <div className="row mb-3">
+                    <label
+                      htmlFor="input07"
+                      className="col-sm-4 col-form-label"
+                    >
+                      Laboratorio
+                    </label>
+                    <div className="col-sm-8">
+                      <div className="input-group">
+                        <span className="input-group-text">
+                          <i className="bx bx-user-circle" />
+                        </span>
+                        <select
+                          className={`form-select ${
+                            errorMessages.Laboratory && "is-invalid"
+                          }`}
+                          name="Laboratory"
+                          onChange={handleInputChange}
+                          id="input07"
+                        >
+                          <option>Seleccionar Laboratorio</option>
+                          <option value="Lab 01">Lab 01</option>
+                          <option value="Labl 02">Lab 02</option>
+                        </select>
+                        {errorMessages.Laboratory && (
+                          <div className="invalid-feedback">
+                            {errorMessages.Laboratory}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="row mb-3">
+                    <label
+                      htmlFor="input09"
+                      className="col-sm-4 col-form-label"
+                    >
+                      Turno
+                    </label>
+                    <div className="col-sm-8">
+                      <div className="input-group">
+                        <span className="input-group-text">
+                          <i className="bx bx-log-in" />
+                        </span>
+                        <select
+                          className={`form-select ${
+                            errorMessages.Shift && "is-invalid"
+                          }`}
+                          name="Shift"
+                          onChange={handleInputChange}
+                          id="input09"
+                        >
+                          <option>Seleccionar acceso</option>
+                          <option value="morning">Mañana</option>
+                          <option value="night">Noche</option>
+                        </select>
+                        {errorMessages.Shift && (
+                          <div className="invalid-feedback">
+                            {errorMessages.Shift}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </>
+              )}
               <div className="row mt-4">
                 <div className="col"></div>
                 <div className="col-auto ml-auto">

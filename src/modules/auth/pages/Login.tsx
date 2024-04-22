@@ -18,7 +18,7 @@ export default function Login() {
         UserRequest: username,
         Password: password,
       });
-      if (response.success) {
+      if (response.data.Rol == 1 || response.data.Rol == 2) {
         Swal.fire({
           position: "top-end",
           icon: "success",
@@ -28,6 +28,28 @@ export default function Login() {
         });
         setUser(response.data);
         navigate("/");
+      }
+      if (response.data.Rol == 3) {
+        Swal.fire({
+          position: "top-end",
+          icon: "success",
+          title: `Cancha a cargo de ${response.data.FirstName}`,
+          showConfirmButton: false,
+          timer: 1500,
+        });
+        setUser(response.data);
+        navigate("/administrador");
+      }
+      if (response.data.Rol == 4) {
+        Swal.fire({
+          position: "top-end",
+          icon: "success",
+          title: `Administrador ${response.data.FirstName}`,
+          showConfirmButton: false,
+          timer: 1500,
+        });
+        setUser(response.data);
+        navigate("/administrador");
       }
       if (!response.success) {
         Swal.fire({
@@ -72,7 +94,7 @@ export default function Login() {
           >
             <div>
               <div className="mb-3 text-center">
-                <img src="assets/images/logo-icon.png" width={120} />
+                <img src="assets/images/logo-icon.png" width={140} />
               </div>
               <div className="text-center mb-4">
                 <h5 className="mb-3 fs-4" style={{ fontWeight: "bold" }}>

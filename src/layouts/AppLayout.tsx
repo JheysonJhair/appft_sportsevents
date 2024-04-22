@@ -83,28 +83,37 @@ function AppLayout() {
             </div>
           </div>
           <ul className="metismenu" id="menu">
-            <li className="">
-              <NavLink to="/">
-                <div className="parent-icon">
-                  <i className="bx bx-grid-alt" />
-                </div>
-                <div className="menu-title">PANEL PRINCIPAL</div>
-              </NavLink>
-            </li>
-
-            <li className="menu-label">PANEL DE CONTROL</li>
-            {user?.Rol === 1 && (
-              <>
-                <li>
-                  <NavLink to="/horarios/">
-                    <div className="parent-icon">
-                      <i className="bx bx-calendar" />
-                    </div>
-                    <div className="menu-title">Horarios</div>
-                  </NavLink>
-                </li>
-              </>
+            {(user?.Rol === 1 || user?.Rol === 2) && (
+              <li className="">
+                <NavLink to="/">
+                  <div className="parent-icon">
+                    <i className="bx bx-grid-alt" />
+                  </div>
+                  <div className="menu-title">PANEL PRINCIPAL</div>
+                </NavLink>
+              </li>
             )}
+            {user?.Rol === 3 && (
+              <li className="mm-active">
+                <NavLink to="/administrador">
+                  <div className="parent-icon">
+                    <i className="bx bx-grid-alt" />
+                  </div>
+                  <div className="menu-title">PANEL PRINCIPAL</div>
+                </NavLink>
+              </li>
+            )}
+            {user?.Rol === 4 && (
+              <li className="mm-active">
+                <NavLink to="/administrador">
+                  <div className="parent-icon">
+                    <i className="bx bx-grid-alt" />
+                  </div>
+                  <div className="menu-title">PANEL PRINCIPAL</div>
+                </NavLink>
+              </li>
+            )}
+            <li className="menu-label">PANEL DE CONTROL</li>
             <li>
               <NavLink to="/areadejuego/">
                 <div className="parent-icon">
@@ -115,7 +124,7 @@ function AppLayout() {
             </li>
 
             <li className="menu-label">Configuración</li>
-            {user?.Rol === 1 && (
+            {user?.Rol === 4 && (
               <>
                 <li className="">
                   <NavLink to="/reportes">
@@ -247,7 +256,15 @@ function AppLayout() {
                   <div className="user-info">
                     <p className="user-name mb-0">{user?.FirstName}</p>
                     <p className="designattion mb-0">
-                      {user?.Rol === 1 ? "EXCLUSIVO" : "TRABAJADOR"}
+                      {user?.Rol === 1
+                        ? "EXCLUSIVO"
+                        : user?.Rol === 2
+                        ? "TRABAJADOR"
+                        : user?.Rol === 3
+                        ? "CANCHA DEPORTIVA"
+                        : user?.Rol === 4
+                        ? "ADMINISTRADOR"
+                        : ""}
                     </p>
                   </div>
                 </a>

@@ -18,7 +18,6 @@ export function Horarios() {
     async function fetchEventsCancha1() {
       try {
         const horarioCancha1 = await obtenerHorarioCancha1();
-        console.log(horarioCancha1)
         const initialEventsCancha1: EventData[] = horarioCancha1.map((event) => ({
           title: event.FirstName,
           area: event.Area,
@@ -36,7 +35,6 @@ export function Horarios() {
     async function fetchEventsCancha2() {
       try {
         const horarioCancha2 = await obtenerHorarioCancha2();
-        console.log(horarioCancha2)
         const initialEventsCancha2: EventData[] = horarioCancha2.map((event) => ({
           title: event.FirstName,
           area: event.Area,

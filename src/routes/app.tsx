@@ -26,7 +26,7 @@ const appRouter = [
         element: <AreaJuego />,
       },
       {
-        path: "/horarios/",
+        path: "/administrador",
         element: <Horarios />,
       },
       {
