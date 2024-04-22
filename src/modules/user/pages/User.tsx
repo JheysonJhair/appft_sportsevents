@@ -113,6 +113,7 @@ export function User() {
             <thead>
               <tr>
                 <th>Area</th>
+                <th>Laboratorio</th>
                 <th>Código</th>
                 <th>Nombres</th>
                 <th>Apellidos</th>
@@ -129,6 +130,7 @@ export function User() {
               {filteredUsuarios.map((usuario, index) => (
                 <tr key={index}>
                   <td>{usuario.Area}</td>
+                  <td>{usuario.Laboratory}</td>
                   <td>{usuario.EmployeeCode}</td>
                   <td>{usuario.FirstName}</td>
                   <td>{usuario.LastName}</td>

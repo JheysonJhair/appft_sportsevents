@@ -23,6 +23,7 @@ export function NewUser() {
     Shift: "",
     Rol: "",
     Area: "",
+    Laboratory: "",
   });
 
   const handleInputChange = (
@@ -72,6 +73,7 @@ export function NewUser() {
         "Shift",
         "Rol",
         "Area",
+        "Laboratory",
       ];
       const invalidFields = requiredFields.filter(
         (field) => !nuevoUsuario[field]
@@ -259,7 +261,7 @@ export function NewUser() {
             </div>
             <div className="col-sm-6">
               <div className="row mb-3">
-                <label htmlFor="input08" className="col-sm-4 col-form-label">
+                <label htmlFor="input06" className="col-sm-4 col-form-label">
                   Area
                 </label>
                 <div className="col-sm-8">
@@ -273,7 +275,7 @@ export function NewUser() {
                       }`}
                       name="Area"
                       onChange={handleInputChange}
-                      id="input08"
+                      id="input06"
                     >
                       <option>Seleccionar Area</option>
                       <option value="Marketing">Marketing</option>
@@ -282,6 +284,35 @@ export function NewUser() {
                     {errorMessages.Area && (
                       <div className="invalid-feedback">
                         {errorMessages.Area}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+              <div className="row mb-3">
+                <label htmlFor="input07" className="col-sm-4 col-form-label">
+                  Laboratorio
+                </label>
+                <div className="col-sm-8">
+                  <div className="input-group">
+                    <span className="input-group-text">
+                      <i className="bx bx-user-circle" />
+                    </span>
+                    <select
+                      className={`form-select ${
+                        errorMessages.Laboratory && "is-invalid"
+                      }`}
+                      name="Laboratory"
+                      onChange={handleInputChange}
+                      id="input07"
+                    >
+                      <option>Seleccionar Laboratorio</option>
+                      <option value="Lab 01">Lab 01</option>
+                      <option value="Labl 02">Lab 02</option>
+                    </select>
+                    {errorMessages.Laboratory && (
+                      <div className="invalid-feedback">
+                        {errorMessages.Laboratory}
                       </div>
                     )}
                   </div>

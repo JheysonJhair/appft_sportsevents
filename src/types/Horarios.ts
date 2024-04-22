@@ -1,7 +1,10 @@
 export interface Horario {
-  IdField1Entity: number;
-  IdUser:number;
+  IdUser: number;
+  FirstName:string;
+  LastName:string;
   StartTime: string;
   EndTime: string;
-  Date: string;
+  Area: string;
+  Laboratory:string;
+  DateDay: string;
 }

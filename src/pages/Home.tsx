@@ -19,7 +19,10 @@ export function HomePage() {
   const { user } = useAuth();
   const [events, setEvents] = useState<EventData[]>([]);
   const [selectedEvent, setSelectedEvent] = useState<EventData | null>(null);
-
+  const selectedDate = selectedEvent && new Date(selectedEvent.start).getDate();
+  const selectedMonth = selectedEvent && new Date(selectedEvent.start).getMonth() + 1; 
+  const selectedYear = selectedEvent && new Date(selectedEvent.start).getFullYear();
+  const formattedDate = `${selectedYear}-${selectedMonth}-${selectedDate}`;
   useEffect(() => {
     const intervalId = setInterval(fetchEvents, 1000);
 
@@ -29,6 +32,7 @@ export function HomePage() {
   async function fetchEvents() {
     try {
       let horario;
+      console.log(user?.Rol)
       if (user?.Rol === 1) {
         horario = await obtenerHorarioCancha1();
       } else if (user?.Rol === 2) {
@@ -37,11 +41,11 @@ export function HomePage() {
         throw new Error("Rol de usuario no válido");
       }
       const initialEvents: EventData[] = horario.map((event) => ({
-        title: "Usuario",
-        area: "Area",
-        laboratorio: "Laboratorio",
-        start: `${event.Date.split("T")[0]}T${event.StartTime}`,
-        end: `${event.Date.split("T")[0]}T${event.EndTime}`,
+        title: event.FirstName,
+        area: event.Area,
+        laboratorio: event.Laboratory,  
+        start: `${event.DateDay.split("T")[0]}T${formatHour(event.StartTime)}`,
+        end: `${event.DateDay.split("T")[0]}T${formatHour(event.EndTime)}`,
         color: "#44a7ea",
       }));
 
@@ -77,6 +81,7 @@ export function HomePage() {
         IdUser: user?.IdUser || 0,
         StartTime: selectedEvent.start,
         EndTime: selectedEvent.end,
+        DateDay: formattedDate,
       };
 
       if (user?.Rol === 1) {
@@ -104,12 +109,13 @@ export function HomePage() {
       handleCloseModal();
     }
   }
-  function formatHour(dateTimeString: any) {
+  function formatHour(dateTimeString: string) {
     const date = new Date(dateTimeString);
     const hours = date.getHours();
     const minutes = date.getMinutes();
-    return `${hours}:${minutes}`;
+    return `${hours}:${minutes < 10 ? '0' + minutes : minutes}`;
   }
+  
 
   return (
     <div className="page-wrapper">
@@ -214,6 +220,7 @@ export function HomePage() {
                   Horario: {selectedEvent && formatHour(selectedEvent.start)} a{" "}
                   {selectedEvent && formatHour(selectedEvent.end)}
                 </p>
+                <p>Día: {selectedEvent && new Date(selectedEvent.start).toLocaleDateString()}</p>
               </div>
               <div className="modal-footer">
                 <button

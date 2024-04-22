@@ -8,7 +8,7 @@ interface ApiResponse {
 //----------------------------------------------------------------CANCHA1
 export async function obtenerHorarioCancha1(): Promise<Horario[]> {
   try {
-    const response = await fetch("https://esappsoccer.ccontrolz.com/api/field1");
+    const response = await fetch("https://esappsoccer.ccontrolz.com/api/field1/GetAllTotal");
     if (!response.ok) {
       throw new Error("Error al obtener los datos");
     }
@@ -62,7 +62,7 @@ export async function eliminarHorarioCancha1(horarioId: number): Promise<void> {
 
 export async function obtenerHorarioCancha2(): Promise<Horario[]> {
   try {
-    const response = await fetch("https://esappsoccer.ccontrolz.com/api/field2");
+    const response = await fetch("https://esappsoccer.ccontrolz.com/api/field2/GetAllTotal");
     if (!response.ok) {
       throw new Error("Error al obtener los datos");
     }
@@ -82,7 +82,7 @@ export async function crearHorarioCancha2(
 ): Promise<void> {
   try {
     const response = await fetch(
-      "https://esappsoccer.ccontrolz.com/api/field1",
+      "https://esappsoccer.ccontrolz.com/api/field2",
       {
         method: "POST",
         headers: {
@@ -101,7 +101,7 @@ export async function crearHorarioCancha2(
 
 export async function eliminarHorarioCancha2(horarioId: number): Promise<void> {
   try {
-    const url = `https://esappsoccer.ccontrolz.com/api/field1/${horarioId}`;
+    const url = `https://esappsoccer.ccontrolz.com/api/field2/${horarioId}`;
     const response = await fetch(url, {
       method: "DELETE",
     });

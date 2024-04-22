@@ -18,12 +18,13 @@ export function Horarios() {
     async function fetchEventsCancha1() {
       try {
         const horarioCancha1 = await obtenerHorarioCancha1();
+        console.log(horarioCancha1)
         const initialEventsCancha1: EventData[] = horarioCancha1.map((event) => ({
-          title: "Usuario",
-          area: "Area",
-          laboratorio: "Laboratorio",
-          start: `${event.Date.split("T")[0]}T${event.StartTime}`,
-          end: `${event.Date.split("T")[0]}T${event.EndTime}`,
+          title: event.FirstName,
+          area: event.Area,
+          laboratorio: event.Laboratory,  
+          start: `${event.DateDay.split("T")[0]}T${formatHour(event.StartTime)}`,
+          end: `${event.DateDay.split("T")[0]}T${formatHour(event.EndTime)}`,
           color: "#44a7ea",
         }));
         setEventsCancha1(initialEventsCancha1);
@@ -35,12 +36,13 @@ export function Horarios() {
     async function fetchEventsCancha2() {
       try {
         const horarioCancha2 = await obtenerHorarioCancha2();
+        console.log(horarioCancha2)
         const initialEventsCancha2: EventData[] = horarioCancha2.map((event) => ({
-          title: "Usuario",
-          area: "Area",
-          laboratorio: "Laboratorio",
-          start: `${event.Date.split("T")[0]}T${event.StartTime}`,
-          end: `${event.Date.split("T")[0]}T${event.EndTime}`,
+          title: event.FirstName,
+          area: event.Area,
+          laboratorio: event.Laboratory,  
+          start: `${event.DateDay.split("T")[0]}T${formatHour(event.StartTime)}`,
+          end: `${event.DateDay.split("T")[0]}T${formatHour(event.EndTime)}`,
           color: "#fd3550",
         }));
         setEventsCancha2(initialEventsCancha2);
@@ -63,7 +65,12 @@ export function Horarios() {
       </div>
     );
   }
-
+  function formatHour(dateTimeString: string) {
+    const date = new Date(dateTimeString);
+    const hours = date.getHours();
+    const minutes = date.getMinutes();
+    return `${hours}:${minutes < 10 ? '0' + minutes : minutes}`;
+  }
   function renderCalendar(slotMinTime: any, slotMaxTime: any, eventsData: EventData[]) {
     return (
       <div className="table-responsive">
