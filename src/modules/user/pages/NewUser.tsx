@@ -93,16 +93,24 @@ export function NewUser() {
           )}`
         );
       }
-
-      console.log(nuevoUsuario);
-      await crearUsuario(nuevoUsuario);
-      Swal.fire({
-        title: "Correcto!",
-        text: "El usuario se registró correctamente!",
-        icon: "success",
-        confirmButtonText: "Aceptar",
-      });
-      navigate("/usuarios/");
+      let response: { msg: string; success: boolean };
+      response = await crearUsuario(nuevoUsuario);
+      if (response.success) {
+        Swal.fire({
+          title: "Correcto!",
+          text: "El usuario se registró correctamente!",
+          icon: "success",
+          confirmButtonText: "Aceptar",
+        });
+        navigate("/usuarios/");
+      } else if (!response.success) {
+        Swal.fire({
+          title: "Error",
+          text: response.msg + "",
+          icon: "warning",
+          confirmButtonText: "Aceptar",
+        });
+      }
     } catch (error) {
       Swal.fire({
         title: "Error!",
@@ -395,8 +403,8 @@ export function NewUser() {
                           id="input09"
                         >
                           <option>Seleccionar acceso</option>
-                          <option value="morning">Mañana</option>
-                          <option value="night">Noche</option>
+                          <option value="Mañana">Mañana</option>
+                          <option value="Noche">Noche</option>
                         </select>
                         {errorMessages.Shift && (
                           <div className="invalid-feedback">

@@ -23,7 +23,8 @@ export async function obtenerUsuarios(): Promise<Usuario[]> {
   }
 }
 
-export async function crearUsuario(usuario: Partial<Usuario>): Promise<void> {
+
+export async function crearUsuario(usuario: Partial<Usuario>): Promise<{ msg: string; success: boolean }> {
   try {
     const response = await fetch("https://esappsoccer.ccontrolz.com/api/user/insert", {
       method: "POST",
@@ -35,6 +36,8 @@ export async function crearUsuario(usuario: Partial<Usuario>): Promise<void> {
     if (!response.ok) {
       throw new Error("Error al crear el usuario");
     }
+    const responseData: { msg: string; success: boolean } = await response.json();
+    return responseData;
   } catch (error) {
     throw new Error("Error al crear el usuario: " + error);
   }

@@ -7,4 +7,6 @@ export interface Horario {
   Area: string;
   Laboratory:string;
   DateDay: string;
+  StartWeekend:string;
+  EndWeekend:string
 }

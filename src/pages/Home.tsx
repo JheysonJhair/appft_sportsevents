@@ -34,7 +34,6 @@ export function HomePage() {
   async function fetchEvents() {
     try {
       let horario;
-      console.log(user?.Rol);
       if (user?.Rol === 1) {
         horario = await obtenerHorarioCancha1();
       } else if (user?.Rol === 2) {
@@ -69,29 +68,55 @@ export function HomePage() {
   }
 
   function handleSelectEvent(event: any) {
-    setSelectedEvent(event);
+    console.log("asdasd");
+    if (user?.Rol === 2) {
+      const startTime = new Date(event.start).getTime();
+      const endTime = new Date(event.end).getTime();
+      const duration = endTime - startTime;
+      const oneHourInMilliseconds = 3600000;
+      console.log(duration);
+      if (duration > oneHourInMilliseconds) {
+        Swal.fire({
+          title: "Error",
+          text: "Debe seleccionar solo una hora",
+          icon: "error",
+          confirmButtonText: "Aceptar",
+        });
+      } else {
+        setSelectedEvent(event);
+      }
+    } else {
+      setSelectedEvent(event);
+    }
   }
 
   function handleCloseModal() {
     setSelectedEvent(null);
   }
+  console.log(selectedEvent);
   async function handleConfirmReservation() {
     try {
       if (!selectedEvent) return;
+      const startOfWeek = new Date(selectedEvent.start);
+      startOfWeek.setDate(startOfWeek.getDate() - startOfWeek.getDay() + 1);
+
+      const endOfWeek = new Date(selectedEvent.end);
+      endOfWeek.setDate(endOfWeek.getDate() + (6 - endOfWeek.getDay()) + 1);
 
       let horario: Partial<Horario> = {
         IdUser: user?.IdUser || 0,
         StartTime: `${formatHour(selectedEvent.start)}:00`,
         EndTime: `${formatHour(selectedEvent.end)}:00`,
         DateDay: formatDate(formattedDate),
+        StartWeekend: formatDate2(startOfWeek),
+        EndWeekend: formatDate2(endOfWeek),
       };
-
-      let respuesta: { msg: string; success: boolean };
-
+      console.log(horario);
+      let response: { msg: string; success: boolean };
       if (user?.Rol === 1) {
-        console.log("1", horario);
-        respuesta = await crearHorarioCancha1(horario);
-        if (respuesta.success) {
+        response = await crearHorarioCancha1(horario);
+        console.log(response);
+        if (response.success) {
           Swal.fire({
             title: "CANCHA 1!",
             text: "El horario se registró correctamente!",
@@ -100,13 +125,20 @@ export function HomePage() {
           });
         }
       } else if (user?.Rol === 2) {
-        console.log("2", horario);
-        respuesta = await crearHorarioCancha2(horario);
-        if (respuesta.success) {
+        response = await crearHorarioCancha2(horario);
+        console.log(response);
+        if (response.success) {
           Swal.fire({
             title: "CANCHA 2!",
             text: "El horario se registró correctamente!",
             icon: "success",
+            confirmButtonText: "Aceptar",
+          });
+        } else if (!response.success) {
+          Swal.fire({
+            title: "Horario completo!!",
+            text: response.msg + "",
+            icon: "warning",
             confirmButtonText: "Aceptar",
           });
         }
@@ -134,13 +166,18 @@ export function HomePage() {
     const day = dateParts[2].padStart(2, "0");
     return `${year}-${month}-${day}`;
   }
-
+  function formatDate2(date: Date): string {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  }
   return (
     <div className="page-wrapper">
       <div className="page-content">
         <div className="card">
           <div className="card-body">
-            <div className={user && user.Shift === "Morning" ? "disabled" : ""}>
+            <div className={user && user.Shift === "Mañana" ? "disabled" : ""}>
               <h5 className="card-title">Turno mañana</h5>
               <hr />
               <div className="table-responsive">
@@ -172,7 +209,7 @@ export function HomePage() {
                 />
               </div>
             </div>
-            <div className={user && user.Shift === "Night" ? "disabled" : ""}>
+            <div className={user && user.Shift === "Noche" ? "disabled" : ""}>
               <h5 className="card-title mt-3">Turno tarde</h5>
               <hr />
               <div className="table-responsive">
