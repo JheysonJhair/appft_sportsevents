@@ -99,11 +99,9 @@ export function HomePage() {
   async function handleConfirmReservation() {
     try {
       if (!selectedEvent) return;
-      const startOfWeek = new Date(selectedEvent.start);
-      startOfWeek.setDate(startOfWeek.getDate() - startOfWeek.getDay() + 1);
-
-      const endOfWeek = new Date(selectedEvent.end);
-      endOfWeek.setDate(endOfWeek.getDate() + (6 - endOfWeek.getDay()) + 1);
+      const selectedDate = new Date(selectedEvent.start);
+      const startOfWeek = new Date(selectedDate.setDate(selectedDate.getDate() - selectedDate.getDay() + (selectedDate.getDay() === 0 ? -6 : 1)));
+      const endOfWeek = new Date(selectedDate.setDate(selectedDate.getDate() - selectedDate.getDay() + 7));
 
       let horario: Partial<Horario> = {
         IdUser: user?.IdUser || 0,
@@ -114,6 +112,7 @@ export function HomePage() {
         EndWeekend: formatDate2(endOfWeek),
       };
       console.log(horario);
+      console.log(horario.StartWeekend, horario.EndWeekend);
       let response: { msg: string; success: boolean };
       if (user?.Rol === 1) {
         response = await crearHorarioCancha1(horario);
