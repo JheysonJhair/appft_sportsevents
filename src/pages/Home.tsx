@@ -68,14 +68,16 @@ export function HomePage() {
   }
 
   function handleSelectEvent(event: any) {
-    console.log("asdasd");
     if (user?.Rol === 2) {
       const startTime = new Date(event.start).getTime();
       const endTime = new Date(event.end).getTime();
       const duration = endTime - startTime;
       const oneHourInMilliseconds = 3600000;
       console.log(duration);
-      if (duration > oneHourInMilliseconds) {
+      if (
+        duration > oneHourInMilliseconds ||
+        duration < oneHourInMilliseconds
+      ) {
         Swal.fire({
           title: "Error",
           text: "Debe seleccionar solo una hora",
