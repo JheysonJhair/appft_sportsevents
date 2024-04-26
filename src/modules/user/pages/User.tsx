@@ -163,7 +163,7 @@ export function User() {
           </table>
         </div>
         <ul className="pagination justify-content-center">
-          {usuarios.map((usuario, index) => (
+          {usuarios.map((_, index) => (
             <li key={index} className="page-item">
               <button onClick={() => paginate(index + 1)} className="page-link">
                 {index + 1}

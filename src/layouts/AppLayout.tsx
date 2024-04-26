@@ -57,6 +57,8 @@ function AppLayout() {
     loadScripts();
   }, []);
 
+  //
+  
   const { user } = useAuth();
   return (
     <>
@@ -73,9 +75,9 @@ function AppLayout() {
             <div>
               <h4
                 className="logo-text text-danger"
-                style={{ fontWeight: "bold" }}
+                style={{ fontWeight: "bold", fontSize:"20px" }}
               >
-                GAMETIME
+                LAS BAMBAS
               </h4>
             </div>
             <div className="toggle-icon ms-auto">
@@ -223,7 +225,7 @@ function AppLayout() {
                     style={{ marginRight: "20px" }}
                   >
                     <h6 className="m-0" style={{ fontSize: "13px" }}>
-                      Turno: {user?.Shift == "Night" ? "Tarde" : "Mañana"}
+                      Turno: {user?.Shift}
                     </h6>
                   </div>
                   <i
@@ -235,7 +237,7 @@ function AppLayout() {
                     style={{ marginRight: "20px" }}
                   >
                     <h6 className="m-0" style={{ fontSize: "13px" }}>
-                      Laboratorio: {user?.Area}
+                      Area: {user?.Area}
                     </h6>
                   </div>
                 </ul>
@@ -303,7 +305,7 @@ function AppLayout() {
         </a>
         <footer className="page-footer">
           <p className="mb-0">
-            Copyright © GAMETIME 2024. Todos los derechos reservados.
+            Copyright © LAS BAMBAS 2024. Todos los derechos reservados.
           </p>
         </footer>
       </div>

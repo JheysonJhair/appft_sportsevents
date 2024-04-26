@@ -20,7 +20,7 @@ export default function Login() {
       });
       if (response.data.Rol == 1 || response.data.Rol == 2) {
         Swal.fire({
-          position: "top-end",
+          position: "top-end",  
           icon: "success",
           title: `Bienvenido ${response.data.FirstName}`,
           showConfirmButton: false,
@@ -110,7 +110,7 @@ export default function Login() {
                   className="form-select w-100 p-3"
                   style={{ backgroundColor: "#eff0f4", textAlign: "center" }}
                 >
-                  <option value="">GAMETIME</option>
+                  <option value="">LAS BAMBAS</option>
                 </select>
               </div>
 
