@@ -41,7 +41,6 @@ function AppLayout() {
       "../assets/plugins/perfect-scrollbar/js/perfect-scrollbar.js",
       "../assets/plugins/vectormap/jquery-jvectormap-2.0.2.min.js",
       "../assets/plugins/vectormap/jquery-jvectormap-world-mill-en.js",
-      "../assets/js/index.js",
       "../assets/js/app.js",
     ];
 

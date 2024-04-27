@@ -8,7 +8,7 @@ export function AreaJuego() {
             <nav aria-label="breadcrumb">
               <ol className="breadcrumb mb-0 p-0">
                 <li className="breadcrumb-item">
-                  <a href="javascript:;">
+                  <a >
                     <i className="bx bx-home-alt" />
                   </a>
                 </li>

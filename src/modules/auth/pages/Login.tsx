@@ -128,6 +128,7 @@ export default function Login() {
                       placeholder="Usuario"
                       value={username}
                       onChange={(e) => setUsername(e.target.value)}
+                      autoComplete="username"
                     />
                   </div>
                   <div className="col-12">
@@ -143,6 +144,7 @@ export default function Login() {
                         placeholder="Tu contraseña"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
+                        autoComplete="current-password"
                       />
                       <button
                         className="input-group-text bg-transparent border-start-0"

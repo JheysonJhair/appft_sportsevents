@@ -1,37 +1,80 @@
-import { useEffect } from "react";
+import Chart from "react-apexcharts";
+import { ApexOptions } from "apexcharts";
+
 export function Reportes() {
-  useEffect(() => {
-    const scriptPaths = [
-      "../assets/plugins/apexcharts-bundle/js/apexcharts.min.js",
-      "../assets/plugins/apexcharts-bundle/js/apex-custom.js",
-      "../assets/plugins/chartjs/js/chart.js",
-    ];
+  const dataBarra = {
+    series: [
+      {
+        data: [30, 40, 35, 50, 49, 60, 70, 91, 125],
+      },
+    ],
+    options: {
+      chart: {
+        type: "bar",
+      },
+      xaxis: {
+        categories: [
+          "Enero",
+          "Febrero",
+          "Marzo",
+          "Abril",
+          "Mayo",
+          "Junio",
+          "Julio",
+          "Agosto",
+          "Septiembre",
+        ],
+      },
+    } as ApexOptions,
+  };
 
-    const loadScript = (path: any) => {
-      return new Promise((resolve, reject) => {
-        const script = document.createElement("script");
-        script.src = path;
-        script.async = true;
-        script.onload = resolve;
-        script.onerror = reject;
-        document.body.appendChild(script);
-      });
-    };
+  const dataCircular = {
+    series: [44, 55, 41, 17, 15],
+    options: {
+      chart: {
+        type: "donut",
+      },
+      labels: ["Equipo A", "Equipo B", "Equipo C", "Equipo D", "Equipo E"],
+    } as ApexOptions,
+  };
+  const dataMultiLinea = {
+    series: [
+      {
+        name: "Serie 1",
+        data: [30, 40, 35, 50, 49, 60, 70, 91, 125],
+      },
+      {
+        name: "Serie 2",
+        data: [42, 53, 28, 60, 72, 89, 95, 112, 135],
+      },
+      {
+        name: "Serie 3",
+        data: [20, 38, 45, 56, 61, 73, 82, 94, 105],
+      },
+    ],
+    options: {
+      chart: {
+        type: "line",
+      },
+      xaxis: {
+        categories: [
+          "Enero",
+          "Febrero",
+          "Marzo",
+          "Abril",
+          "Mayo",
+          "Junio",
+          "Julio",
+          "Agosto",
+          "Septiembre",
+        ],
+      },
+      legend: {
+        position: "top",
+      },
+    } as ApexOptions,
+  };
 
-    const loadScripts = async () => {
-      for (const scriptPath of scriptPaths) {
-        try {
-          await loadScript(scriptPath);
-          console.log(`Script loaded: ${scriptPath}`);
-        } catch (error) {
-          console.error(`Failed to load script: ${scriptPath}`, error);
-        }
-      }
-      console.log("All scripts loaded successfully.");
-    };
-
-    loadScripts();
-  }, []);
   return (
     <div className="page-wrapper">
       <div className="page-content">
@@ -41,7 +84,7 @@ export function Reportes() {
             <nav aria-label="breadcrumb">
               <ol className="breadcrumb mb-0 p-0">
                 <li className="breadcrumb-item">
-                  <a href="javascript:;">
+                  <a>
                     <i className="bx bx-home-alt" />
                   </a>
                 </li>
@@ -55,19 +98,29 @@ export function Reportes() {
         <div className="row">
           <div className="col-xl-12 mx-auto">
             <h6 className="mb-0 text-uppercase">Column Chart</h6>
-            <hr />
-            <div className="card">
-              <div className="card-body">
-                <div id="chart4" />
+            <hr />{" "}
+            <div className="card py-3">
+              <div className="card-body" style={{ paddingBottom: "25px" }}>
+                <Chart
+                  options={dataBarra.options}
+                  series={dataBarra.series}
+                  type="bar"
+                  height={350}
+                />{" "}
               </div>
             </div>
             <div className="row">
               <div className="col-md-7">
                 <h6 className="mb-0 text-uppercase">Multi-Line Chart</h6>
-                <hr />
-                <div className="card">
-                  <div className="card-body">
-                    <div id="chart2" />
+                <hr />{" "}
+                <div className="card py-3">
+                  <div className="card-body" style={{ paddingBottom: "25px" }}>
+                    <Chart
+                      options={dataMultiLinea.options}
+                      series={dataMultiLinea.series}
+                      type="line"
+                      height={350}
+                    />{" "}
                   </div>
                 </div>
               </div>
@@ -76,7 +129,12 @@ export function Reportes() {
                 <hr />
                 <div className="card py-3">
                   <div className="card-body" style={{ paddingBottom: "25px" }}>
-                    <div id="chart8" />
+                    <Chart
+                      options={dataCircular.options}
+                      series={dataCircular.series}
+                      type="donut"
+                      height={350}
+                    />
                   </div>
                 </div>
               </div>
