@@ -20,7 +20,7 @@ export default function Login() {
       });
       if (response.data.Rol == 1 || response.data.Rol == 2) {
         Swal.fire({
-          position: "top-end",  
+          position: "top-end",
           icon: "success",
           title: `Bienvenido ${response.data.FirstName}`,
           showConfirmButton: false,
@@ -144,17 +144,17 @@ export default function Login() {
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                       />
-                      <a
-                        href="javascript:;"
-                        className="input-group-text bg-transparent"
+                      <button
+                        className="input-group-text bg-transparent border-start-0"
                         onClick={() => setShowPassword(!showPassword)}
+                        type="button"
                       >
                         {showPassword ? (
                           <i className="bx bx-show" />
                         ) : (
                           <i className="bx bx-hide" />
                         )}
-                      </a>
+                      </button>
                     </div>
                   </div>
                   <div className="col-12">

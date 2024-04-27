@@ -2,11 +2,8 @@ import { useEffect } from "react";
 export function Reportes() {
   useEffect(() => {
     const scriptPaths = [
-      "../assets/js/jquery.min.js",
       "../assets/plugins/apexcharts-bundle/js/apexcharts.min.js",
       "../assets/plugins/apexcharts-bundle/js/apex-custom.js",
-      "../assets/plugins/vectormap/jquery-jvectormap-2.0.2.min.js",
-      "../assets/plugins/vectormap/jquery-jvectormap-world-mill-en.js",
       "../assets/plugins/chartjs/js/chart.js",
     ];
 

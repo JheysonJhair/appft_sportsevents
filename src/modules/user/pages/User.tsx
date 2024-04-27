@@ -134,7 +134,7 @@ export function User() {
                   <td>{usuario.Dni}</td>
                   <td>{usuario.PhoneNumber}</td>
                   <td>{usuario.Mail}</td>
-                  <td>{usuario.Shift}</td>
+                  <td>{usuario.Shift !== "" ? usuario.Shift : "Sin turno"}</td>
                   <td>
                     {usuario.Rol === 1 && "EXCLUSIVO"}
                     {usuario.Rol === 2 && "TRABAJADOR"}

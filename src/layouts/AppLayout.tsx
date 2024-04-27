@@ -3,30 +3,44 @@ import { NavLink } from "react-router-dom";
 import { useAuth } from "../hooks/AuthContext";
 import { useEffect, useState } from "react";
 function AppLayout() {
-  const [currentDate, setCurrentDate] = useState<string>("");
+  const [currentDate, setCurrentDate] = useState<{
+    small: string;
+    large: string;
+  }>({ small: "", large: "" });
 
   useEffect(() => {
-    const options: Intl.DateTimeFormatOptions = {
+    const optionsSmall: Intl.DateTimeFormatOptions = {
+      year: "2-digit",
+      month: "2-digit",
+      day: "2-digit",
+    };
+    const optionsLarge: Intl.DateTimeFormatOptions = {
       year: "numeric",
       month: "long",
       day: "numeric",
     };
-    const formattedDate = new Date().toLocaleDateString("es-ES", options);
-    setCurrentDate(formattedDate);
+
+    const formattedDateSmall = new Date().toLocaleDateString(
+      "es-ES",
+      optionsSmall
+    );
+    const formattedDateLarge = new Date().toLocaleDateString(
+      "es-ES",
+      optionsLarge
+    );
+
+    setCurrentDate({ small: formattedDateSmall, large: formattedDateLarge });
   }, []);
 
   useEffect(() => {
     const scriptPaths = [
+      "../assets/js/bootstrap.bundle.min.js",
       "../assets/js/jquery.min.js",
       "../assets/plugins/simplebar/js/simplebar.min.js",
-      "../assets/plugins/datatable/js/jquery.dataTables.min.js",
       "../assets/plugins/metismenu/js/metisMenu.min.js",
-      "../assets/plugins/apexcharts-bundle/js/apexcharts.min.js",
-      "../assets/plugins/apexcharts-bundle/js/apex-custom.js",
       "../assets/plugins/perfect-scrollbar/js/perfect-scrollbar.js",
       "../assets/plugins/vectormap/jquery-jvectormap-2.0.2.min.js",
       "../assets/plugins/vectormap/jquery-jvectormap-world-mill-en.js",
-      "../assets/plugins/chartjs/js/chart.js",
       "../assets/js/index.js",
       "../assets/js/app.js",
     ];
@@ -58,7 +72,7 @@ function AppLayout() {
   }, []);
 
   //
-  
+
   const { user } = useAuth();
   return (
     <>
@@ -75,7 +89,7 @@ function AppLayout() {
             <div>
               <h4
                 className="logo-text text-danger"
-                style={{ fontWeight: "bold", fontSize:"20px" }}
+                style={{ fontWeight: "bold", fontSize: "20px" }}
               >
                 LAS BAMBAS
               </h4>
@@ -119,7 +133,7 @@ function AppLayout() {
             <li>
               <NavLink to="/areadejuego/">
                 <div className="parent-icon">
-                  <i className="bx bx-basketball" />
+                  <i className="bx bx-baseball" />
                 </div>
                 <div className="menu-title">Área de juego</div>
               </NavLink>
@@ -178,7 +192,8 @@ function AppLayout() {
               <div className="mobile-toggle-menu">
                 <i className="bx bx-menu" />
               </div>
-              <h5>{currentDate}</h5>
+              <h5 className="d-lg-none">{currentDate.small}</h5>
+              <h5 className="d-none d-lg-block">{currentDate.large}</h5>
               <div className="top-menu ms-auto">
                 <ul className="navbar-nav align-items-center gap-1">
                   <i
@@ -190,8 +205,8 @@ function AppLayout() {
                     }}
                   ></i>
                   <div
-                    className="col text-center"
-                    style={{ marginRight: "50px" }}
+                    className="col text-center "
+                    style={{ marginRight: "40px" }}
                   >
                     <h6 className="m-0" style={{ fontSize: "13px" }}>
                       Hoy día
@@ -225,7 +240,7 @@ function AppLayout() {
                     style={{ marginRight: "20px" }}
                   >
                     <h6 className="m-0" style={{ fontSize: "13px" }}>
-                      Turno: {user?.Shift}
+                      Turno: {user?.Shift !== "" ? user?.Shift : "Desabilitado"}
                     </h6>
                   </div>
                   <i
@@ -237,7 +252,7 @@ function AppLayout() {
                     style={{ marginRight: "20px" }}
                   >
                     <h6 className="m-0" style={{ fontSize: "13px" }}>
-                      Area: {user?.Area}
+                      Area: {user?.Area !== "" ? user?.Area : "Desabilitado"}
                     </h6>
                   </div>
                 </ul>
