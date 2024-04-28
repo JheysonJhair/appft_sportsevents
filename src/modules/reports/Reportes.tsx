@@ -128,7 +128,7 @@ export function Reportes() {
                 <h6 className="mb-0 text-uppercase">Pie Chart</h6>
                 <hr />
                 <div className="card py-3">
-                  <div className="card-body" style={{ paddingBottom: "25px" }}>
+                  <div className="card-body" style={{ paddingTop: "40px" ,paddingBottom: "40px" }}>
                     <Chart
                       options={dataCircular.options}
                       series={dataCircular.series}
