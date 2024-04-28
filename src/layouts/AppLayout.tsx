@@ -34,14 +34,14 @@ function AppLayout() {
 
   useEffect(() => {
     const scriptPaths = [
-      "../../src/assets/js/bootstrap.bundle.min.js",
-      "../../src/assets/js/jquery.min.js",
-      "../../src/assets/plugins/simplebar/js/simplebar.min.js",
-      "../../src/assets/plugins/metismenu/js/metisMenu.min.js",
-      "../../src/assets/plugins/perfect-scrollbar/js/perfect-scrollbar.js",
-      "../../src/assets/plugins/vectormap/jquery-jvectormap-2.0.2.min.js",
-      "../../src/assets/plugins/vectormap/jquery-jvectormap-world-mill-en.js",
-      "../../src/assets/js/app.js",
+      "../assets/js/bootstrap.bundle.min.js",
+      "../assets/js/jquery.min.js",
+      "../assets/plugins/simplebar/js/simplebar.min.js",
+      "../assets/plugins/metismenu/js/metisMenu.min.js",
+      "../assets/plugins/perfect-scrollbar/js/perfect-scrollbar.js",
+      "../assets/plugins/vectormap/jquery-jvectormap-2.0.2.min.js",
+      "../assets/plugins/vectormap/jquery-jvectormap-world-mill-en.js",
+      "../assets/js/app.js",
     ];
 
     const loadScript = (path: any) => {
