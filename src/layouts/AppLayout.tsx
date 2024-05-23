@@ -2,11 +2,30 @@ import { Outlet } from "react-router-dom";
 import { NavLink } from "react-router-dom";
 import { useAuth } from "../hooks/AuthContext";
 import { useEffect, useState } from "react";
+import { getWeather } from '../services/weather';
+
+interface User {
+  FirstName: string;
+  Rol: number;
+  Shift?: string;
+  Area?: string;
+}
+
+interface Weather {
+  temp: number;
+}
+
 function AppLayout() {
   const [currentDate, setCurrentDate] = useState<{
     small: string;
     large: string;
-  }>({ small: "", large: "" });
+  }>({
+    small: "",
+    large: "",
+  });
+
+  const [weatherToday, setWeatherToday] = useState<Weather | null>(null);
+  const [weatherTomorrow, setWeatherTomorrow] = useState<Weather | null>(null);
 
   useEffect(() => {
     const optionsSmall: Intl.DateTimeFormatOptions = {
@@ -20,16 +39,22 @@ function AppLayout() {
       day: "numeric",
     };
 
-    const formattedDateSmall = new Date().toLocaleDateString(
-      "es-ES",
-      optionsSmall
-    );
-    const formattedDateLarge = new Date().toLocaleDateString(
-      "es-ES",
-      optionsLarge
-    );
+    const formattedDateSmall = new Date().toLocaleDateString("es-ES", optionsSmall);
+    const formattedDateLarge = new Date().toLocaleDateString("es-ES", optionsLarge);
 
     setCurrentDate({ small: formattedDateSmall, large: formattedDateLarge });
+
+    const fetchWeather = async () => {
+      try {
+        const data = await getWeather('Grau'); 
+        setWeatherToday(data.list[0].main);
+        setWeatherTomorrow(data.list[8].main);
+      } catch (error) {
+        console.error('Error fetching weather data:', error);
+      }
+    };
+
+    fetchWeather();
   }, []);
 
   useEffect(() => {
@@ -44,7 +69,7 @@ function AppLayout() {
       "../assets/js/app.js",
     ];
 
-    const loadScript = (path: any) => {
+    const loadScript = (path: string) => {
       return new Promise((resolve, reject) => {
         const script = document.createElement("script");
         script.src = path;
@@ -69,7 +94,7 @@ function AppLayout() {
     loadScripts();
   }, []);
 
-  const { user } = useAuth();
+  const { user } = useAuth() as { user: User };
   return (
     <>
       <div className="wrapper">
@@ -208,7 +233,7 @@ function AppLayout() {
                       Hoy día
                     </h6>
                     <h6 className="m-0" style={{ fontSize: "13px" }}>
-                      78ºF/75ºF
+                    {weatherToday?.temp}ºC
                     </h6>
                   </div>
                   <i
@@ -223,7 +248,7 @@ function AppLayout() {
                       Mañana
                     </h6>
                     <h6 className="m-0" style={{ fontSize: "13px" }}>
-                      78ºF/75ºF
+                    {weatherTomorrow?.temp}ºC
                     </h6>
                   </div>
 

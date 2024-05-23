@@ -15,7 +15,7 @@
     "@fullcalendar/react": "^6.1.11",
     "@fullcalendar/timegrid": "^6.1.11",
     "apexcharts": "^3.49.0",
-    "axios": "^1.6.8",
+    "axios": "^1.7.2",
     "bootstrap": "^5.3.3",
     "react": "^18.2.0",
     "react-apexcharts": "^1.4.1",
