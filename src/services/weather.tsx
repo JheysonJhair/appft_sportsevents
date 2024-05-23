@@ -9,7 +9,7 @@ interface WeatherResponse {
 }
 
 export const getWeather = async (location: string): Promise<WeatherResponse> => {
-  const API_KEY = '7718d61b43ca0d9eed1d0054f1fa715d';
+  const API_KEY = 'bb97cd7b6645e62724e98782b850968e';
   const BASE_URL = 'https://api.openweathermap.org/data/2.5/forecast';
 
   const response = await axios.get<WeatherResponse>(BASE_URL, {
