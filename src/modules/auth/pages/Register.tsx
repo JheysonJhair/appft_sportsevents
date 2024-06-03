@@ -1,8 +1,12 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
+
 import { User, ErrorMessages } from "../../../types/User";
 import { crearUsuario } from "../../../services/Usuario";
+import { fetchGerencias } from "../../../services/Gerencia";
+import { fetchAreasByManagementId } from "../../../services/Area";
+import { Management } from "../../../types/Management";
 import {
   validateRequiredField,
   validateDNI,
@@ -10,7 +14,7 @@ import {
   validatePhoneNumber,
 } from "../../../utils/validations";
 
-export function Register() {
+export function Register(): JSX.Element {
   const navigate = useNavigate();
   const [formData, setFormData] = useState<User>({
     FirstName: "",
@@ -24,8 +28,28 @@ export function Register() {
   });
 
   const [errorMessages, setErrorMessages] = useState<ErrorMessages>({});
+  const [gerencias, setGerencias] = useState<Management[]>([]);
+  const [areas, setAreas] = useState<any[]>([]);
 
-  const handleInputChange = (
+  useEffect(() => {
+    const getGerencias = async () => {
+      try {
+        const gerenciasData = await fetchGerencias();
+        setGerencias(gerenciasData);
+      } catch (error) {
+        Swal.fire({
+          title: "Error!",
+          text: "Error fetching gerencias data.",
+          icon: "error",
+          confirmButtonText: "Aceptar",
+        });
+      }
+    };
+
+    getGerencias();
+  }, []);
+
+  const handleInputChange = async (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
@@ -39,6 +63,20 @@ export function Register() {
       ...prevErrors,
       [name]: validateField(name, value),
     }));
+
+    if (name === "Gerencia") {
+      try {
+        const areasData = await fetchAreasByManagementId(value);
+        setAreas(areasData.data);
+      } catch (error) {
+        Swal.fire({
+          title: "Error!",
+          text: "Error fetching areas data.",
+          icon: "error",
+          confirmButtonText: "Aceptar",
+        });
+      }
+    }
   };
 
   const validateField = (name: string, value: string): string | null => {
@@ -92,7 +130,6 @@ export function Register() {
       });
     } else {
       try {
-        console.log("Datos que se enviarán al backend:", formData);
         const response = await crearUsuario(formData);
         if (response.success) {
           Swal.fire({
@@ -301,20 +338,33 @@ export function Register() {
                           Gerencia
                         </label>
                         <select
-                          className={`form-select`}
+                          className={`form-select ${
+                            errorMessages.IdArea && "is-invalid"
+                          }`}
                           id="inputGerencia"
                           name="Gerencia"
                           aria-label="Default select example"
                           onChange={handleInputChange}
                         >
                           <option>Seleccionar Gerencia</option>
-                          <option value="Mañana">Mañana</option>
-                          <option value="Noche">Noche</option>
+                          {gerencias.map((gerencia) => (
+                            <option
+                              key={gerencia.IdManagement}
+                              value={gerencia.IdManagement}
+                            >
+                              {gerencia.NameManagement}
+                            </option>
+                          ))}
                         </select>
+                        {errorMessages.IdArea && (
+                          <div className="invalid-feedback">
+                            {errorMessages.IdArea}
+                          </div>
+                        )}
                       </div>
                       <div className="col-md-6">
                         <label htmlFor="inputArea" className="form-label">
-                          Area
+                          Área
                         </label>
                         <select
                           className={`form-select ${
@@ -325,9 +375,12 @@ export function Register() {
                           aria-label="Default select example"
                           onChange={handleInputChange}
                         >
-                          <option>Seleccionar Area</option>
-                          <option value="1">Area 1</option>
-                          <option value="2">Area 2</option>
+                          <option>Seleccionar área</option>
+                          {areas.map((area) => (
+                            <option key={area.id} value={area.IdArea}>
+                              {area.NameArea}
+                            </option>
+                          ))}
                         </select>
                         {errorMessages.IdArea && (
                           <div className="invalid-feedback">
@@ -335,6 +388,7 @@ export function Register() {
                           </div>
                         )}
                       </div>
+
                       <div className="col-12">
                         <div className="d-grid">
                           <button type="submit" className="btn btn-danger">

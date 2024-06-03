@@ -1,4 +1,4 @@
-export interface management {
+export interface Management {
   IdManagement?: number;
   NameManagement: string;
 }
