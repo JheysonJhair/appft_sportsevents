@@ -1,141 +1,85 @@
-import { useState, useEffect } from "react";
-import { obtenerUsuarios } from "../../services/Usuario";
-import { User } from "../../types/User";
-import { FaTrash, FaLock, FaUnlock } from "react-icons/fa";
-import Swal from "sweetalert2";
+import React, { useState, useEffect } from "react";
+import { fetchGerencias } from "../../services/Gerencia";
+import { fetchAreas } from "../../services/Area";
+import { Management } from "../../types/Management";
+import { Area } from "../../types/Area";
 
 export function ManagementArea() {
-  const [usuarios, setUsuarios] = useState<User[]>([]);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [UsuariosPerPage] = useState(9);
-  const [searchTerm, setSearchTerm] = useState("");
+  const [, setGerencias] = useState<Management[]>([]);
+  const [, setAreas] = useState<Area[]>([]);
+  const [currentGerencias, setCurrentGerencias] = useState<Management[]>([]);
+  const [currentAreas, setCurrentAreas] = useState<Area[]>([]);
+  const [currentPageGerencias, setCurrentPageGerencias] = useState(1);
+  const [currentPageAreas, setCurrentPageAreas] = useState(1);
+  const [itemsPerPage] = useState(9);
+  const [searchTermGerencias, setSearchTermGerencias] = useState("");
+  const [searchTermAreas, setSearchTermAreas] = useState("");
 
   useEffect(() => {
-    const fetchData = async () => {
-      const data = await obtenerUsuarios();
-      setUsuarios(data);
+    const getGerenciasAndAreas = async () => {
+      try {
+        const gerenciasData = await fetchGerencias();
+        setGerencias(gerenciasData);
+        setCurrentGerencias(gerenciasData);
+
+        const areasData = await fetchAreas();
+        setAreas(areasData);
+        setCurrentAreas(areasData);
+      } catch (error) {
+        console.error(error);
+      }
     };
 
-    fetchData();
+    getGerenciasAndAreas();
   }, []);
 
-  const indexOfLastUsuario = currentPage * UsuariosPerPage;
-  const indexOfFirstUsuario = indexOfLastUsuario - UsuariosPerPage;
-  const currentUsuarios = usuarios.slice(
-    indexOfFirstUsuario,
-    indexOfLastUsuario
-  );
+  const paginateGerencias = (pageNumber: number) => {
+    setCurrentPageGerencias(pageNumber);
+  };
 
-  const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
+  const paginateAreas = (pageNumber: number) => {
+    setCurrentPageAreas(pageNumber);
+  };
 
-  const filteredUsuarios = currentUsuarios.filter((usuario) =>
-    Object.values(usuario).some((value) =>
-      value.toString().toLowerCase().includes(searchTerm.toLowerCase())
+  const handleGerenciasSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchTermGerencias(e.target.value);
+    setCurrentPageGerencias(1);
+  };
+
+  const handleAreasSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchTermAreas(e.target.value);
+    setCurrentPageAreas(1);
+  };
+
+  const filteredGerencias = currentGerencias.filter((gerencia) =>
+    gerencia.NameManagement.toLowerCase().includes(
+      searchTermGerencias.toLowerCase()
     )
   );
 
-  const eliminarUsuario = async (id: number) => {
-    try {
-      const confirmacion = await Swal.fire({
-        title: "¿Estás seguro?",
-        text: "¡No podrás revertir esto!",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
-        confirmButtonText: "Sí, eliminarlo",
-        cancelButtonText: "Cancelar",
-      });
+  const filteredAreas = currentAreas.filter((area) =>
+    area.NameArea.toLowerCase().includes(searchTermAreas.toLowerCase())
+  );
 
-      if (confirmacion.isConfirmed) {
-        const response = await fetch(
-          `https://esappsoccer.ccontrolz.com/api/user/${id}`,
-          {
-            method: "DELETE",
-          }
-        );
-        if (!response.ok) {
-          throw new Error("Error al eliminar el usuario");
-        }
+  const indexOfLastGerencia = currentPageGerencias * itemsPerPage;
+  const indexOfFirstGerencia = indexOfLastGerencia - itemsPerPage;
+  const currentGerenciasPage = filteredGerencias.slice(
+    indexOfFirstGerencia,
+    indexOfLastGerencia
+  );
 
-        const updatedUsuarios = usuarios.filter(
-          (usuario) => usuario.IdUser !== id
-        );
-        setUsuarios(updatedUsuarios);
-
-        await Swal.fire(
-          "¡Eliminado!",
-          "El usuario ha sido eliminado.",
-          "success"
-        );
-      }
-    } catch (error) {
-      console.error("Error al eliminar el usuario:", error);
-      Swal.fire("Error", "Hubo un error al eliminar el usuario", "error");
-    }
-  };
-
-  const bloquearUsuario = async (id: number) => {
-    try {
-      const response = await fetch(
-        `https://esappsoccer.ccontrolz.com/api/user/block/${id}`,
-        {
-          method: "POST",
-        }
-      );
-      if (!response.ok) {
-        throw new Error("Error al bloquear el usuario");
-      }
-
-      const updatedUsuarios = usuarios.map((usuario) =>
-        usuario.IdUser === id ? { ...usuario, IndActive: false } : usuario
-      );
-      setUsuarios(updatedUsuarios);
-
-      Swal.fire(
-        "¡Bloqueado!",
-        "El usuario ha sido bloqueado.",
-        "success"
-      );
-    } catch (error) {
-      console.error("Error al bloquear el usuario:", error);
-      Swal.fire("Error", "Hubo un error al bloquear el usuario", "error");
-    }
-  };
-
-  const desbloquearUsuario = async (id: number) => {
-    try {
-      const response = await fetch(
-        `https://esappsoccer.ccontrolz.com/api/user/unblock/${id}`,
-        {
-          method: "POST",
-        }
-      );
-      if (!response.ok) {
-        throw new Error("Error al desbloquear el usuario");
-      }
-
-      const updatedUsuarios = usuarios.map((usuario) =>
-        usuario.IdUser === id ? { ...usuario, IndActive: true } : usuario
-      );
-      setUsuarios(updatedUsuarios);
-
-      Swal.fire(
-        "¡Desbloqueado!",
-        "El usuario ha sido desbloqueado.",
-        "success"
-      );
-    } catch (error) {
-      console.error("Error al desbloquear el usuario:", error);
-      Swal.fire("Error", "Hubo un error al desbloquear el usuario", "error");
-    }
-  };
+  const indexOfLastArea = currentPageAreas * itemsPerPage;
+  const indexOfFirstArea = indexOfLastArea - itemsPerPage;
+  const currentAreasPage = filteredAreas.slice(
+    indexOfFirstArea,
+    indexOfLastArea
+  );
 
   return (
     <div className="page-wrapper">
       <div className="page-content">
         <div className="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
-          <div className="breadcrumb-title pe-3">Usuario</div>
+          <div className="breadcrumb-title pe-3">Gerencia y área</div>
           <div className="ps-3">
             <nav aria-label="breadcrumb">
               <ol className="breadcrumb mb-0 p-0">
@@ -145,99 +89,106 @@ export function ManagementArea() {
                   </a>
                 </li>
                 <li className="breadcrumb-item active" aria-current="page">
-                  Lista de usuarios
+                  Todas las gerencias y áreas
                 </li>
               </ol>
             </nav>
           </div>
         </div>
-        <div className="mb-3">
-          <input
-            type="text"
-            className="form-control"
-            placeholder="Buscar usuario..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-        </div>
-        <div className="table-responsive">
-          <table
-            id="example"
-            className="table table-striped table-bordered"
-            style={{ width: "100%" }}
-          >
-            <thead>
-              <tr>
-                <th>Area</th>
-                <th>Nombres</th>
-                <th>Apellidos</th>
-                <th>Contraseña</th>
-                <th>DNI</th>
-                <th>Teléfono</th>
-                <th>Email</th>
-                <th>Turno</th>
-                <th>ROL</th>
-                <th>Acciones</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredUsuarios.map((usuario, index) => (
-                <tr key={index}>
-                  <td>{usuario.Rol ? usuario.Rol : "Administrador"}</td>
-                  <td>{usuario.FirstName}</td>
-                  <td>{usuario.LastName}</td>
-                  <td>{usuario.Password}</td>
-                  <td>{usuario.Dni}</td>
-                  <td>{usuario.PhoneNumber}</td>
-                  <td>{usuario.Mail}</td>
-                  <td>{usuario.Shift !== "" ? usuario.Shift : "Sin turno"}</td>
-                  <td>
-                    {usuario.Rol === 1 && "EXCLUSIVO"}
-                    {usuario.Rol === 2 && "TRABAJADOR"}
-                    {usuario.Rol === 3 && "ADMINISTRADOR DE CANCHA"}
-                    {usuario.Rol === 4 && "ADMINISTRADOR"}
-                  </td>
-                  <td>
-                    {usuario.IndActive ? (
-                      <button
-                        className="btn btn-warning btn-sm"
-                        style={{ marginRight: "6px" }}
-                        title="Bloquear"
-                        onClick={() => bloquearUsuario(usuario.IdUser || 0)}
-                      >
-                        <FaLock />
-                      </button>
-                    ) : (
-                      <button
-                        className="btn btn-success btn-sm"
-                        style={{ marginRight: "6px" }}
-                        title="Desbloquear"
-                        onClick={() => desbloquearUsuario(usuario.IdUser || 0)}
-                      >
-                        <FaUnlock />
-                      </button>
-                    )}
-                    <button
-                      className="btn btn-danger btn-sm"
-                      onClick={() => eliminarUsuario(usuario.IdUser || 0)}
-                    >
-                      <FaTrash />
-                    </button>
-                  </td>
-                </tr>
+        <div className="row ">
+          <div className="col-12 col-lg-5 ">
+            <div className="mb-3">
+              <input
+                type="text"
+                className="form-control"
+                placeholder="Buscar gerencia..."
+                value={searchTermGerencias}
+                onChange={handleGerenciasSearch}
+              />
+            </div>
+            <div className="table-responsive">
+              <table
+                id="gerenciasTable"
+                className="table table-striped table-bordered"
+                style={{ width: "100%" }}
+              >
+                <thead>
+                  <tr>
+                    <th>Nº</th>
+                    <th>Nombre de gerencia</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {currentGerenciasPage.map((gerencia, index) => (
+                    <tr key={index}>
+                      <td>{gerencia.IdManagement}</td>
+                      <td>{gerencia.NameManagement}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <ul className="pagination justify-content-center">
+              {filteredGerencias.map((_, index) => (
+                <li key={index} className="page-item">
+                  <button
+                    onClick={() => paginateGerencias(index + 1)}
+                    className="page-link"
+                  >
+                    {index + 1}
+                  </button>
+                </li>
               ))}
-            </tbody>
-          </table>
+            </ul>
+          </div>
+          <div className="col-12 col-lg-7 ">
+            <div className="mb-3">
+              <input
+                type="text"
+                className="form-control"
+                placeholder="Buscar área..."
+                value={searchTermAreas}
+                onChange={handleAreasSearch}
+              />
+            </div>
+            <div className="table-responsive">
+              <table
+                id="areasTable"
+                className="table table-striped table-bordered"
+                style={{ width: "100%" }}
+              >
+                <thead>
+                  <tr>
+                    <th>Nº</th>
+                    <th>Nombre de área</th>
+                    <th>Fecha de creación</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {currentAreasPage.map((area, index) => (
+                    <tr key={index}>
+                      <td>{area.IdArea}</td>
+                      <td>{area.NameArea}</td>
+                      <td>{area.Date}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <ul className="pagination justify-content-center">
+              {filteredAreas.map((_, index) => (
+                <li key={index} className="page-item">
+                  <button
+                    onClick={() => paginateAreas(index + 1)}
+                    className="page-link"
+                  >
+                    {index + 1}
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </div>
         </div>
-        <ul className="pagination justify-content-center">
-          {usuarios.map((_, index) => (
-            <li key={index} className="page-item">
-              <button onClick={() => paginate(index + 1)} className="page-link">
-                {index + 1}
-              </button>
-            </li>
-          ))}
-        </ul>
       </div>
     </div>
   );

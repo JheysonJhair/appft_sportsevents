@@ -1,11 +1,43 @@
-export async function fetchAreasByManagementId(gerenciaId:any) {
-    const response = await fetch(`http://esappsoccer.ccontrolz.com/api/area/getManagementById/${gerenciaId}`);
-    const data = await response.json();
-  
-    if (!response.ok) {
-      throw new Error(data.msg || "Error fetching areas data");
-    }
-  
-    return data;
+import { Area } from "../types/Area";
+const API_URL = "http://esappsoccer.ccontrolz.com/api";
+
+export async function fetchAreasByManagementId(gerenciaId: any) {
+  const response = await fetch(
+    `${API_URL}/area/getManagementById/${gerenciaId}`
+  );
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.msg || "Error fetching areas data");
   }
-  
+
+  return data;
+}
+
+export const crearArea = async (
+  NameArea: string,
+  IdManagement: number
+): Promise<{ success: boolean; msg: string }> => {
+  const response = await fetch(`${API_URL}/area/insert`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ NameArea, IdManagement }),
+  });
+  return response.json();
+};
+
+export const fetchAreas = async (): Promise<Area[]> => {
+  try {
+    const response = await fetch(`${API_URL}/area`);
+    const data = await response.json();
+    if (data.success) {
+      return data.data as Area[];
+    } else {
+      throw new Error("Error fetching gerencias data.");
+    }
+  } catch (error) {
+    throw new Error("Error fetching gerencias data.");
+  }
+};
