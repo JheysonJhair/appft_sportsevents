@@ -1,16 +1,19 @@
 import React, { useState } from "react";
+import { NavLink, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 
 import { login } from "../../../services/Login";
-import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../../hooks/AuthContext";
 
 export default function Login() {
   const navigate = useNavigate();
+  const { setUser } = useAuth();
+
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const { setUser } = useAuth();
+
   const [showPassword, setShowPassword] = useState(false);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
@@ -18,46 +21,47 @@ export default function Login() {
         UserRequest: username,
         Password: password,
       });
-      if (response.data.Rol == 1 || response.data.Rol == 2) {
-        Swal.fire({
-          position: "top-end",
-          icon: "success",
-          title: `Bienvenido ${response.data.FirstName}`,
-          showConfirmButton: false,
-          timer: 1500,
-        });
-        setUser(response.data);
-        navigate("/");
-      }
-      if (response.data.Rol == 3) {
-        Swal.fire({
-          position: "top-end",
-          icon: "success",
-          title: `Cancha a cargo de ${response.data.FirstName}`,
-          showConfirmButton: false,
-          timer: 1500,
-        });
-        setUser(response.data);
-        navigate("/administrador");
-      }
-      if (response.data.Rol == 4) {
-        Swal.fire({
-          position: "top-end",
-          icon: "success",
-          title: `Administrador ${response.data.FirstName}`,
-          showConfirmButton: false,
-          timer: 1500,
-        });
-        setUser(response.data);
-        navigate("/administrador");
-      }
       if (!response.success) {
         Swal.fire({
           title: "Error!",
-          text: "Usuario o contraseña icorrecta!",
+          text: response.msg,
           icon: "error",
           confirmButtonText: "Aceptar",
         });
+      } else {
+        if (response.data.Rol == 1 || response.data.Rol == 2) {
+          Swal.fire({
+            position: "top-end",
+            icon: "success",
+            title: `Bienvenido ${response.data.FirstName}`,
+            showConfirmButton: false,
+            timer: 1500,
+          });
+          setUser(response.data);
+          navigate("/");
+        }
+        if (response.data.Rol == 3) {
+          Swal.fire({
+            position: "top-end",
+            icon: "success",
+            title: `Cancha a cargo de ${response.data.FirstName}`,
+            showConfirmButton: false,
+            timer: 1500,
+          });
+          setUser(response.data);
+          navigate("/administrador");
+        }
+        if (response.data.Rol == 4) {
+          Swal.fire({
+            position: "top-end",
+            icon: "success",
+            title: `Administrador ${response.data.FirstName}`,
+            showConfirmButton: false,
+            timer: 1500,
+          });
+          setUser(response.data);
+          navigate("/administrador");
+        }
       }
     } catch (error) {
       Swal.fire({
@@ -86,7 +90,7 @@ export default function Login() {
       <div className="col-12 col-xl-5 col-xxl-4 auth-cover-right align-items-center justify-content-center">
         <div className="card rounded-0 m-3 shadow-none bg-transparent mb-0 ">
           <div
-            className="card-body p-sm-5  m-4 "
+            className="card-body p-sm-5  m-2 "
             style={{
               borderRadius: "20px",
               boxShadow: "0 0 6px rgba(0, 0, 0, 0.2)",
@@ -169,6 +173,14 @@ export default function Login() {
                         Ingresar
                       </button>
                     </div>
+                  </div>
+                  <div className="text-center ">
+                    <p className="mb-0">
+                      ¿Aún no tienes una cuenta?{" "}
+                      <NavLink to="/register" className="text-danger">
+                        Regístrate aquí{" "}
+                      </NavLink>
+                    </p>
                   </div>
                 </form>
               </div>

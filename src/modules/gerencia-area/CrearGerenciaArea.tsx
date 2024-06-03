@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import Swal from "sweetalert2";
-import { crearUsuario } from "../../../services/Usuario";
-import { User } from "../../../types/User";
+import { crearUsuario } from "../../services/Usuario";
+import { Usuario } from "../../types/User";
 import { useNavigate } from "react-router-dom";
 import {
   validateRequiredField,
@@ -9,11 +9,11 @@ import {
   validateEmail,
   validatePhoneNumber,
   validatePassword,
-} from "../../../utils/validations";
+} from "../../utils/validations";
 
-export function NewUser() {
+export function CrearGerenciaArea() {
   const navigate = useNavigate();
-  const [nuevoUsuario, setNuevoUsuario] = useState<Partial<User>>({});
+  const [nuevoUsuario, setNuevoUsuario] = useState<Partial<Usuario>>({});
   const [errorMessages, setErrorMessages] = useState({
     FirstName: "",
     LastName: "",
@@ -65,7 +65,7 @@ export function NewUser() {
     }
   };
 
-  type UsuarioKey = keyof Partial<User>;
+  type UsuarioKey = keyof Partial<Usuario>;
 
   const handleRegistrarUsuario = async () => {
     try {
@@ -79,7 +79,7 @@ export function NewUser() {
       ];
 
       if (showAdditionalFields) {
-        requiredFields.push("Area", "Shift");
+        requiredFields.push("Gerencia", "Laboratory", "Shift");
       }
 
       const missingFields = requiredFields.filter(

@@ -2,7 +2,7 @@ import { Outlet } from "react-router-dom";
 import { NavLink } from "react-router-dom";
 import { useAuth } from "../hooks/AuthContext";
 import { useEffect, useState } from "react";
-import { getWeather } from '../services/weather';
+import { getWeather } from "../services/weather";
 
 interface User {
   FirstName: string;
@@ -39,18 +39,24 @@ function AppLayout() {
       day: "numeric",
     };
 
-    const formattedDateSmall = new Date().toLocaleDateString("es-ES", optionsSmall);
-    const formattedDateLarge = new Date().toLocaleDateString("es-ES", optionsLarge);
+    const formattedDateSmall = new Date().toLocaleDateString(
+      "es-ES",
+      optionsSmall
+    );
+    const formattedDateLarge = new Date().toLocaleDateString(
+      "es-ES",
+      optionsLarge
+    );
 
     setCurrentDate({ small: formattedDateSmall, large: formattedDateLarge });
 
     const fetchWeather = async () => {
       try {
-        const data = await getWeather('Grau'); 
+        const data = await getWeather("Grau");
         setWeatherToday(data.list[0].main);
         setWeatherTomorrow(data.list[8].main);
       } catch (error) {
-        console.error('Error fetching weather data:', error);
+        console.error("Error fetching weather data:", error);
       }
     };
 
@@ -131,14 +137,36 @@ function AppLayout() {
               </li>
             )}
             {user?.Rol === 3 && (
-              <li className="mm-active">
-                <NavLink to="/administrador">
-                  <div className="parent-icon">
-                    <i className="bx bx-grid-alt" />
-                  </div>
-                  <div className="menu-title">PANEL PRINCIPAL</div>
-                </NavLink>
-              </li>
+              <>
+                <li className="mm-active">
+                  <NavLink to="/administrador">
+                    <div className="parent-icon">
+                      <i className="bx bx-grid-alt" />
+                    </div>
+                    <div className="menu-title">PANEL PRINCIPAL</div>
+                  </NavLink>
+                </li>
+                <li className="menu-label">DETALLES Y REPORTES</li>
+
+                <li>
+                  <NavLink to="/areadejuego/">
+                    <div className="parent-icon">
+                      <i className="bx bx-baseball" />
+                    </div>
+                    <div className="menu-title">Deporte en juego</div>
+                  </NavLink>
+                </li>
+
+                <li className="menu-label">Configuración</li>
+                <li>
+                  <NavLink to="/areadejuego/">
+                    <div className="parent-icon">
+                      <i className="bx bx-baseball" />
+                    </div>
+                    <div className="menu-title">Reportar suceso</div>
+                  </NavLink>
+                </li>
+              </>
             )}
             {user?.Rol === 4 && (
               <li className="mm-active">
@@ -150,27 +178,28 @@ function AppLayout() {
                 </NavLink>
               </li>
             )}
-            <li className="menu-label">PANEL DE CONTROL</li>
-            <li>
-              <NavLink to="/areadejuego/">
-                <div className="parent-icon">
-                  <i className="bx bx-baseball" />
-                </div>
-                <div className="menu-title">Área de juego</div>
-              </NavLink>
-            </li>
 
-            <li className="menu-label">Configuración</li>
             {user?.Rol === 4 && (
               <>
+                <li className="menu-label">DETALLES Y REPORTES</li>
+                <li>
+                  <NavLink to="/areadejuego/">
+                    <div className="parent-icon">
+                      <i className="bx bx-baseball" />
+                    </div>
+                    <div className="menu-title">Reportes y detalles</div>
+                  </NavLink>
+                </li>
                 <li className="">
                   <NavLink to="/reportes">
                     <div className="parent-icon">
                       <i className="bx bx-bar-chart" />
                     </div>
-                    <div className="menu-title">Reportes</div>
+                    <div className="menu-title">Reportes gráficos</div>
                   </NavLink>
                 </li>
+
+                <li className="menu-label">Configuración</li>
                 <li>
                   <a className="has-arrow" href="#">
                     <div className="parent-icon">
@@ -190,6 +219,29 @@ function AppLayout() {
                       <NavLink to="/nuevousuario/">
                         <i className="bx bx-radio-circle" />
                         Nuevo usuario
+                      </NavLink>
+                    </li>
+                  </ul>
+                </li>
+                <li>
+                  <a className="has-arrow" href="#">
+                    <div className="parent-icon">
+                      <i className="bx bx-user" />
+                    </div>
+                    <div className="menu-title">Gerencia y área</div>
+                  </a>
+
+                  <ul>
+                    <li>
+                      <NavLink to="/gerencia-area/">
+                        <i className="bx bx-radio-circle" />
+                        Todos
+                      </NavLink>
+                    </li>
+                    <li>
+                      <NavLink to="/nuevo-gerencia-area/">
+                        <i className="bx bx-radio-circle" />
+                        Crear gerencia y área
                       </NavLink>
                     </li>
                   </ul>
@@ -233,7 +285,7 @@ function AppLayout() {
                       Hoy día
                     </h6>
                     <h6 className="m-0" style={{ fontSize: "13px" }}>
-                    {weatherToday?.temp}ºC
+                      {weatherToday?.temp}ºC
                     </h6>
                   </div>
                   <i
@@ -248,7 +300,7 @@ function AppLayout() {
                       Mañana
                     </h6>
                     <h6 className="m-0" style={{ fontSize: "13px" }}>
-                    {weatherTomorrow?.temp}ºC
+                      {weatherTomorrow?.temp}ºC
                     </h6>
                   </div>
 
@@ -292,7 +344,10 @@ function AppLayout() {
                     alt="user avatar"
                   />
                   <div className="user-info">
-                    <p className="user-name mb-0">{user?.FirstName}</p>
+                    <p className="user-name mb-0">
+                      {user?.FirstName.toUpperCase()}
+                    </p>
+
                     <p className="designattion mb-0">
                       {user?.Rol === 1
                         ? "EXCLUSIVO"

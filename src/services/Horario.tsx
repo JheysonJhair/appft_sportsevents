@@ -1,4 +1,4 @@
-import { Horario } from "../types/Horarios";
+import { Horario } from "../types/Filed";
 
 interface ApiResponse {
   msg: string;

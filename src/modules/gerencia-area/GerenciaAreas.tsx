@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
-import { obtenerUsuarios } from "../../../services/Usuario";
-import { Usuario } from "../../../types/User";
+import { obtenerUsuarios } from "../../services/Usuario";
+import { Usuario } from "../../types/User";
 import { FaTrash, FaLock, FaUnlock } from "react-icons/fa";
 import Swal from "sweetalert2";
 
-export function User() {
+export function GerenciaArea() {
   const [usuarios, setUsuarios] = useState<Usuario[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [UsuariosPerPage] = useState(9);
