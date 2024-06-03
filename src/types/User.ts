@@ -5,6 +5,7 @@ export interface User {
   Password?: string;
   Dni: string;
   EmployeeCode?: string;
+  Gerencia?: string;
   IdArea: string;
   Shift: string;
   PhoneNumber: string;
@@ -20,6 +21,7 @@ export interface ErrorMessages {
   Password?: string;
   Dni?: string;
   EmployeeCode?: string;
+  Gerencia?: string;
   IdArea?: string;
   Shift?: string;
   PhoneNumber?: string;

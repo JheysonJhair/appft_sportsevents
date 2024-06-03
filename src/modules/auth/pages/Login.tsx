@@ -49,7 +49,7 @@ export default function Login() {
             timer: 1500,
           });
           setUser(response.data);
-          navigate("/administrador");
+          navigate("/administrator-field");
         }
         if (response.data.Rol == 4) {
           Swal.fire({
@@ -60,7 +60,7 @@ export default function Login() {
             timer: 1500,
           });
           setUser(response.data);
-          navigate("/administrador");
+          navigate("/administrator");
         }
       }
     } catch (error) {

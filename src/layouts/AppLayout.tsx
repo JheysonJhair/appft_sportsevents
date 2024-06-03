@@ -1,19 +1,10 @@
-import { Outlet } from "react-router-dom";
-import { NavLink } from "react-router-dom";
-import { useAuth } from "../hooks/AuthContext";
+import { Outlet, NavLink } from "react-router-dom";
 import { useEffect, useState } from "react";
+
+import { useAuth } from "../hooks/AuthContext";
 import { getWeather } from "../services/weather";
-
-interface User {
-  FirstName: string;
-  Rol: number;
-  Shift?: string;
-  Area?: string;
-}
-
-interface Weather {
-  temp: number;
-}
+import { User } from "../types/User";
+import { Weather } from "../types/Weather";
 
 function AppLayout() {
   const [currentDate, setCurrentDate] = useState<{
@@ -139,7 +130,7 @@ function AppLayout() {
             {user?.Rol === 3 && (
               <>
                 <li className="mm-active">
-                  <NavLink to="/administrador">
+                  <NavLink to="/administrator-field">
                     <div className="parent-icon">
                       <i className="bx bx-grid-alt" />
                     </div>
@@ -149,9 +140,9 @@ function AppLayout() {
                 <li className="menu-label">DETALLES Y REPORTES</li>
 
                 <li>
-                  <NavLink to="/areadejuego/">
+                  <NavLink to="/sport-play">
                     <div className="parent-icon">
-                      <i className="bx bx-baseball" />
+                      <i className="bx bx-football" />
                     </div>
                     <div className="menu-title">Deporte en juego</div>
                   </NavLink>
@@ -159,9 +150,9 @@ function AppLayout() {
 
                 <li className="menu-label">Configuración</li>
                 <li>
-                  <NavLink to="/areadejuego/">
+                  <NavLink to="/day-report">
                     <div className="parent-icon">
-                      <i className="bx bx-baseball" />
+                      <i className="bx bx-info-circle" />
                     </div>
                     <div className="menu-title">Reportar suceso</div>
                   </NavLink>
@@ -169,37 +160,35 @@ function AppLayout() {
               </>
             )}
             {user?.Rol === 4 && (
-              <li className="mm-active">
-                <NavLink to="/administrador">
-                  <div className="parent-icon">
-                    <i className="bx bx-grid-alt" />
-                  </div>
-                  <div className="menu-title">PANEL PRINCIPAL</div>
-                </NavLink>
-              </li>
-            )}
-
-            {user?.Rol === 4 && (
               <>
+                <li className="mm-active">
+                  <NavLink to="/administrator">
+                    <div className="parent-icon">
+                      <i className="bx bx-grid-alt" />
+                    </div>
+                    <div className="menu-title">PANEL PRINCIPAL</div>
+                  </NavLink>
+                </li>
+
                 <li className="menu-label">DETALLES Y REPORTES</li>
                 <li>
-                  <NavLink to="/areadejuego/">
+                  <NavLink to="/all-reports">
                     <div className="parent-icon">
-                      <i className="bx bx-baseball" />
+                      <i className="bx bx-task" />
                     </div>
-                    <div className="menu-title">Reportes y detalles</div>
+                    <div className="menu-title">Reportes diarios</div>
                   </NavLink>
                 </li>
                 <li className="">
-                  <NavLink to="/reportes">
+                  <NavLink to="/general-reports">
                     <div className="parent-icon">
-                      <i className="bx bx-bar-chart" />
+                      <i className="bx bx-line-chart" />
                     </div>
-                    <div className="menu-title">Reportes gráficos</div>
+                    <div className="menu-title">Reporte general</div>
                   </NavLink>
                 </li>
 
-                <li className="menu-label">Configuración</li>
+                <li className="menu-label">CONFIGURACIÓN</li>
                 <li>
                   <a className="has-arrow" href="#">
                     <div className="parent-icon">
@@ -210,13 +199,13 @@ function AppLayout() {
 
                   <ul>
                     <li>
-                      <NavLink to="/usuarios/">
+                      <NavLink to="/users">
                         <i className="bx bx-radio-circle" />
                         Todos
                       </NavLink>
                     </li>
                     <li>
-                      <NavLink to="/nuevousuario/">
+                      <NavLink to="/new-user">
                         <i className="bx bx-radio-circle" />
                         Nuevo usuario
                       </NavLink>
@@ -226,20 +215,20 @@ function AppLayout() {
                 <li>
                   <a className="has-arrow" href="#">
                     <div className="parent-icon">
-                      <i className="bx bx-user" />
+                      <i className="bx bx-layer" />
                     </div>
                     <div className="menu-title">Gerencia y área</div>
                   </a>
 
                   <ul>
                     <li>
-                      <NavLink to="/gerencia-area/">
+                      <NavLink to="/management-area">
                         <i className="bx bx-radio-circle" />
                         Todos
                       </NavLink>
                     </li>
                     <li>
-                      <NavLink to="/nuevo-gerencia-area/">
+                      <NavLink to="/new-management-area">
                         <i className="bx bx-radio-circle" />
                         Crear gerencia y área
                       </NavLink>
@@ -325,7 +314,10 @@ function AppLayout() {
                     style={{ marginRight: "20px" }}
                   >
                     <h6 className="m-0" style={{ fontSize: "13px" }}>
-                      Area: {user?.Area !== "" ? user?.Area : "Desabilitado"}
+                      Area:{" "}
+                      {user?.EmployeeCode !== ""
+                        ? user?.EmployeeCode
+                        : "Desabilitado"}
                     </h6>
                   </div>
                 </ul>
@@ -350,11 +342,11 @@ function AppLayout() {
 
                     <p className="designattion mb-0">
                       {user?.Rol === 1
-                        ? "EXCLUSIVO"
+                        ? "OPERACIONES MINA"
                         : user?.Rol === 2
                         ? "TRABAJADOR"
                         : user?.Rol === 3
-                        ? "CANCHA DEPORTIVA"
+                        ? "ADMIN. CANCHA"
                         : user?.Rol === 4
                         ? "ADMINISTRADOR"
                         : ""}

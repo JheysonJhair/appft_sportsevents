@@ -1,5 +1,3 @@
-// En tu archivo services/Area.js
-
 export async function fetchAreasByManagementId(gerenciaId:any) {
     const response = await fetch(`http://esappsoccer.ccontrolz.com/api/area/getManagementById/${gerenciaId}`);
     const data = await response.json();

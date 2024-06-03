@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react";
-import { obtenerUsuarios } from "../../../services/Usuario";
-import { Usuario } from "../../../types/User";
+import { obtenerUsuarios } from "../../services/Usuario";
+import { User } from "../../types/User";
 import { FaTrash, FaLock, FaUnlock } from "react-icons/fa";
 import Swal from "sweetalert2";
 
-export function User() {
-  const [usuarios, setUsuarios] = useState<Usuario[]>([]);
+export function ManagementArea() {
+  const [usuarios, setUsuarios] = useState<User[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [UsuariosPerPage] = useState(9);
   const [searchTerm, setSearchTerm] = useState("");

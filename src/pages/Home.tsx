@@ -12,7 +12,7 @@ import {
   crearHorarioCancha1,
   crearHorarioCancha2,
 } from "../services/Horario";
-import { Horario } from "../types/Filed";
+import { Horario } from "../types/Field";
 import Swal from "sweetalert2";
 
 export function HomePage() {

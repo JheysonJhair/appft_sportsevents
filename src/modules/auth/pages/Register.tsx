@@ -37,12 +37,7 @@ export function Register(): JSX.Element {
         const gerenciasData = await fetchGerencias();
         setGerencias(gerenciasData);
       } catch (error) {
-        Swal.fire({
-          title: "Error!",
-          text: "Error fetching gerencias data.",
-          icon: "error",
-          confirmButtonText: "Aceptar",
-        });
+        console.error(error);
       }
     };
 
@@ -69,12 +64,7 @@ export function Register(): JSX.Element {
         const areasData = await fetchAreasByManagementId(value);
         setAreas(areasData.data);
       } catch (error) {
-        Swal.fire({
-          title: "Error!",
-          text: "Error fetching areas data.",
-          icon: "error",
-          confirmButtonText: "Aceptar",
-        });
+        console.error(error);
       }
     }
   };
@@ -148,12 +138,7 @@ export function Register(): JSX.Element {
           });
         }
       } catch (error) {
-        Swal.fire({
-          title: "Error!",
-          text: "Hubo un error al crear el usuario.",
-          icon: "error",
-          confirmButtonText: "Aceptar",
-        });
+        console.error(error)
       }
     }
   };

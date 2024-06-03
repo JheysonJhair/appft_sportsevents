@@ -1,11 +1,17 @@
 import { useState, useEffect } from "react";
-import { obtenerUsuarios } from "../../services/Usuario";
-import { Usuario } from "../../types/User";
 import { FaTrash, FaLock, FaUnlock } from "react-icons/fa";
 import Swal from "sweetalert2";
 
-export function GerenciaArea() {
-  const [usuarios, setUsuarios] = useState<Usuario[]>([]);
+import {
+  obtenerUsuarios,
+  eliminarUsuario,
+  bloquearUsuario,
+  desbloquearUsuario,
+} from "../../../services/Usuario";
+import { User } from "../../../types/User";
+
+export function Users() {
+  const [usuarios, setUsuarios] = useState<User[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [UsuariosPerPage] = useState(9);
   const [searchTerm, setSearchTerm] = useState("");
@@ -34,7 +40,7 @@ export function GerenciaArea() {
     )
   );
 
-  const eliminarUsuario = async (id: number) => {
+  const handleEliminarUsuario = async (id: number) => {
     try {
       const confirmacion = await Swal.fire({
         title: "¿Estás seguro?",
@@ -43,21 +49,13 @@ export function GerenciaArea() {
         showCancelButton: true,
         confirmButtonColor: "#3085d6",
         cancelButtonColor: "#d33",
-        confirmButtonText: "Sí, eliminarlo",
+        confirmButtonText: "Sí, elimínalo",
         cancelButtonText: "Cancelar",
       });
 
       if (confirmacion.isConfirmed) {
-        const response = await fetch(
-          `https://esappsoccer.ccontrolz.com/api/user/${id}`,
-          {
-            method: "DELETE",
-          }
-        );
-        if (!response.ok) {
-          throw new Error("Error al eliminar el usuario");
-        }
-
+        const response = await eliminarUsuario(id);
+        console.log(response);
         const updatedUsuarios = usuarios.filter(
           (usuario) => usuario.IdUser !== id
         );
@@ -75,56 +73,60 @@ export function GerenciaArea() {
     }
   };
 
-  const bloquearUsuario = async (id: number) => {
+  const handleBloquearUsuario = async (id: number) => {
     try {
-      const response = await fetch(
-        `https://esappsoccer.ccontrolz.com/api/user/block/${id}`,
-        {
-          method: "POST",
-        }
-      );
-      if (!response.ok) {
-        throw new Error("Error al bloquear el usuario");
+      const confirmacion = await Swal.fire({
+        title: "¿Estás seguro?",
+        text: "¡No podrás revertir esto!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Sí, bloquearlo",
+        cancelButtonText: "Cancelar",
+      });
+
+      if (confirmacion.isConfirmed) {
+        await bloquearUsuario(id);
+        const updatedUsuarios = usuarios.map((usuario) =>
+          usuario.IdUser === id ? { ...usuario, IndActive: false } : usuario
+        );
+        setUsuarios(updatedUsuarios);
+
+        Swal.fire("¡Bloqueado!", "El usuario ha sido bloqueado.", "success");
       }
-
-      const updatedUsuarios = usuarios.map((usuario) =>
-        usuario.IdUser === id ? { ...usuario, IndActive: false } : usuario
-      );
-      setUsuarios(updatedUsuarios);
-
-      Swal.fire(
-        "¡Bloqueado!",
-        "El usuario ha sido bloqueado.",
-        "success"
-      );
     } catch (error) {
       console.error("Error al bloquear el usuario:", error);
       Swal.fire("Error", "Hubo un error al bloquear el usuario", "error");
     }
   };
 
-  const desbloquearUsuario = async (id: number) => {
+  const handleDesbloquearUsuario = async (id: number) => {
     try {
-      const response = await fetch(
-        `https://esappsoccer.ccontrolz.com/api/user/unblock/${id}`,
-        {
-          method: "POST",
-        }
-      );
-      if (!response.ok) {
-        throw new Error("Error al desbloquear el usuario");
+      const confirmacion = await Swal.fire({
+        title: "¿Estás seguro?",
+        text: "¡No podrás revertir esto!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Sí, desbloquearlo",
+        cancelButtonText: "Cancelar",
+      });
+
+      if (confirmacion.isConfirmed) {
+        await desbloquearUsuario(id);
+        const updatedUsuarios = usuarios.map((usuario) =>
+          usuario.IdUser === id ? { ...usuario, IndActive: true } : usuario
+        );
+        setUsuarios(updatedUsuarios);
+
+        Swal.fire(
+          "¡Desbloqueado!",
+          "El usuario ha sido desbloqueado.",
+          "success"
+        );
       }
-
-      const updatedUsuarios = usuarios.map((usuario) =>
-        usuario.IdUser === id ? { ...usuario, IndActive: true } : usuario
-      );
-      setUsuarios(updatedUsuarios);
-
-      Swal.fire(
-        "¡Desbloqueado!",
-        "El usuario ha sido desbloqueado.",
-        "success"
-      );
     } catch (error) {
       console.error("Error al desbloquear el usuario:", error);
       Swal.fire("Error", "Hubo un error al desbloquear el usuario", "error");
@@ -200,26 +202,30 @@ export function GerenciaArea() {
                   <td>
                     {usuario.IndActive ? (
                       <button
-                        className="btn btn-warning btn-sm"
+                        className="btn btn-success btn-sm"
                         style={{ marginRight: "6px" }}
                         title="Bloquear"
-                        onClick={() => bloquearUsuario(usuario.IdUser || 0)}
+                        onClick={() =>
+                          handleBloquearUsuario(usuario.IdUser || 0)
+                        }
                       >
-                        <FaLock />
+                        <FaUnlock />
                       </button>
                     ) : (
                       <button
-                        className="btn btn-success btn-sm"
+                        className="btn btn-warning btn-sm"
                         style={{ marginRight: "6px" }}
                         title="Desbloquear"
-                        onClick={() => desbloquearUsuario(usuario.IdUser || 0)}
+                        onClick={() =>
+                          handleDesbloquearUsuario(usuario.IdUser || 0)
+                        }
                       >
-                        <FaUnlock />
+                        <FaLock />
                       </button>
                     )}
                     <button
                       className="btn btn-danger btn-sm"
-                      onClick={() => eliminarUsuario(usuario.IdUser || 0)}
+                      onClick={() => handleEliminarUsuario(usuario.IdUser || 0)}
                     >
                       <FaTrash />
                     </button>

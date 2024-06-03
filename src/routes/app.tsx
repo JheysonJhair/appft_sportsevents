@@ -2,11 +2,16 @@ import AppLayout from "../layouts/AppLayout";
 import { Navigate } from "react-router-dom";
 import { HomePage } from "../pages/Home";
 import ProtectedRoute from "../components/ProtectedRoute ";
-import { Reportes } from "../modules/reports/Reportes";
-import { AreaJuego } from "../modules/area/AreaJuego";
-import { User } from "../modules/user/pages/User";
+import { Reportes } from "../modules/general-reports/Reportes";
+import { Users } from "../modules/user/pages/Users";
 import { NewUser } from "../modules/user/pages/NewUser";
-import { Horarios } from "../modules/horario/Horarios";
+import { AdimistratorHome } from "../modules/administrator/AdministratorHome";
+import { DayReport } from "../modules/details-report/DayReport";
+import { AllReport } from "../modules/details-report/AllReports";
+import { ManagementArea } from "../modules/management-area/ManagementArea";
+import { NewManagementArea } from "../modules/management-area/NewManagementArea";
+import { SportPlay } from "../modules/details-report/SportPlay";
+import { AdimistratorField } from "../modules/administrator/AdministratorField";
 
 const appRouter = [
   {
@@ -17,29 +22,52 @@ const appRouter = [
       </ProtectedRoute>
     ),
     children: [
+      // JUGADORES 1 Y 2
       {
         path: "/",
         element: <HomePage />,
       },
+      // ADMINISTRADOR
       {
-        path: "/areadejuego/",
-        element: <AreaJuego />,
+        path: "/administrator",
+        element: <AdimistratorHome />,
       },
       {
-        path: "/administrador",
-        element: <Horarios />,
+        path: "/all-reports",
+        element: <AllReport />,
       },
       {
-        path: "/reportes/",
+        path: "/general-reports",
         element: <Reportes />,
       },
       {
-        path: "/usuarios/",
-        element: <User />,
+        path: "/users",
+        element: <Users />,
       },
       {
-        path: "/nuevousuario/",
+        path: "/new-user",
         element: <NewUser />,
+      },
+      {
+        path: "/management-area",
+        element: <ManagementArea />,
+      },
+      {
+        path: "/new-management-area",
+        element: <NewManagementArea />,
+      },
+      // ADMINISTRADOR CANCHA
+      {
+        path: "/administrator-field",
+        element: <AdimistratorField />,
+      },
+      {
+        path: "/day-report",
+        element: <DayReport />,
+      },
+      {
+        path: "/sport-play",
+        element: <SportPlay />,
       },
       {
         path: "*",

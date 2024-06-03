@@ -10,7 +10,7 @@ import {
   obtenerHorarioCancha2,
 } from "../../services/Horario";
 
-export function Horarios() {
+export function AdimistratorHome() {
   const [eventsCancha1, setEventsCancha1] = useState<EventData[]>([]);
   const [eventsCancha2, setEventsCancha2] = useState<EventData[]>([]);
 
