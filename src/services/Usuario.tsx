@@ -1,14 +1,15 @@
 import { User } from "../types/User";
-
 interface ApiResponse {
   msg: string;
   success: boolean;
   data: User[];
 }
+const API_URL = "https://esappsoccer.ccontrolz.com/api";
 
+//---------------------------------------------------------------- GET USER
 export async function obtenerUsuarios(): Promise<User[]> {
   try {
-    const response = await fetch("https://esappsoccer.ccontrolz.com/api/user");
+    const response = await fetch(`${API_URL}/user`);
     if (!response.ok) {
       throw new Error("Error al obtener los datos");
     }
@@ -23,20 +24,18 @@ export async function obtenerUsuarios(): Promise<User[]> {
   }
 }
 
+//---------------------------------------------------------------- POST USER
 export async function crearUsuario(
   usuario: Partial<User>
 ): Promise<{ msg: string; success: boolean }> {
   try {
-    const response = await fetch(
-      "https://esappsoccer.ccontrolz.com/api/user/insert",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(usuario),
-      }
-    );
+    const response = await fetch(`${API_URL}/user/insert`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(usuario),
+    });
     if (!response.ok) {
       throw new Error("Error al crear el usuario");
     }
@@ -48,9 +47,10 @@ export async function crearUsuario(
   }
 }
 
+//---------------------------------------------------------------- PUT USER
 export async function actualizarUsuario(usuario: Partial<User>): Promise<void> {
   try {
-    const url = `https://esappsoccer.ccontrolz.com/api/user/update`;
+    const url = `${API_URL}/user/update`;
     const response = await fetch(url, {
       method: "PUT",
       headers: {
@@ -66,11 +66,12 @@ export async function actualizarUsuario(usuario: Partial<User>): Promise<void> {
   }
 }
 
+//---------------------------------------------------------------- GET USER ID
 export async function obtenerUsuarioPorId(
   usuarioId: number
 ): Promise<User | null> {
   try {
-    const url = `https://esappsoccer.ccontrolz.com/api/user/${usuarioId}`;
+    const url = `${API_URL}/user/${usuarioId}`;
     const response = await fetch(url);
     if (!response.ok) {
       throw new Error("Error al obtener el usuario");
@@ -86,9 +87,10 @@ export async function obtenerUsuarioPorId(
   }
 }
 
+//---------------------------------------------------------------- DELETE USER
 export async function eliminarUsuario(usuarioId: number): Promise<void> {
   try {
-    const url = `https://esappsoccer.ccontrolz.com/api/user/${usuarioId}`;
+    const url = `${API_URL}/user/${usuarioId}`;
     const response = await fetch(url, {
       method: "DELETE",
     });
@@ -101,14 +103,12 @@ export async function eliminarUsuario(usuarioId: number): Promise<void> {
   }
 }
 
+//---------------------------------------------------------------- BLOCK USER
 export async function bloquearUsuario(id: number) {
   try {
-    const response = await fetch(
-      `https://esappsoccer.ccontrolz.com/api/user/blockUser/${id}`,
-      {
-        method: "PUT",
-      }
-    );
+    const response = await fetch(`${API_URL}/user/blockUser/${id}`, {
+      method: "PUT",
+    });
     if (!response.ok) {
       throw new Error("Error al bloquear el usuario");
     }
@@ -119,14 +119,12 @@ export async function bloquearUsuario(id: number) {
   }
 }
 
+//---------------------------------------------------------------- UNLOCK USER
 export async function desbloquearUsuario(id: number) {
   try {
-    const response = await fetch(
-      `https://esappsoccer.ccontrolz.com/api/user/unLockUser/${id}`,
-      {
-        method: "PUT",
-      }
-    );
+    const response = await fetch(`${API_URL}/user/unLockUser/${id}`, {
+      method: "PUT",
+    });
     if (!response.ok) {
       throw new Error("Error al desbloquear el usuario");
     }

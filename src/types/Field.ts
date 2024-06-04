@@ -1,9 +1,9 @@
 export interface Field {
-  FirstName:string;
-  LastName:string;
+  FirstName: string;
+  LastName: string;
   Area: string;
-  Laboratory:string;
-  
+  Laboratory: string;
+
   IdUser?: number;
   StartTime: string;
   EndTime: string;

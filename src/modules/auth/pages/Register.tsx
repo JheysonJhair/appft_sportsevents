@@ -138,7 +138,7 @@ export function Register(): JSX.Element {
           });
         }
       } catch (error) {
-        console.error(error)
+        console.error(error);
       }
     }
   };

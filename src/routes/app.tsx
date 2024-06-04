@@ -1,7 +1,7 @@
 import AppLayout from "../layouts/AppLayout";
 import { Navigate } from "react-router-dom";
-import { HomePage } from "../pages/Home";
 import ProtectedRoute from "../components/ProtectedRoute ";
+import { HomePage } from "../pages/Home";
 import { Reportes } from "../modules/general-reports/Reportes";
 import { Users } from "../modules/user/pages/Users";
 import { NewUser } from "../modules/user/pages/NewUser";

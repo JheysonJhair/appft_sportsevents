@@ -12,22 +12,24 @@ import {
   crearHorarioCancha1,
   crearHorarioCancha2,
 } from "../services/Horario";
-import { Horario } from "../types/Field";
+import { Field } from "../types/Field";
 import Swal from "sweetalert2";
 
 export function HomePage() {
   const { user } = useAuth();
   const [events, setEvents] = useState<EventData[]>([]);
   const [selectedEvent, setSelectedEvent] = useState<EventData | null>(null);
+  const [listPlayer, setListPlayer] = useState<string>("");
+
   const selectedDate = selectedEvent && new Date(selectedEvent.start).getDate();
   const selectedMonth =
     selectedEvent && new Date(selectedEvent.start).getMonth() + 1;
   const selectedYear =
     selectedEvent && new Date(selectedEvent.start).getFullYear();
   const formattedDate = `${selectedYear}-${selectedMonth}-${selectedDate}`;
+
   useEffect(() => {
     const intervalId = setInterval(fetchEvents, 1000);
-
     return () => clearInterval(intervalId);
   }, []);
 
@@ -73,7 +75,6 @@ export function HomePage() {
       const endTime = new Date(event.end).getTime();
       const duration = endTime - startTime;
       const oneHourInMilliseconds = 3600000;
-      console.log(duration);
       if (
         duration > oneHourInMilliseconds ||
         duration < oneHourInMilliseconds
@@ -94,29 +95,46 @@ export function HomePage() {
 
   function handleCloseModal() {
     setSelectedEvent(null);
+    setListPlayer("");
   }
-  console.log(selectedEvent);
+
   async function handleConfirmReservation() {
     try {
-      if (!selectedEvent) return;
+      if (!selectedEvent || !listPlayer.trim()) {
+        Swal.fire({
+          title: "Error",
+          text: "Debe ingresar la lista de jugadores",
+          icon: "error",
+          confirmButtonText: "Aceptar",
+        });
+        return;
+      }
       const selectedDate = new Date(selectedEvent.start);
-      const startOfWeek = new Date(selectedDate.setDate(selectedDate.getDate() - selectedDate.getDay() + (selectedDate.getDay() === 0 ? -6 : 1)));
-      const endOfWeek = new Date(selectedDate.setDate(selectedDate.getDate() - selectedDate.getDay() + 7));
+      const startOfWeek = new Date(
+        selectedDate.setDate(
+          selectedDate.getDate() -
+            selectedDate.getDay() +
+            (selectedDate.getDay() === 0 ? -6 : 1)
+        )
+      );
+      const endOfWeek = new Date(
+        selectedDate.setDate(selectedDate.getDate() - selectedDate.getDay() + 7)
+      );
 
-      let horario: Partial<Horario> = {
+      let horario: Partial<Field> = {
         IdUser: user?.IdUser || 0,
         StartTime: `${formatHour(selectedEvent.start)}:00`,
         EndTime: `${formatHour(selectedEvent.end)}:00`,
         DateDay: formatDate(formattedDate),
         StartWeekend: formatDate2(startOfWeek),
         EndWeekend: formatDate2(endOfWeek),
+        ListPlayer: listPlayer,
       };
       console.log(horario);
       console.log(horario.StartWeekend, horario.EndWeekend);
       let response: { msg: string; success: boolean };
       if (user?.Rol === 1) {
         response = await crearHorarioCancha1(horario);
-        console.log(response);
         if (response.success) {
           Swal.fire({
             title: "CANCHA 1!",
@@ -127,7 +145,6 @@ export function HomePage() {
         }
       } else if (user?.Rol === 2) {
         response = await crearHorarioCancha2(horario);
-        console.log(response);
         if (response.success) {
           Swal.fire({
             title: "CANCHA 2!",
@@ -144,7 +161,12 @@ export function HomePage() {
           });
         }
       } else {
-        throw new Error("Rol de usuario no válido");
+        Swal.fire({
+          title: "Error!",
+          text: "Oppss, algo salio mal!",
+          icon: "error",
+          confirmButtonText: "Aceptar",
+        });
       }
     } catch (error) {
       console.error("Error al confirmar reserva:", error);
@@ -167,12 +189,14 @@ export function HomePage() {
     const day = dateParts[2].padStart(2, "0");
     return `${year}-${month}-${day}`;
   }
+
   function formatDate2(date: Date): string {
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, "0");
     const day = String(date.getDate()).padStart(2, "0");
     return `${year}-${month}-${day}`;
   }
+
   return (
     <div className="page-wrapper">
       <div className="page-content">
@@ -271,7 +295,7 @@ export function HomePage() {
 
               <div className="modal-body">
                 <p>Usuario: {user?.FirstName}</p>
-                <p>Área: {user?.Area}</p>
+                <p>Área: {user?.EmployeeCode}</p>
                 <p>
                   Horario: {selectedEvent && formatHour(selectedEvent.start)} a{" "}
                   {selectedEvent && formatHour(selectedEvent.end)}
@@ -281,6 +305,19 @@ export function HomePage() {
                   {selectedEvent &&
                     new Date(selectedEvent.start).toLocaleDateString()}
                 </p>
+                <div className="mb-3">
+                  <label htmlFor="listPlayer" className="form-label">
+                    Lista de Jugadores
+                  </label>
+                  <textarea
+                    className="form-control"
+                    id="listPlayer"
+                    rows={3}
+                    value={listPlayer}
+                    onChange={(e) => setListPlayer(e.target.value)}
+                    required
+                  ></textarea>
+                </div>
               </div>
               <div className="modal-footer">
                 <button

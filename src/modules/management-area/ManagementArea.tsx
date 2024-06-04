@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+
 import { fetchGerencias } from "../../services/Gerencia";
 import { fetchAreas } from "../../services/Area";
 import { Management } from "../../types/Management";

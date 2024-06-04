@@ -1,9 +1,10 @@
 import { useState, useEffect } from "react";
+
 import { fetchReports } from "../../services/Reportes";
-import { DayReport } from "../../types/DayReport";
+import { ReportDay } from "../../types/DayReport";
 
 export function AllReport() {
-  const [reports, setReports] = useState<DayReport[]>([]);
+  const [reports, setReports] = useState<ReportDay[]>([]);
 
   useEffect(() => {
     const fetchReportData = async () => {
