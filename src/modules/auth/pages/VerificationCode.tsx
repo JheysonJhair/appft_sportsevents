@@ -39,11 +39,7 @@ export default function VerificationCode() {
             confirmButtonText: `
               <i class="fa fa-thumbs-up"></i> ¡Entendido!
             `,
-            confirmButtonAriaLabel: "Thumbs up, great!",
-            cancelButtonText: `
-              <i class="fa fa-thumbs-down"></i>
-            `,
-            cancelButtonAriaLabel: "Thumbs down",
+            confirmButtonAriaLabel: "Thumbs up, great!"
           });
 
           navigate("/login");

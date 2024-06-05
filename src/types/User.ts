@@ -6,6 +6,7 @@ export interface User {
   Dni: string;
   EmployeeCode?: string;
   IdArea?: string;
+  Gerencia?: string;
   Shift: string;
   PhoneNumber: string;
   Mail: string;

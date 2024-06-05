@@ -55,7 +55,7 @@ export function NewUser() {
     }
     setNuevoUsuario((prevUsuario) => ({
       ...prevUsuario,
-      [name]: name === "Rol" ? Number(value) : value,
+[name]: name === "Rol" ? Number(value) : value && name === "IdArea" ? Number(value) : value,
     }));
 
     setErrorMessages((prevErrors) => ({
@@ -122,7 +122,7 @@ export function NewUser() {
 
       const usuarioParaEnviar: Partial<User> = {
         ...nuevoUsuario,
-        Shift: nuevoUsuario.Shift || "sin turno",
+        Shift: nuevoUsuario.Shift || "SIN TURNO",
         IdArea: nuevoUsuario.IdArea ? String(nuevoUsuario.IdArea) : "1",
       };
 

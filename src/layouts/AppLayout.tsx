@@ -350,7 +350,9 @@ function AppLayout() {
                     >
                       <h6 className="m-0" style={{ fontSize: "13px" }}>
                         Turno:{" "}
-                        {user?.Shift !== "" ? user?.Shift : "Desabilitado"}
+                        {user?.Shift !== "SIN TURNO"
+                          ? user?.Shift
+                          : "Desabilitado"}
                       </h6>
                     </div>
                   </li>
@@ -364,7 +366,9 @@ function AppLayout() {
                     ></i>
                     <h6 className="m-0" style={{ fontSize: "13px" }}>
                       Area:{" "}
-                      {user?.NameArea !== "" ? user?.NameArea : "Desabilitado"}
+                      {user?.NameArea !== "ADMINISTRADOR"
+                        ? user?.NameArea
+                        : "Desabilitado"}
                     </h6>
                   </li>
                   <li className="nav-item dropdown dropdown-large">

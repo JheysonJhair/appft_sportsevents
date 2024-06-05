@@ -1,4 +1,6 @@
 export interface Field {
+  IdField1Entity?: number | string;
+  IdField2Entity?: number | string;
   FirstName: string;
   LastName: string;
   NameArea: string;
