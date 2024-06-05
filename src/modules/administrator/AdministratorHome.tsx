@@ -6,6 +6,7 @@ import interactionPlugin from "@fullcalendar/interaction";
 import esLocale from "@fullcalendar/core/locales/es";
 import Swal from "sweetalert2";
 import { EventData } from "../../types/Eventos";
+import { Field } from "../../types/Field";
 import {
   obtenerHorarioCancha1,
   obtenerHorarioCancha2,
@@ -14,19 +15,24 @@ import {
   crearHorarioCancha1,
   crearHorarioCancha2,
 } from "../../services/Horario";
+import { useAuth } from "../../hooks/AuthContext";
 
 export function AdimistratorHome() {
+  const { user } = useAuth();
   const [eventsCancha1, setEventsCancha1] = useState<EventData[]>([]);
   const [eventsCancha2, setEventsCancha2] = useState<EventData[]>([]);
-  const [isEventModalOpen, setIsEventModalOpen] = useState(false);
-  const [newEvent, setNewEvent] = useState<EventData>({
-    title: "",
-    area: "",
-    laboratorio: "",
-    start: "",
-    end: "",
-    color: "",
-  });
+  const [selectedEvent, setSelectedEvent] = useState<EventData | null>(null);
+  const [listPlayer, setListPlayer] = useState<string>("");
+  const [selectedCancha, setSelectedCancha] = useState<string>("cancha1");
+
+  //
+  const selectedDate = selectedEvent && new Date(selectedEvent.start).getDate();
+  const selectedMonth =
+    selectedEvent && new Date(selectedEvent.start).getMonth() + 1;
+  const selectedYear =
+    selectedEvent && new Date(selectedEvent.start).getFullYear();
+  const formattedDate = `${selectedYear}-${selectedMonth}-${selectedDate}`;
+  //
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -36,6 +42,99 @@ export function AdimistratorHome() {
 
     return () => clearInterval(interval);
   }, []);
+
+  //
+  function handleSelectEvent(event: any) {
+    setSelectedEvent(event);
+  }
+
+  function handleCloseModal() {
+    setSelectedEvent(null);
+    setListPlayer("");
+    setSelectedCancha("cancha1");
+  }
+
+  function formatHour(dateTimeString: string) {
+    const date = new Date(dateTimeString);
+    const hours = date.getHours().toString().padStart(2, "0");
+    const minutes = date.getMinutes().toString().padStart(2, "0");
+    return `${hours}:${minutes}`;
+  }
+
+  function formatDate(dateString: string) {
+    const dateParts = dateString.split("-");
+    const year = dateParts[0];
+    const month = dateParts[1].padStart(2, "0");
+    const day = dateParts[2].padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  }
+
+  function formatDate2(date: Date): string {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  }
+
+  async function handleConfirmReservation() {
+    try {
+      if (!selectedEvent || !listPlayer.trim()) {
+        Swal.fire({
+          title: "Error",
+          text: "Debe ingresar la lista de jugadores",
+          icon: "error",
+          confirmButtonText: "Aceptar",
+        });
+        return;
+      }
+      const selectedDate = new Date(selectedEvent.start);
+      const startOfWeek = new Date(
+        selectedDate.setDate(
+          selectedDate.getDate() -
+            selectedDate.getDay() +
+            (selectedDate.getDay() === 0 ? -6 : 1)
+        )
+      );
+      const endOfWeek = new Date(
+        selectedDate.setDate(selectedDate.getDate() - selectedDate.getDay() + 7)
+      );
+
+      let horario: Partial<Field> = {
+        IdUser: user?.IdUser || 0,
+        StartTime: `${formatHour(selectedEvent.start)}:00`,
+        EndTime: `${formatHour(selectedEvent.end)}:00`,
+        DateDay: formatDate(formattedDate),
+        StartWeekend: formatDate2(startOfWeek),
+        EndWeekend: formatDate2(endOfWeek),
+        ListPlayer: listPlayer,
+      };
+      let response: { msg: string; success: boolean };
+      if (selectedCancha === "cancha1") {
+        response = await crearHorarioCancha1(horario);
+      } else {
+        response = await crearHorarioCancha2(horario);
+      }
+      if (response.success) {
+        Swal.fire({
+          title: "CANCHA REGISTRADA!",
+          text: "El horario se registró correctamente!",
+          icon: "success",
+          confirmButtonText: "Aceptar",
+        });
+      } else {
+        Swal.fire({
+          title: "Error!",
+          text: "Oppss, algo salio mal!",
+          icon: "error",
+          confirmButtonText: "Aceptar",
+        });
+      }
+    } catch (error) {
+      console.error("Error al confirmar reserva:", error);
+    } finally {
+      handleCloseModal();
+    }
+  }
 
   async function fetchEventsCancha1() {
     try {
@@ -96,7 +195,7 @@ export function AdimistratorHome() {
               );
               Swal.fire({
                 title: "¡Eliminado!",
-                text: "Se ah eliminado correctamente!",
+                text: "Se ha eliminado correctamente!",
                 icon: "success",
               });
             }
@@ -108,7 +207,7 @@ export function AdimistratorHome() {
               );
               Swal.fire({
                 title: "¡Eliminado!",
-                text: "Se ah eliminado correctamente!",
+                text: "Se ha eliminado correctamente!",
                 icon: "success",
               });
             }
@@ -162,8 +261,8 @@ export function AdimistratorHome() {
           initialDate={new Date()}
           nowIndicator={true}
           dayMaxEvents={true}
-          editable={true} // Allow drag and drop
-          selectable={true} // Allow selecting slots
+          editable={false}
+          selectable={true}
           slotMinTime={slotMinTime}
           slotMaxTime={slotMaxTime}
           contentHeight="auto"
@@ -177,85 +276,6 @@ export function AdimistratorHome() {
         />
       </div>
     );
-  }
-
-  function handleSelectEvent(event: any) {
-    setIsEventModalOpen(true);
-    setNewEvent({
-      ...newEvent,
-      start: event.startStr,
-      end: event.endStr,
-    });
-  }
-
-  async function handleConfirmReservation() {
-    try {
-      const canchaId = newEvent.color === "#44a7ea" ? 1 : 2; // Example: distinguish between Cancha 1 and 2 by color
-      const horario = {
-        IdUser: 1, // Dummy user ID for admin, update as necessary
-        StartTime: `${formatHour(newEvent.start)}:00`,
-        EndTime: `${formatHour(newEvent.end)}:00`,
-        DateDay: formatDate(newEvent.start),
-        ListPlayer: newEvent.title, // Assuming the title contains player list, update as necessary
-      };
-
-      let response;
-      if (canchaId === 1) {
-        response = await crearHorarioCancha1(horario);
-      } else {
-        response = await crearHorarioCancha2(horario);
-      }
-
-      if (response.success) {
-        Swal.fire({
-          title: `CANCHA ${canchaId}!`,
-          text: "El horario se registró correctamente!",
-          icon: "success",
-          confirmButtonText: "Aceptar",
-        });
-        setIsEventModalOpen(false);
-        setNewEvent({
-          title: "",
-          area: "",
-          laboratorio: "",
-          start: "",
-          end: "",
-          color: "",
-        });
-        fetchEventsCancha1();
-        fetchEventsCancha2();
-      } else {
-        Swal.fire({
-          title: "Error!",
-          text: response.msg,
-          icon: "error",
-          confirmButtonText: "Aceptar",
-        });
-      }
-    } catch (error) {
-      console.error("Error al confirmar reserva:", error);
-      Swal.fire({
-        title: "Error!",
-        text: "Ocurrió un error al confirmar la reserva.",
-        icon: "error",
-        confirmButtonText: "Aceptar",
-      });
-    }
-  }
-
-  function formatHour(dateTimeString: string) {
-    const date = new Date(dateTimeString);
-    const hours = date.getHours().toString().padStart(2, "0");
-    const minutes = date.getMinutes().toString().padStart(2, "0");
-    return `${hours}:${minutes}`;
-  }
-
-  function formatDate(dateString: string) {
-    const date = new Date(dateString);
-    const year = date.getFullYear();
-    const month = (date.getMonth() + 1).toString().padStart(2, "0");
-    const day = date.getDate().toString().padStart(2, "0");
-    return `${year}-${month}-${day}`;
   }
 
   return (
@@ -274,70 +294,90 @@ export function AdimistratorHome() {
           </div>
         </div>
       </div>
+      {selectedEvent && (
+        <div
+          className="modal fade show"
+          id="exampleModal"
+          tabIndex={-1}
+          aria-labelledby="exampleModalLabel"
+          aria-hidden="true"
+          style={{ display: "block" }}
+        >
+          <div className="modal-dialog">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5 className="modal-title" id="exampleModalLabel">
+                  Reservar Horario
+                </h5>
+                <button
+                  type="button"
+                  className="btn-close"
+                  onClick={handleCloseModal}
+                  aria-label="Close"
+                ></button>
+              </div>
 
-      {isEventModalOpen && (
-        <div className="modal">
-          <div className="modal-content">
-            <h2>Añadir Evento</h2>
-            <form>
-              <div className="form-group">
-                <label>Título</label>
-                <input
-                  type="text"
-                  value={newEvent.title}
-                  onChange={(e) =>
-                    setNewEvent({ ...newEvent, title: e.target.value })
-                  }
-                />
+              <div className="modal-body">
+                <p>Usuario: {user?.FirstName}</p>
+                <p>Área: {user?.EmployeeCode}</p>
+                <p>
+                  Horario: {selectedEvent && formatHour(selectedEvent.start)} a{" "}
+                  {selectedEvent && formatHour(selectedEvent.end)}
+                </p>
+                <p>
+                  Día:{" "}
+                  {selectedEvent &&
+                    new Date(selectedEvent.start).toLocaleDateString()}
+                </p>
+                <div className="mb-3">
+                  <label htmlFor="listPlayer" className="form-label">
+                    Lista de Jugadores
+                  </label>
+                  <textarea
+                    className="form-control"
+                    id="listPlayer"
+                    rows={3}
+                    value={listPlayer}
+                    onChange={(e) => setListPlayer(e.target.value)}
+                    required
+                  ></textarea>
+                </div>
+                <div className="mb-3">
+                  <label htmlFor="selectedCancha" className="form-label">
+                    Seleccionar Cancha
+                  </label>
+                  <select
+                    className="form-select"
+                    id="selectedCancha"
+                    value={selectedCancha}
+                    onChange={(e) => setSelectedCancha(e.target.value)}
+                  >
+                    <option value="cancha1">Cancha 1</option>
+                    <option value="cancha2">Cancha 2</option>
+                  </select>
+                </div>
               </div>
-              <div className="form-group">
-                <label>Área</label>
-                <input
-                  type="text"
-                  value={newEvent.area}
-                  onChange={(e) =>
-                    setNewEvent({ ...newEvent, area: e.target.value })
-                  }
-                />
+              <div className="modal-footer">
+                <button
+                  type="button"
+                  className="btn btn-primary"
+                  onClick={handleConfirmReservation}
+                >
+                  Confirmar reserva
+                </button>
+                <button
+                  type="button"
+                  className="btn btn-secondary"
+                  onClick={handleCloseModal}
+                >
+                  Cerrar
+                </button>
               </div>
-              <div className="form-group">
-                <label>Laboratorio</label>
-                <input
-                  type="text"
-                  value={newEvent.laboratorio}
-                  onChange={(e) =>
-                    setNewEvent({ ...newEvent, laboratorio: e.target.value })
-                  }
-                />
-              </div>
-              <div className="form-group">
-                <label>Color</label>
-                <input
-                  type="color"
-                  value={newEvent.color}
-                  onChange={(e) =>
-                    setNewEvent({ ...newEvent, color: e.target.value })
-                  }
-                />
-              </div>
-              <button
-                type="button"
-                onClick={handleConfirmReservation}
-                className="btn btn-primary"
-              >
-                Confirmar
-              </button>
-              <button
-                type="button"
-                onClick={() => setIsEventModalOpen(false)}
-                className="btn btn-secondary"
-              >
-                Cancelar
-              </button>
-            </form>
+            </div>
           </div>
         </div>
       )}
+      {selectedEvent && <div className="modal-backdrop fade show"></div>}
     </div>
   );
 }
