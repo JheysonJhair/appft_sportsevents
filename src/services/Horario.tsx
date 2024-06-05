@@ -50,7 +50,7 @@ export async function crearHorarioCancha1(
 }
 
 //---------------------------------------------------------------- DELETE FIELD 1
-export async function eliminarHorarioCancha1(horarioId: number): Promise<void> {
+export async function eliminarHorarioCancha1(horarioId: number): Promise<{ msg: string; success: boolean }> {
   try {
     const url = `${API_URL}/field1/${horarioId}`;
     const response = await fetch(url, {
@@ -59,6 +59,9 @@ export async function eliminarHorarioCancha1(horarioId: number): Promise<void> {
     if (!response.ok) {
       throw new Error("Error al eliminar horario de la cancha 1");
     }
+    const responseData: { msg: string; success: boolean } =
+      await response.json();
+    return responseData;
   } catch (error) {
     throw new Error("Error al eliminar el horario de la cancha 1 " + error);
   }
@@ -106,15 +109,18 @@ export async function crearHorarioCancha2(
 }
 
 //---------------------------------------------------------------- DELETE FIELD 2
-export async function eliminarHorarioCancha2(horarioId: number): Promise<void> {
+export async function eliminarHorarioCancha2(horarioId: number): Promise<{ msg: string; success: boolean }> {
   try {
     const url = `${API_URL}/field2/${horarioId}`;
     const response = await fetch(url, {
       method: "DELETE",
     });
     if (!response.ok) {
-      throw new Error("Error al eliminar eL horario de la cancha 2");
+      throw new Error("Error al eliminar horario de la cancha 2");
     }
+    const responseData: { msg: string; success: boolean } =
+      await response.json();
+    return responseData;
   } catch (error) {
     throw new Error("Error al eliminar el horario de la cancha 2 " + error);
   }

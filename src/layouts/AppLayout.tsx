@@ -60,7 +60,6 @@ function AppLayout() {
       }
     };
     const fetchNotifications = async () => {
-      console.log("hola");
       try {
         if (user) {
           console.log("hola22" + user.areaIdArea, user.FirstName);
@@ -69,7 +68,6 @@ function AppLayout() {
           );
           if (response.ok) {
             const result = await response.json();
-            console.log(result);
             if (result && result.data) {
               setNotifications(result.data);
             } else {
