@@ -6,6 +6,13 @@ import { getWeather } from "../services/weather";
 import { User } from "../types/User";
 import { Weather } from "../types/Weather";
 
+interface Notification {
+  IdNotification?: number;
+  Message: string;
+  IndViewed: boolean;
+  Date: string;
+}
+
 function AppLayout() {
   const [currentDate, setCurrentDate] = useState<{
     small: string;
@@ -17,6 +24,8 @@ function AppLayout() {
 
   const [weatherToday, setWeatherToday] = useState<Weather | null>(null);
   const [weatherTomorrow, setWeatherTomorrow] = useState<Weather | null>(null);
+  const [notifications, setNotifications] = useState<Notification[]>([]);
+  const { user } = useAuth() as { user: User };
 
   useEffect(() => {
     const optionsSmall: Intl.DateTimeFormatOptions = {
@@ -50,7 +59,37 @@ function AppLayout() {
         console.error("Error fetching weather data:", error);
       }
     };
+    const fetchNotifications = async () => {
+      console.log("hola");
+      try {
+        if (user) {
+          console.log("hola22" + user.areaIdArea, user.FirstName);
+          const response = await fetch(
+            `http://esappsoccer.ccontrolz.com/api/notification/getManagementById/${user.areaIdArea}`
+          );
+          if (response.ok) {
+            const result = await response.json();
+            console.log(result);
+            if (result && result.data) {
+              setNotifications(result.data);
+            } else {
+              console.error(
+                "Error: No se recibieron datos de notificaciones en el formato esperado"
+              );
+            }
+          } else {
+            console.error(
+              "Error en la solicitud de notificaciones:",
+              response.statusText
+            );
+          }
+        }
+      } catch (error) {
+        console.error("Error al obtener notificaciones:", error);
+      }
+    };
 
+    fetchNotifications();
     fetchWeather();
   }, []);
 
@@ -91,7 +130,6 @@ function AppLayout() {
     loadScripts();
   }, []);
 
-  const { user } = useAuth() as { user: User };
   return (
     <>
       <div className="wrapper">
@@ -258,68 +296,129 @@ function AppLayout() {
               <h5 className="d-none d-lg-block">{currentDate.large}</h5>
               <div className="top-menu ms-auto">
                 <ul className="navbar-nav align-items-center gap-1">
-                  <i
-                    className="bx bxs-sun"
-                    style={{
-                      fontSize: "29px",
-                      marginLeft: "20px",
-                      color: "#edae25",
-                    }}
-                  ></i>
-                  <div
-                    className="col text-center "
-                    style={{ marginRight: "40px" }}
+                  <li className="nav-item dropdown dropdown-large">
+                    <i
+                      className="bx bxs-sun"
+                      style={{
+                        fontSize: "29px",
+                        marginLeft: "20px",
+                        color: "#edae25",
+                        marginRight: "10px",
+                      }}
+                    ></i>
+                    <div
+                      className="col text-center "
+                      style={{ marginRight: "40px" }}
+                    >
+                      <h6 className="m-0" style={{ fontSize: "13px" }}>
+                        Hoy
+                      </h6>
+                      <h6 className="m-0" style={{ fontSize: "13px" }}>
+                        {weatherToday?.temp || "0.0"}ºC
+                      </h6>
+                    </div>
+                  </li>
+                  <li className="nav-item dropdown dropdown-large">
+                    <i
+                      className="bx bxs-moon"
+                      style={{
+                        fontSize: "24px",
+                        marginRight: "10px",
+                        color: "#2C3E50",
+                      }}
+                    ></i>
+                    <div
+                      className="col text-center"
+                      style={{ marginRight: "30px" }}
+                    >
+                      <h6 className="m-0" style={{ fontSize: "13px" }}>
+                        Mañana
+                      </h6>
+                      <h6 className="m-0" style={{ fontSize: "13px" }}>
+                        {weatherTomorrow?.temp || "0.0"}ºC
+                      </h6>
+                    </div>
+                  </li>
+                  <li className="nav-item dropdown dropdown-large">
+                    <i
+                      className="bx bx-time"
+                      style={{ fontSize: "24px", color: "#2C3E50" }}
+                    ></i>
+                    <div
+                      className="col text-center"
+                      style={{ marginRight: "30px" }}
+                    >
+                      <h6 className="m-0" style={{ fontSize: "13px" }}>
+                        Turno:{" "}
+                        {user?.Shift !== "" ? user?.Shift : "Desabilitado"}
+                      </h6>
+                    </div>
+                  </li>
+                  <li
+                    className="nav-item dropdown dropdown-large col text-center"
+                    style={{ marginRight: "10px" }}
                   >
-                    <h6 className="m-0" style={{ fontSize: "13px" }}>
-                      Hoy día
-                    </h6>
-                    <h6 className="m-0" style={{ fontSize: "13px" }}>
-                      {weatherToday?.temp}ºC
-                    </h6>
-                  </div>
-                  <i
-                    className="bx bxs-moon"
-                    style={{ fontSize: "24px", color: "#2C3E50" }}
-                  ></i>
-                  <div
-                    className="col text-center"
-                    style={{ marginRight: "20px" }}
-                  >
-                    <h6 className="m-0" style={{ fontSize: "13px" }}>
-                      Mañana
-                    </h6>
-                    <h6 className="m-0" style={{ fontSize: "13px" }}>
-                      {weatherTomorrow?.temp}ºC
-                    </h6>
-                  </div>
-
-                  <i
-                    className="bx bx-time"
-                    style={{ fontSize: "24px", color: "#2C3E50" }}
-                  ></i>
-                  <div
-                    className="col text-center"
-                    style={{ marginRight: "20px" }}
-                  >
-                    <h6 className="m-0" style={{ fontSize: "13px" }}>
-                      Turno: {user?.Shift !== "" ? user?.Shift : "Desabilitado"}
-                    </h6>
-                  </div>
-                  <i
-                    className="bx bx-user-circle"
-                    style={{ fontSize: "24px", color: "#2C3E50" }}
-                  ></i>
-                  <div
-                    className="col text-center"
-                    style={{ marginRight: "20px" }}
-                  >
+                    <i
+                      className="bx bx-user-circle"
+                      style={{ fontSize: "24px", color: "#2C3E50" }}
+                    ></i>
                     <h6 className="m-0" style={{ fontSize: "13px" }}>
                       Area:{" "}
-                      {user?.EmployeeCode !== ""
-                        ? user?.EmployeeCode
-                        : "Desabilitado"}
+                      {user?.NameArea !== "" ? user?.NameArea : "Desabilitado"}
                     </h6>
-                  </div>
+                  </li>
+                  <li className="nav-item dropdown dropdown-large">
+                    <a
+                      className="nav-link dropdown-toggle dropdown-toggle-nocaret"
+                      href="#"
+                      data-bs-toggle="dropdown"
+                    >
+                      <i className="bx bx-bell" />
+                    </a>
+                    <div className="dropdown-menu dropdown-menu-end">
+                      <a href="javascript:;" className="dropdown-item">
+                        <div className="msg-header">
+                          <p className="msg-header-title">Notificaciones</p>
+                          <p className="msg-header-clear ms-auto">
+                            Marcar todas como leídas
+                          </p>
+                        </div>
+                      </a>
+                      <div className="header-notifications-list">
+                        {notifications.map((notification) => (
+                          <a
+                            key={notification.IdNotification}
+                            href="javascript:;"
+                            className="dropdown-item"
+                          >
+                            <div className="d-flex align-items-center">
+                              <div className="notify bg-light-warning text-warning">
+                                <i className="bx bx-error" />
+                              </div>
+                              <div className="flex-grow-1">
+                                <h6 className="msg-name">
+                                  {notification.Message}
+                                </h6>
+                                <p className="msg-info">
+                                  {notification.Message}
+                                </p>
+                                <p className="msg-time mb-0">
+                                  {notification.Date}
+                                </p>
+                              </div>
+                            </div>
+                          </a>
+                        ))}
+                      </div>
+                      <a href="javascript:;" className="dropdown-item">
+                        <div className="text-center msg-footer">
+                          <NavLink to="/notifications">
+                            Ver todas las notificaciones
+                          </NavLink>
+                        </div>
+                      </a>
+                    </div>
+                  </li>
                 </ul>
               </div>
               <div className="user-box dropdown px-3">

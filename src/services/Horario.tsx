@@ -14,6 +14,7 @@ export async function obtenerHorarioCancha1(): Promise<Field[]> {
     if (!response.ok) {
       throw new Error("Error al obtener los datos");
     }
+
     const responseData: ApiResponse = await response.json();
     if (!responseData.success) {
       throw new Error(responseData.msg);

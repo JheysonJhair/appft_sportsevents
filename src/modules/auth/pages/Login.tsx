@@ -37,6 +37,7 @@ export default function Login() {
             showConfirmButton: false,
             timer: 1500,
           });
+
           setUser(response.data);
           navigate("/");
         }

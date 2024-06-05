@@ -27,10 +27,12 @@ export function AdimistratorHome() {
   async function fetchEventsCancha1() {
     try {
       const horarioCancha1 = await obtenerHorarioCancha1();
+      console.log("hola");
+      console.log(horarioCancha1);
       const initialEventsCancha1: EventData[] = horarioCancha1.map((event) => ({
         title: event.FirstName,
-        area: event.Area,
-        laboratorio: event.Laboratory,
+        area: event.NameArea,
+        laboratorio: event.NameManagement,
         start: `${event.DateDay}T${event.StartTime}`,
         end: `${event.DateDay}T${event.EndTime}`,
         color: "#44a7ea",
@@ -46,8 +48,8 @@ export function AdimistratorHome() {
       const horarioCancha2 = await obtenerHorarioCancha2();
       const initialEventsCancha2: EventData[] = horarioCancha2.map((event) => ({
         title: event.FirstName,
-        area: event.Area,
-        laboratorio: event.Laboratory,
+        area: event.NameArea,
+        laboratorio: event.NameManagement,
         start: `${event.DateDay}T${event.StartTime}`,
         end: `${event.DateDay}T${event.EndTime}`,
         color: "#fd3550",

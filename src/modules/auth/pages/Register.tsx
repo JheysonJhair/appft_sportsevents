@@ -2,8 +2,8 @@ import React, { useState, useEffect } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 
+import { enviarVerificacionEmail } from "../../../services/Usuario";
 import { User, ErrorMessages } from "../../../types/User";
-import { crearUsuario } from "../../../services/Usuario";
 import { fetchGerencias } from "../../../services/Gerencia";
 import { fetchAreasByManagementId } from "../../../services/Area";
 import { Management } from "../../../types/Management";
@@ -102,10 +102,16 @@ export function Register(): JSX.Element {
     let hasError = false;
 
     requiredFields.forEach((field) => {
-      const error = validateField(field, formData[field] as string);
-      if (error) {
-        newErrorMessages[field] = error;
+      const value = formData[field];
+      if (value === undefined || value === "") {
+        newErrorMessages[field] = "Campo requerido";
         hasError = true;
+      } else {
+        const error = validateField(field, value as string);
+        if (error) {
+          newErrorMessages[field] = error;
+          hasError = true;
+        }
       }
     });
 
@@ -120,23 +126,16 @@ export function Register(): JSX.Element {
       });
     } else {
       try {
-        const response = await crearUsuario(formData);
-        if (response.success) {
-          Swal.fire({
-            title: "Correcto!",
-            text: response.msg,
-            icon: "success",
-            confirmButtonText: "Aceptar",
-          });
-          navigate("/login");
-        } else {
-          Swal.fire({
-            title: "Error!",
-            text: response.msg,
-            icon: "error",
-            confirmButtonText: "Aceptar",
-          });
-        }
+        await enviarVerificacionEmail(formData.Mail);
+        Swal.fire({
+          title: "Correo Enviado!",
+          text: "Hemos enviado un código de verificación a su correo.",
+          icon: "success",
+          confirmButtonText: "Aceptar",
+        });
+        navigate("/verification-code", {
+          state: { email: formData.Mail, formData },
+        });
       } catch (error) {
         console.error(error);
       }

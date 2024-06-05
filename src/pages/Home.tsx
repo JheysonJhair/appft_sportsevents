@@ -4,22 +4,24 @@ import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import esLocale from "@fullcalendar/core/locales/es";
+import Swal from "sweetalert2";
+
 import { useAuth } from "../hooks/AuthContext";
 import { EventData } from "../types/Eventos";
+import { Field } from "../types/Field";
 import {
   obtenerHorarioCancha1,
   obtenerHorarioCancha2,
   crearHorarioCancha1,
   crearHorarioCancha2,
 } from "../services/Horario";
-import { Field } from "../types/Field";
-import Swal from "sweetalert2";
 
 export function HomePage() {
   const { user } = useAuth();
   const [events, setEvents] = useState<EventData[]>([]);
   const [selectedEvent, setSelectedEvent] = useState<EventData | null>(null);
   const [listPlayer, setListPlayer] = useState<string>("");
+  const [showAlert, setShowAlert] = useState(false);
 
   const selectedDate = selectedEvent && new Date(selectedEvent.start).getDate();
   const selectedMonth =
@@ -43,10 +45,11 @@ export function HomePage() {
       } else {
         throw new Error("Rol de usuario no válido");
       }
+      console.log(horario);
       const initialEvents: EventData[] = horario.map((event) => ({
         title: event.FirstName,
-        area: event.Area,
-        laboratorio: event.Laboratory,
+        area: event.NameArea,
+        laboratorio: event.NameManagement,
         start: `${event.DateDay}T${event.StartTime}`,
         end: `${event.DateDay}T${event.EndTime}`,
         color: "#44a7ea",
@@ -168,6 +171,7 @@ export function HomePage() {
           confirmButtonText: "Aceptar",
         });
       }
+      setShowAlert(true); // Show alert after successful registration
     } catch (error) {
       console.error("Error al confirmar reserva:", error);
     } finally {
@@ -340,6 +344,29 @@ export function HomePage() {
         </div>
       )}
       {selectedEvent && <div className="modal-backdrop fade show"></div>}
+
+      {showAlert && (
+        <div className="alert alert-danger border-0 bg-danger alert-dismissible fade show py-2 alert-bottom-right">
+          <div className="d-flex align-items-center">
+            <div className="font-35 text-white">
+              <i className="bx bx-info-square" />
+            </div>
+            <div className="ms-3">
+              <h6 className="mb-0 text-white">Nota importante!</h6>
+              <div className="text-white">
+                No te olvides de llevar tu photocheck
+              </div>
+            </div>
+          </div>
+          <button
+            type="button"
+            className="btn-close"
+            data-bs-dismiss="alert"
+            aria-label="Close"
+            onClick={() => setShowAlert(false)}
+          />
+        </div>
+      )}
     </div>
   );
 }

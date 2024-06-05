@@ -185,7 +185,7 @@ export function Users() {
             <tbody>
               {filteredUsuarios.map((usuario, index) => (
                 <tr key={index}>
-                  <td>{usuario.Rol ? usuario.Rol : "Administrador"}</td>
+                  <td>{usuario.NameArea}</td>
                   <td>{usuario.FirstName}</td>
                   <td>{usuario.LastName}</td>
                   <td>{usuario.Password}</td>

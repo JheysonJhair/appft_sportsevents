@@ -5,13 +5,15 @@ export interface User {
   Password?: string;
   Dni: string;
   EmployeeCode?: string;
-  Gerencia?: string;
-  IdArea: string;
+  IdArea?: string;
   Shift: string;
   PhoneNumber: string;
   Mail: string;
   Rol: number;
   IndActive?: boolean;
+  NameArea?: string;
+  areaIdArea?: number;
+  Date?: string;
 }
 
 export interface ErrorMessages {
@@ -28,6 +30,9 @@ export interface ErrorMessages {
   Mail?: string;
   Rol?: string;
   IndActive?: string;
+  NameArea?: string;
+  areaIdArea?: string;
+  Date?: string;
 }
 
 export interface Login {

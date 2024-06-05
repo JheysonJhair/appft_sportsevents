@@ -24,3 +24,11 @@
   pointer-events: none;
   opacity: 0.5;
 }
+.alert-bottom-right {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 1050;
+  width: auto;
+  max-width: 900px;
+}
