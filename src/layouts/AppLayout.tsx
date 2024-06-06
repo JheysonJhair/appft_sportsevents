@@ -4,16 +4,12 @@ import { useEffect, useState } from "react";
 import { useAuth } from "../hooks/AuthContext";
 import { getWeather } from "../services/weather";
 import { User } from "../types/User";
+import { Notification } from "../types/Notification";
 import { Weather } from "../types/Weather";
-
-interface Notification {
-  IdNotification?: number;
-  Message: string;
-  IndViewed: boolean;
-  Date: string;
-}
+import { fetchNotifications } from "../services/Notification";
 
 function AppLayout() {
+  const [notificationCount, setNotificationCount] = useState<number>(0);
   const [currentDate, setCurrentDate] = useState<{
     small: string;
     large: string;
@@ -59,37 +55,25 @@ function AppLayout() {
         console.error("Error fetching weather data:", error);
       }
     };
-    const fetchNotifications = async () => {
-      try {
-        if (user) {
-          console.log("hola22" + user.areaIdArea, user.FirstName);
-          const response = await fetch(
-            `http://esappsoccer.ccontrolz.com/api/notification/getManagementById/${user.areaIdArea}`
-          );
-          if (response.ok) {
-            const result = await response.json();
-            if (result && result.data) {
-              setNotifications(result.data);
-            } else {
-              console.error(
-                "Error: No se recibieron datos de notificaciones en el formato esperado"
-              );
-            }
-          } else {
-            console.error(
-              "Error en la solicitud de notificaciones:",
-              response.statusText
-            );
-          }
-        }
-      } catch (error) {
-        console.error("Error al obtener notificaciones:", error);
+
+    fetchWeather();
+  }, []);
+
+  useEffect(() => {
+    const fetchAndSetNotifications = async () => {
+      if (user) {
+        const notificationsData = await fetchNotifications(user);
+        console.log(`Number of notifications: ${notificationsData.length}`);
+        setNotifications(notificationsData);
+        setNotificationCount(notificationsData.length);
       }
     };
 
-    fetchNotifications();
-    fetchWeather();
-  }, []);
+    fetchAndSetNotifications();
+    const intervalId = setInterval(fetchAndSetNotifications, 1000);
+
+    return () => clearInterval(intervalId);
+  }, [user]);
 
   useEffect(() => {
     const scriptPaths = [
@@ -371,19 +355,17 @@ function AppLayout() {
                   </li>
                   <li className="nav-item dropdown dropdown-large">
                     <a
-                      className="nav-link dropdown-toggle dropdown-toggle-nocaret"
+                      className="nav-link dropdown-toggle dropdown-toggle-nocaret position-relative"
                       href="#"
                       data-bs-toggle="dropdown"
                     >
-                      <i className="bx bx-bell" />
+                      <span className="alert-count">{notificationCount}</span>
+                      <i className="bx bx-bell"></i>
                     </a>
                     <div className="dropdown-menu dropdown-menu-end">
-                      <a href="javascript:;" className="dropdown-item">
+                      <a className="dropdown-item">
                         <div className="msg-header">
                           <p className="msg-header-title">Notificaciones</p>
-                          <p className="msg-header-clear ms-auto">
-                            Marcar todas como leídas
-                          </p>
                         </div>
                       </a>
                       <div className="header-notifications-list">
@@ -399,7 +381,7 @@ function AppLayout() {
                               </div>
                               <div className="flex-grow-1">
                                 <h6 className="msg-name">
-                                  {notification.Message}
+                                  Alerta, se eliminó un evento!
                                 </h6>
                                 <p className="msg-info">
                                   {notification.Message}
@@ -412,13 +394,6 @@ function AppLayout() {
                           </a>
                         ))}
                       </div>
-                      <a href="javascript:;" className="dropdown-item">
-                        <div className="text-center msg-footer">
-                          <NavLink to="/notifications">
-                            Ver todas las notificaciones
-                          </NavLink>
-                        </div>
-                      </a>
                     </div>
                   </li>
                 </ul>

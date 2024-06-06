@@ -1,31 +1,37 @@
-import { Notification } from "../types/Notification";
 const API_URL = "https://esappsoccer.ccontrolz.com/api";
 
-interface ApiResponse<T> {
-  msg: string;
-  success: boolean;
-  data: T;
-}
-
-//---------------------------------------------------------------- GET MANAGEMENT ID
-export async function notificacionesGerenciaId(
-  managementId: number
-): Promise<Notification[]> {
+//---------------------------------------------------------------- GET MANAGEMENT ID NOTIFICATION
+export const fetchNotifications = async (user: any) => {
   try {
-    const response = await fetch(
-      `${API_URL}/notification/getManagementById/${managementId}`
-    );
-    if (!response.ok) {
-      throw new Error("Error al obtener las notificaciones");
+    if (user) {
+      const response = await fetch(
+        `${API_URL}/notification/getManagementById/${user.areaIdArea}`
+      );
+      if (response.ok) {
+        const result = await response.json();
+        if (result && result.data) {
+          return result.data;
+        } else {
+          console.error(
+            "Error: No se recibieron datos de notificaciones en el formato esperado"
+          );
+          return [];
+        }
+      } else {
+        console.error(
+          "Error en la solicitud de notificaciones:",
+          response.statusText
+        );
+        return [];
+      }
     }
-    const responseData: ApiResponse<Notification[]> = await response.json();
-    return responseData.data;
   } catch (error) {
-    console.error("Error al obtener las notificaciones:", error);
-    throw error;
+    console.error("Error al obtener notificaciones:", error);
+    return [];
   }
-}
+};
 
+//---------------------------------------------------------------- POST .NOTIFICATION
 export async function insertarNotificacion(
   message: string,
   userId: number,
@@ -54,4 +60,3 @@ export async function insertarNotificacion(
     throw error;
   }
 }
-

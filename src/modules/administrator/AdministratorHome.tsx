@@ -15,6 +15,7 @@ import {
   crearHorarioCancha1,
   crearHorarioCancha2,
 } from "../../services/Horario";
+import { insertarNotificacion } from "../../services/Notification";
 import { useAuth } from "../../hooks/AuthContext";
 
 export function AdimistratorHome() {
@@ -25,14 +26,12 @@ export function AdimistratorHome() {
   const [listPlayer, setListPlayer] = useState<string>("");
   const [selectedCancha, setSelectedCancha] = useState<string>("cancha1");
 
-  //
   const selectedDate = selectedEvent && new Date(selectedEvent.start).getDate();
   const selectedMonth =
     selectedEvent && new Date(selectedEvent.start).getMonth() + 1;
   const selectedYear =
     selectedEvent && new Date(selectedEvent.start).getFullYear();
   const formattedDate = `${selectedYear}-${selectedMonth}-${selectedDate}`;
-  //
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -43,7 +42,6 @@ export function AdimistratorHome() {
     return () => clearInterval(interval);
   }, []);
 
-  //
   function handleSelectEvent(event: any) {
     setSelectedEvent(event);
   }
@@ -212,6 +210,9 @@ export function AdimistratorHome() {
               });
             }
           }
+
+          const notificationMessage = `Se eliminó la reserva del area de GERENCIA`;
+          await insertarNotificacion(notificationMessage, user?.IdUser || 0, 1);
         } catch (error: any) {
           Swal.fire({
             title: "Error!",
