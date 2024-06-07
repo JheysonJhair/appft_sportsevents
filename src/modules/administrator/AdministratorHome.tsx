@@ -17,6 +17,7 @@ import {
 } from "../../services/Horario";
 import { insertarNotificacion } from "../../services/Notification";
 import { useAuth } from "../../hooks/AuthContext";
+import { formatHour, formatDate, formatDate2 } from "../../utils/util";
 
 export function AdimistratorHome() {
   const { user } = useAuth();
@@ -27,10 +28,8 @@ export function AdimistratorHome() {
   const [selectedCancha, setSelectedCancha] = useState<string>("cancha1");
 
   const selectedDate = selectedEvent && new Date(selectedEvent.start).getDate();
-  const selectedMonth =
-    selectedEvent && new Date(selectedEvent.start).getMonth() + 1;
-  const selectedYear =
-    selectedEvent && new Date(selectedEvent.start).getFullYear();
+  const selectedMonth = selectedEvent && new Date(selectedEvent.start).getMonth() + 1;
+  const selectedYear = selectedEvent && new Date(selectedEvent.start).getFullYear();
   const formattedDate = `${selectedYear}-${selectedMonth}-${selectedDate}`;
 
   useEffect(() => {
@@ -38,7 +37,6 @@ export function AdimistratorHome() {
       fetchEventsCancha1();
       fetchEventsCancha2();
     }, 1000);
-
     return () => clearInterval(interval);
   }, []);
 
@@ -50,28 +48,6 @@ export function AdimistratorHome() {
     setSelectedEvent(null);
     setListPlayer("");
     setSelectedCancha("cancha1");
-  }
-
-  function formatHour(dateTimeString: string) {
-    const date = new Date(dateTimeString);
-    const hours = date.getHours().toString().padStart(2, "0");
-    const minutes = date.getMinutes().toString().padStart(2, "0");
-    return `${hours}:${minutes}`;
-  }
-
-  function formatDate(dateString: string) {
-    const dateParts = dateString.split("-");
-    const year = dateParts[0];
-    const month = dateParts[1].padStart(2, "0");
-    const day = dateParts[2].padStart(2, "0");
-    return `${year}-${month}-${day}`;
-  }
-
-  function formatDate2(date: Date): string {
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, "0");
-    const day = String(date.getDate()).padStart(2, "0");
-    return `${year}-${month}-${day}`;
   }
 
   async function handleConfirmReservation() {
@@ -88,9 +64,7 @@ export function AdimistratorHome() {
       const selectedDate = new Date(selectedEvent.start);
       const startOfWeek = new Date(
         selectedDate.setDate(
-          selectedDate.getDate() -
-            selectedDate.getDay() +
-            (selectedDate.getDay() === 0 ? -6 : 1)
+          selectedDate.getDate() - selectedDate.getDay() + (selectedDate.getDay() === 0 ? -6 : 1)
         )
       );
       const endOfWeek = new Date(
@@ -188,27 +162,19 @@ export function AdimistratorHome() {
           if (fieldId1) {
             const response = await eliminarHorarioCancha1(fieldId1);
             if (response.success) {
-              setEventsCancha1(
-                eventsCancha1.filter((e) => e.IdField1Entity !== fieldId1)
-              );
+              setEventsCancha1(eventsCancha1.filter((e) => e.IdField1Entity !== fieldId1));
               Swal.fire({
                 title: "¡Eliminado!",
                 text: "Se ha eliminado correctamente!",
                 icon: "success",
               });
               const notificationMessage = `Se eliminó la reserva de GERENCIA`;
-              await insertarNotificacion(
-                notificationMessage,
-                user?.IdUser || 0,
-                response.IdArea
-              );
+              await insertarNotificacion(notificationMessage, user?.IdUser || 0, response.IdArea);
             }
           } else if (fieldId2) {
             const response = await eliminarHorarioCancha2(fieldId2);
             if (response.success) {
-              setEventsCancha2(
-                eventsCancha2.filter((e) => e.IdField2Entity !== fieldId2)
-              );
+              setEventsCancha2(eventsCancha2.filter((e) => e.IdField2Entity !== fieldId2));
               Swal.fire({
                 title: "¡Eliminado!",
                 text: "Se ha eliminado correctamente!",
@@ -216,11 +182,7 @@ export function AdimistratorHome() {
               });
             }
             const notificationMessage = `Se eliminó la reserva de GERENCIA`;
-            await insertarNotificacion(
-              notificationMessage,
-              user?.IdUser || 0,
-              response.IdArea
-            );
+            await insertarNotificacion(notificationMessage, user?.IdUser || 0, response.IdArea);
           }
         } catch (error: any) {
           Swal.fire({
@@ -235,27 +197,26 @@ export function AdimistratorHome() {
 
   function renderEventContent(eventInfo: any) {
     return (
-      <div>
+      <div style={{ position: "relative", padding: "4px" }}>
         <span
           className="delete-icon"
           onClick={() => handleDelete(eventInfo.event)}
-          style={{ cursor: "pointer", marginRight: "8px" }}
+          style={{
+            cursor: "pointer",
+            position: "absolute",
+            top: "8px",
+            right: "8px",
+          }}
         >
           ❌
         </span>
         <div className="fc-event-title">{eventInfo.event.title}</div>
-        <div className="fc-event-title">
-          {eventInfo.event.extendedProps.area}
-        </div>
+        <div className="fc-event-title">{eventInfo.event.extendedProps.area}</div>
       </div>
     );
   }
 
-  function renderCalendar(
-    slotMinTime: any,
-    slotMaxTime: any,
-    eventsData: EventData[]
-  ) {
+  function renderCalendar(slotMinTime: any, slotMaxTime: any, eventsData: EventData[]) {
     return (
       <div className="table-responsive">
         <FullCalendar

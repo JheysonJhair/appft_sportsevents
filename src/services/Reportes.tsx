@@ -1,6 +1,6 @@
 import { ReportDay } from "../types/DayReport";
 
-const API_URL = "http://esappsoccer.ccontrolz.com/api";
+const API_URL = "https://esappsoccer.ccontrolz.com/api";
 //---------------------------------------------------------------- GET REPORTS
 export const fetchReports = async (): Promise<ReportDay[]> => {
   try {
@@ -38,3 +38,5 @@ export async function crearReporte(
     throw new Error("Error al crear el reporte: " + error);
   }
 }
+
+//================================================================ REPORTS GRAPHICS

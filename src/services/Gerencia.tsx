@@ -1,6 +1,6 @@
 import { Management } from "../types/Management";
 
-const API_URL = "http://esappsoccer.ccontrolz.com/api";
+const API_URL = "https://esappsoccer.ccontrolz.com/api";
 
 //---------------------------------------------------------------- GET MANAGEMENT
 export const fetchGerencias = async (): Promise<Management[]> => {

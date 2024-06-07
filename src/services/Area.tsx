@@ -1,6 +1,6 @@
 import { Area } from "../types/Area";
 
-const API_URL = "http://esappsoccer.ccontrolz.com/api";
+const API_URL = "https://esappsoccer.ccontrolz.com/api";
 
 //---------------------------------------------------------------- GET AREA MANAGEMNET ID
 export async function fetchAreasByManagementId(gerenciaId: any) {

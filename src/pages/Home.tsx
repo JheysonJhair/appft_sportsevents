@@ -15,6 +15,7 @@ import {
   crearHorarioCancha1,
   crearHorarioCancha2,
 } from "../services/Horario";
+import { formatHour, formatDate, formatDate2 } from "../utils/util";
 
 export function HomePage() {
   const { user } = useAuth();
@@ -176,27 +177,6 @@ export function HomePage() {
     }
   }
 
-  function formatHour(dateTimeString: string) {
-    const date = new Date(dateTimeString);
-    const hours = date.getHours().toString().padStart(2, "0");
-    const minutes = date.getMinutes().toString().padStart(2, "0");
-    return `${hours}:${minutes}`;
-  }
-
-  function formatDate(dateString: string) {
-    const dateParts = dateString.split("-");
-    const year = dateParts[0];
-    const month = dateParts[1].padStart(2, "0");
-    const day = dateParts[2].padStart(2, "0");
-    return `${year}-${month}-${day}`;
-  }
-
-  function formatDate2(date: Date): string {
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, "0");
-    const day = String(date.getDate()).padStart(2, "0");
-    return `${year}-${month}-${day}`;
-  }
 
   return (
     <div className="page-wrapper">
