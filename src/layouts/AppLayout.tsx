@@ -333,7 +333,7 @@ function AppLayout() {
                         Turno:{" "}
                         {user?.Shift !== "SIN TURNO"
                           ? user?.Shift
-                          : "Desabilitado"}
+                          : "Deshabilitado"}
                       </h6>
                     </div>
                   </li>
@@ -347,9 +347,13 @@ function AppLayout() {
                     ></i>
                     <h6 className="m-0" style={{ fontSize: "13px" }}>
                       Area:{" "}
-                      {user?.NameArea !== "ADMINISTRADOR"
-                        ? user?.NameArea
-                        : "Desabilitado"}
+                      {[
+                        "ADMINISTRADOR",
+                        "ADMIN CANCHA",
+                        "OPERACIONES MINA",
+                      ].includes(user?.NameArea ?? "")
+                        ? "Deshabilitado"
+                        : user?.NameArea}
                     </h6>
                   </li>
                   <li className="nav-item dropdown dropdown-large">
@@ -418,7 +422,7 @@ function AppLayout() {
                       {user?.Rol === 1
                         ? "OPERACIONES MINA"
                         : user?.Rol === 2
-                        ? "TRABAJADOR"
+                        ? "TRAB. GERENCIA"
                         : user?.Rol === 3
                         ? "ADMIN. CANCHA"
                         : user?.Rol === 4
@@ -444,7 +448,7 @@ function AppLayout() {
         </header>
         <Outlet />
         <div className="overlay toggle-icon" />
-        <a href="#" className="back-to-top">
+        <a className="back-to-top">
           <i className="bx bxs-up-arrow-alt" />
         </a>
         <footer className="page-footer">
