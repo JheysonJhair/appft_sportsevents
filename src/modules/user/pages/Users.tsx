@@ -194,9 +194,9 @@ export function Users() {
                   <td>{usuario.Mail}</td>
                   <td>{usuario.Shift !== "" ? usuario.Shift : "Sin turno"}</td>
                   <td>
-                    {usuario.Rol === 1 && "EXCLUSIVO"}
-                    {usuario.Rol === 2 && "TRABAJADOR"}
-                    {usuario.Rol === 3 && "ADMINISTRADOR DE CANCHA"}
+                    {usuario.Rol === 1 && "OPERACIONES MINA"}
+                    {usuario.Rol === 2 && "TRAB. GERENCIAS"}
+                    {usuario.Rol === 3 && "ADMIN. CANCHA"}
                     {usuario.Rol === 4 && "ADMINISTRADOR"}
                   </td>
                   <td>

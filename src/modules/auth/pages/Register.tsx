@@ -31,8 +31,6 @@ export function Register(): JSX.Element {
   const [gerencias, setGerencias] = useState<Management[]>([]);
   const [areas, setAreas] = useState<any[]>([]);
 
-  const OPERACIONES_MINA_AREA_ID = 3;
-
   useEffect(() => {
     const getGerencias = async () => {
       try {
@@ -54,7 +52,6 @@ export function Register(): JSX.Element {
     if (name === "Rol" && value === "1") {
       setFormData((prevData) => ({
         ...prevData,
-        IdArea: OPERACIONES_MINA_AREA_ID,
         Shift: "SIN TURNO",
         [name]: Number(value),
       }));
@@ -219,7 +216,7 @@ export function Register(): JSX.Element {
                         >
                           <option>Seleccionar rol</option>
                           <option value="1">Operaciones Mina</option>
-                          <option value="2">Trabajador</option>
+                          <option value="2">Trabajador gerencia</option>
                         </select>
                         {errorMessages.Rol && (
                           <div className="invalid-feedback">
@@ -335,68 +332,68 @@ export function Register(): JSX.Element {
                           </div>
                         )}
                       </div>
-                      {formData.Rol == 2 && (
-                        <>
-                          <div className="col-md-6">
-                            <label
-                              htmlFor="inputGerencia"
-                              className="form-label"
-                            >
-                              Gerencia
-                            </label>
-                            <select
-                              className={`form-select ${
-                                errorMessages.IdArea && "is-invalid"
-                              }`}
-                              id="inputGerencia"
-                              name="Gerencia"
-                              aria-label="Default select example"
-                              onChange={handleInputChange}
-                            >
-                              <option>Seleccionar Gerencia</option>
-                              {gerencias.map((gerencia) => (
-                                <option
-                                  key={gerencia.IdManagement}
-                                  value={gerencia.IdManagement}
-                                >
-                                  {gerencia.NameManagement}
-                                </option>
-                              ))}
-                            </select>
-                            {errorMessages.IdArea && (
-                              <div className="invalid-feedback">
-                                {errorMessages.IdArea}
-                              </div>
-                            )}
+
+                      <div className="col-md-6">
+                        <label htmlFor="inputGerencia" className="form-label">
+                          Gerencia
+                        </label>
+                        <select
+                          className={`form-select ${
+                            errorMessages.IdArea && "is-invalid"
+                          }`}
+                          id="inputGerencia"
+                          name="Gerencia"
+                          aria-label="Default select example"
+                          onChange={handleInputChange}
+                        >
+                          <option>Seleccionar Gerencia</option>
+                          {gerencias
+                            .filter(
+                              (gerencia) =>
+                                gerencia.NameManagement !== "SISTEMA"
+                            )
+                            .map((gerencia) => (
+                              <option
+                                key={gerencia.IdManagement}
+                                value={gerencia.IdManagement}
+                              >
+                                {gerencia.NameManagement}
+                              </option>
+                            ))}
+                        </select>
+                        {errorMessages.IdArea && (
+                          <div className="invalid-feedback">
+                            {errorMessages.IdArea}
                           </div>
-                          <div className="col-md-6">
-                            <label htmlFor="inputArea" className="form-label">
-                              Área
-                            </label>
-                            <select
-                              className={`form-select ${
-                                errorMessages.IdArea && "is-invalid"
-                              }`}
-                              id="inputArea"
-                              name="IdArea"
-                              aria-label="Default select example"
-                              onChange={handleInputChange}
-                            >
-                              <option>Seleccionar área</option>
-                              {areas.map((area) => (
-                                <option key={area.id} value={area.IdArea}>
-                                  {area.NameArea}
-                                </option>
-                              ))}
-                            </select>
-                            {errorMessages.IdArea && (
-                              <div className="invalid-feedback">
-                                {errorMessages.IdArea}
-                              </div>
-                            )}
+                        )}
+                      </div>
+                      <div className="col-md-6">
+                        <label htmlFor="inputArea" className="form-label">
+                          Área
+                        </label>
+                        <select
+                          className={`form-select ${
+                            errorMessages.IdArea && "is-invalid"
+                          }`}
+                          id="inputArea"
+                          name="IdArea"
+                          aria-label="Default select example"
+                          onChange={handleInputChange}
+                        >
+                          <option>Seleccionar área</option>
+                          {areas.map((area) => (
+                            <option key={area.id} value={area.IdArea}>
+                              {area.NameArea}
+                            </option>
+                          ))}
+                        </select>
+                        {errorMessages.IdArea && (
+                          <div className="invalid-feedback">
+                            {errorMessages.IdArea}
                           </div>
-                        </>
-                      )}
+                        )}
+                      </div>
+
                       <div className="col-12">
                         <div className="d-grid">
                           <button type="submit" className="btn btn-danger">

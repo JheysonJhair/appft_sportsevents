@@ -52,7 +52,7 @@ export function HomePage() {
         laboratorio: event.NameManagement,
         start: `${event.DateDay}T${event.StartTime}`,
         end: `${event.DateDay}T${event.EndTime}`,
-        color: "#44a7ea",
+        color: event.NameArea === "Admin Sistema" ? "#2C3E50" : "#44a7ea",
       }));
 
       setEvents(initialEvents);
@@ -71,7 +71,6 @@ export function HomePage() {
       </div>
     );
   }
-  console.log(user?.IdUser);
   function handleSelectEvent(event: any) {
     if (user?.Rol === 2) {
       const startTime = new Date(event.start).getTime();
@@ -170,14 +169,13 @@ export function HomePage() {
           confirmButtonText: "Aceptar",
         });
       }
-      setShowAlert(true); 
+      setShowAlert(true);
     } catch (error) {
       console.error("Error al confirmar reserva:", error);
     } finally {
       handleCloseModal();
     }
   }
-
 
   return (
     <div className="page-wrapper">

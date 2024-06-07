@@ -26,10 +26,12 @@ export function AdimistratorHome() {
   const { user } = useAuth();
   const [eventsCancha1, setEventsCancha1] = useState<EventData[]>([]);
   const [eventsCancha2, setEventsCancha2] = useState<EventData[]>([]);
+
   const [selectedEvent, setSelectedEvent] = useState<EventData | null>(null);
-  const [listPlayer, setListPlayer] = useState<string>("");
   const [selectedCancha, setSelectedCancha] = useState<string>("cancha1");
   const [eventDetails, setEventDetails] = useState<any>(null);
+
+  const [listPlayer, setListPlayer] = useState<string>("");
   const [ayuda, setAyuda] = useState<any>(false);
 
   const selectedDate = selectedEvent && new Date(selectedEvent.start).getDate();
@@ -130,7 +132,7 @@ export function AdimistratorHome() {
         laboratorio: event.NameManagement,
         start: `${event.DateDay}T${event.StartTime}`,
         end: `${event.DateDay}T${event.EndTime}`,
-        color: "#44a7ea",
+        color: event.NameArea === "Admin Sistema" ? "#2C3E50" : "#44a7ea",
         IdField1Entity: event.IdField1Entity,
       }));
       setEventsCancha1(initialEventsCancha1);
@@ -138,7 +140,7 @@ export function AdimistratorHome() {
       console.error("Error al obtener el horario de la Cancha 1:", error);
     }
   }
-
+  
   async function fetchEventsCancha2() {
     try {
       const horarioCancha2 = await obtenerHorarioCancha2();
@@ -148,7 +150,7 @@ export function AdimistratorHome() {
         laboratorio: event.NameManagement,
         start: `${event.DateDay}T${event.StartTime}`,
         end: `${event.DateDay}T${event.EndTime}`,
-        color: "#ef8392",
+        color: event.NameArea === "Admin Sistema" ? "#2C3E50" : "#ef8392",
         IdField2Entity: event.IdField2Entity,
       }));
       setEventsCancha2(initialEventsCancha2);
@@ -156,6 +158,7 @@ export function AdimistratorHome() {
       console.error("Error al obtener el horario de la Cancha 2:", error);
     }
   }
+  
 
   async function handleDelete(event: any) {
     const fieldId1 = event.extendedProps.IdField1Entity;
@@ -230,7 +233,7 @@ export function AdimistratorHome() {
         setAyuda(true);
       } else if (fieldId2) {
         const response = await obtenerHorarioCancha2PorId(fieldId2);
-        setEventDetails(response.data);
+        setEventDetails(response);
         setAyuda(true);
       }
     } catch (error: any) {
@@ -251,7 +254,11 @@ export function AdimistratorHome() {
             right: "8px",
           }}
         >
-          ❌
+          <i
+            className="bx bxs-trash"
+            title="Eliminar"
+            style={{ fontSize: "17px", color: "#FFF" }}
+          ></i>
         </span>
         <span
           className="view-icon"
@@ -260,10 +267,14 @@ export function AdimistratorHome() {
             cursor: "pointer",
             position: "absolute",
             top: "8px",
-            right: "24px",
+            right: "28px",
           }}
         >
-          👁️
+          <i
+            className="bx bx-show"
+            title="Ver"
+            style={{ fontSize: "17px", color: "#FFF" }}
+          ></i>
         </span>
         <div className="fc-event-title">{eventInfo.event.title}</div>
         <div className="fc-event-title">
@@ -315,11 +326,13 @@ export function AdimistratorHome() {
       <div className="page-content">
         <div className="card">
           <div className="card-body">
-            <h5 className="card-title">Horario Cancha 1 (Exclusivos)</h5>
+            <h5 className="card-title">OPERACIONES MINA (Cancha 1)</h5>
             <hr />
             {renderCalendar("06:00:00", "09:00:00", eventsCancha1)}
             {renderCalendar("18:00:00", "21:00:00", eventsCancha1)}
-            <h5 className="card-title mt-3">Horario Cancha 2 (Trabajadores)</h5>
+            <h5 className="card-title mt-3">
+              TRABAJADORES GERENCIAS (Cancha 2)
+            </h5>
             <hr />
             {renderCalendar("06:00:00", "09:00:00", eventsCancha2)}
             {renderCalendar("18:00:00", "21:00:00", eventsCancha2)}
@@ -333,7 +346,7 @@ export function AdimistratorHome() {
           tabIndex={-1}
           aria-labelledby="exampleModalLabel"
           aria-hidden="true"
-          style={{ display: "block" }}
+          style={{ display: "block", marginTop: "40px" }}
         >
           <div className="modal-dialog">
             <div className="modal-content">
@@ -417,7 +430,7 @@ export function AdimistratorHome() {
           tabIndex={-1}
           aria-labelledby="exampleModalLabel"
           aria-hidden="true"
-          style={{ display: "block" }}
+          style={{ display: "block", marginTop: "90px"}}
         >
           <div className="modal-dialog">
             <div className="modal-content">
@@ -438,14 +451,13 @@ export function AdimistratorHome() {
                   <div>
                     <p>
                       Usuario:{" "}
-                      {eventDetails.FirstName + "" + eventDetails.LastName}
+                      {eventDetails.FirstName + " " + eventDetails.LastName}
                     </p>
                     <p>Gerencia: {eventDetails.NameManagement}</p>
                     <p>Area: {eventDetails.NameArea}</p>
                     <p>Fecha: {eventDetails.DateDay}</p>
                     <p>Hora Inicio: {eventDetails.StartTime}</p>
                     <p>Hora Fin: {eventDetails.EndTime}</p>
-                    <p>Fecha: {eventDetails.DateDay}</p>
                     <p>Lista de jugadores: {eventDetails.ListPlayer}</p>
                   </div>
                 )}
@@ -463,6 +475,7 @@ export function AdimistratorHome() {
           </div>
         </div>
       )}
+      {ayuda && <div className="modal-backdrop fade show"></div>}
     </div>
   );
 }

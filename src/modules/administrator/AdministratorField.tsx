@@ -33,7 +33,7 @@ export function AdimistratorField() {
         laboratorio: event.NameManagement,
         start: `${event.DateDay}T${event.StartTime}`,
         end: `${event.DateDay}T${event.EndTime}`,
-        color: "#44a7ea",
+        color: event.NameArea === "Admin Sistema" ? "#2C3E50" : "#44a7ea",
       }));
       setEventsCancha1(initialEventsCancha1);
     } catch (error) {
@@ -50,7 +50,7 @@ export function AdimistratorField() {
         laboratorio: event.NameManagement,
         start: `${event.DateDay}T${event.StartTime}`,
         end: `${event.DateDay}T${event.EndTime}`,
-        color: "#fd3550",
+        color: event.NameArea === "Admin Sistema" ? "#2C3E50" : "#fd3550",
       }));
       setEventsCancha2(initialEventsCancha2);
     } catch (error) {

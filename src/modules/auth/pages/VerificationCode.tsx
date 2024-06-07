@@ -22,7 +22,6 @@ export default function VerificationCode() {
     ...formData,
   };
   delete usuarioParaEnviar.Gerencia;
-
   const handleVerify = async () => {
     try {
       const response = await verificarCodigo(email, code);

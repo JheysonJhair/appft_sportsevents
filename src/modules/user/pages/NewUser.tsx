@@ -52,10 +52,21 @@ export function NewUser() {
 
     if (name === "Rol") {
       setShowAdditionalFields(value === "1" || value === "2");
+      if (value === "1") {
+        setNuevoUsuario((prevUsuario) => ({
+          ...prevUsuario,
+          Shift: "SIN TURNO",
+        }));
+      }
     }
     setNuevoUsuario((prevUsuario) => ({
       ...prevUsuario,
-[name]: name === "Rol" ? Number(value) : value && name === "IdArea" ? Number(value) : value,
+      [name]:
+        name === "Rol"
+          ? Number(value)
+          : value && name === "IdArea"
+          ? Number(value)
+          : value,
     }));
 
     setErrorMessages((prevErrors) => ({
@@ -123,9 +134,9 @@ export function NewUser() {
       const usuarioParaEnviar: Partial<User> = {
         ...nuevoUsuario,
         Shift: nuevoUsuario.Shift || "SIN TURNO",
-        IdArea: nuevoUsuario.IdArea ? String(nuevoUsuario.IdArea) : "1",
+        IdArea: nuevoUsuario.IdArea ? Number(nuevoUsuario.IdArea) : 1,
       };
-
+      console.log(usuarioParaEnviar);
       delete usuarioParaEnviar.Gerencia;
 
       let response: { msg: string; success: boolean };
@@ -336,8 +347,8 @@ export function NewUser() {
                         id="input08"
                       >
                         <option>Seleccionar rol</option>
-                        <option value={1}>Operaciones mina</option>
-                        <option value={2}>Trabajador</option>
+                        <option value={1}>Operaciones Mina</option>
+                        <option value={2}>Trabajador gerencias</option>
                         <option value={3}>Administrador de cancha</option>
                         <option value={4}>Administrador</option>
                       </select>
@@ -373,7 +384,12 @@ export function NewUser() {
                             onChange={handleInputChange}
                           >
                             <option>Seleccionar Gerencia</option>
-                            {gerencias.map((gerencia) => (
+                            {gerencias
+                            .filter(
+                              (gerencia) =>
+                                gerencia.NameManagement !== "SISTEMA"
+                            )
+                            .map((gerencia) => (
                               <option
                                 key={gerencia.IdManagement}
                                 value={gerencia.IdManagement}
@@ -428,38 +444,40 @@ export function NewUser() {
                       </div>
                     </div>
 
-                    <div className="row mb-3">
-                      <label
-                        htmlFor="input09"
-                        className="col-sm-4 col-form-label"
-                      >
-                        Turno
-                      </label>
-                      <div className="col-sm-8">
-                        <div className="input-group">
-                          <span className="input-group-text">
-                            <i className="bx bx-log-in" />
-                          </span>
-                          <select
-                            className={`form-select ${
-                              errorMessages.Shift && "is-invalid"
-                            }`}
-                            name="Shift"
-                            onChange={handleInputChange}
-                            id="input09"
-                          >
-                            <option>Seleccionar turno</option>
-                            <option value="Mañana">Mañana</option>
-                            <option value="Noche">Noche</option>
-                          </select>
-                          {errorMessages.Shift && (
-                            <div className="invalid-feedback">
-                              {errorMessages.Shift}
-                            </div>
-                          )}
+                    {nuevoUsuario.Rol !== 1 && ( 
+                      <div className="row mb-3">
+                        <label
+                          htmlFor="input09"
+                          className="col-sm-4 col-form-label"
+                        >
+                          Turno
+                        </label>
+                        <div className="col-sm-8">
+                          <div className="input-group">
+                            <span className="input-group-text">
+                              <i className="bx bx-log-in" />
+                            </span>
+                            <select
+                              className={`form-select ${
+                                errorMessages.Shift && "is-invalid"
+                              }`}
+                              name="Shift"
+                              onChange={handleInputChange}
+                              id="input09"
+                            >
+                              <option>Seleccionar turno</option>
+                              <option value="Mañana">Mañana</option>
+                              <option value="Noche">Noche</option>
+                            </select>
+                            {errorMessages.Shift && (
+                              <div className="invalid-feedback">
+                                {errorMessages.Shift}
+                              </div>
+                            )}
+                          </div>
                         </div>
                       </div>
-                    </div>
+                    )}
                   </>
                 )}
                 <div className="row mt-4">

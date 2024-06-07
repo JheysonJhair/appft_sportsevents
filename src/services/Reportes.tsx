@@ -40,74 +40,118 @@ export async function crearReporte(
 }
 
 //================================================================ REPORTS GRAPHICS
-// export const fetchReservationsByDateRange = async (
-//   startDate: string,
-//   endDate: string
-// ): Promise<ReportDay[]> => {
-//   try {
-//     const requestBody = JSON.stringify({
-//       StartDate: startDate,
-//       EndDate: endDate,
-//     });
 
-//     const response = await fetch(`${API_URL}/field1/GetField1ByDateRange`, {
-//       method: "POST",
-//       headers: {
-//         "Content-Type": "application/json",
-//       },
-//       body: requestBody,
-//     });
+export async function fetchUserData(startDate: string, endDate: string) {
+  const requestBody = JSON.stringify({
+    StartDate: startDate,
+    EndDate: endDate,
+  });
 
-//     const responseData = await response.json();
+  const response = await fetch(`${API_URL}/user/GetUserByDateRange`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: requestBody,
+  });
 
-//     if (response.ok && responseData.success) {
-//       return responseData.data as ReportDay[];
-//     } else {
-//       throw new Error("Error fetching reservation reports data.");
-//     }
-//   } catch (error) {
-//     throw new Error("Error fetching reservation reports data: " + error);
-//   }
-// };
+  const responseData = await response.json();
 
-
-// types.ts
-export interface Reservation {
-  IdField1Entity: number;
-  StartTime: string;
-  EndTime: string;
-  DateDay: string;
-  DateRegister: string;
-  ListPlayer: string;
+  if (response.ok && responseData.success) {
+    return responseData.data;
+  } else {
+    throw new Error("Error fetching user data.");
+  }
 }
 
+export async function fetchReservationData(startDate: string, endDate: string) {
+  const requestBody = JSON.stringify({
+    StartDate: startDate,
+    EndDate: endDate,
+  });
 
-export const fetchReservationsByDateRange = async (
-  startDate: string,
-  endDate: string
-): Promise<Reservation[]> => {
-  try {
-    const requestBody = JSON.stringify({
-      StartDate: startDate,
-      EndDate: endDate,
-    });
+  const response = await fetch(`${API_URL}/field1/GetField1ByDateRange`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: requestBody,
+  });
 
-    const response = await fetch(`${API_URL}/field1/GetField1ByDateRange`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: requestBody,
-    });
+  const responseData = await response.json();
 
-    const responseData = await response.json();
-
-    if (response.ok && responseData.success) {
-      return responseData.data as Reservation[];
-    } else {
-      throw new Error("Error fetching reservation reports data.");
-    }
-  } catch (error) {
-    throw new Error("Error fetching reservation reports data: " + error);
+  if (response.ok && responseData.success) {
+    return responseData.data;
+  } else {
+    throw new Error("Error fetching reservation data.");
   }
-};
+}
+
+export async function fetchChannel2Data(startDate: string, endDate: string) {
+  const requestBody = JSON.stringify({
+    StartDate: startDate,
+    EndDate: endDate,
+  });
+
+  const response = await fetch(`${API_URL}/field2/GetField2ByDateRange`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: requestBody,
+  });
+
+  const responseData = await response.json();
+
+  if (response.ok && responseData.success) {
+    return responseData.data;
+  } else {
+    throw new Error("Error fetching channel2 data.");
+  }
+}
+
+export async function fetchAdministratorReports(startDate: string, endDate: string) {
+  const requestBody = JSON.stringify({
+    StartDate: startDate,
+    EndDate: endDate,
+  });
+
+  const response = await fetch(`${API_URL}/reportAdministratorByDateRange`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: requestBody,
+  });
+
+  const responseData = await response.json();
+
+  if (response.ok && responseData.success) {
+    return responseData.data;
+  } else {
+    throw new Error("Error fetching administrator reports data.");
+  }
+}
+
+export async function fetchAdministratorReservations(startDate: string, endDate: string) {
+  const requestBody = JSON.stringify({
+    StartDate: startDate,
+    EndDate: endDate,
+  });
+
+  const response = await fetch(`${API_URL}/reservas/reportAdministratorByDateRange`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: requestBody,
+  });
+
+  const responseData = await response.json();
+
+  if (response.ok && responseData.success) {
+    return responseData.data;
+  } else {
+    throw new Error("Error fetching administrator reservations data.");
+  }
+}
