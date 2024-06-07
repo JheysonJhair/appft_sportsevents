@@ -5,6 +5,9 @@ import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import esLocale from "@fullcalendar/core/locales/es";
 import Swal from "sweetalert2";
+
+import { useAuth } from "../../hooks/AuthContext";
+import { formatHour, formatDate, formatDate2 } from "../../utils/util";
 import { EventData } from "../../types/Eventos";
 import { Field } from "../../types/Field";
 import {
@@ -14,10 +17,10 @@ import {
   eliminarHorarioCancha2,
   crearHorarioCancha1,
   crearHorarioCancha2,
+  obtenerHorarioCancha1PorId,
+  obtenerHorarioCancha2PorId,
 } from "../../services/Horario";
 import { insertarNotificacion } from "../../services/Notification";
-import { useAuth } from "../../hooks/AuthContext";
-import { formatHour, formatDate, formatDate2 } from "../../utils/util";
 
 export function AdimistratorHome() {
   const { user } = useAuth();
@@ -26,17 +29,21 @@ export function AdimistratorHome() {
   const [selectedEvent, setSelectedEvent] = useState<EventData | null>(null);
   const [listPlayer, setListPlayer] = useState<string>("");
   const [selectedCancha, setSelectedCancha] = useState<string>("cancha1");
+  const [eventDetails, setEventDetails] = useState<any>(null);
+  const [ayuda, setAyuda] = useState<any>(false);
 
   const selectedDate = selectedEvent && new Date(selectedEvent.start).getDate();
-  const selectedMonth = selectedEvent && new Date(selectedEvent.start).getMonth() + 1;
-  const selectedYear = selectedEvent && new Date(selectedEvent.start).getFullYear();
+  const selectedMonth =
+    selectedEvent && new Date(selectedEvent.start).getMonth() + 1;
+  const selectedYear =
+    selectedEvent && new Date(selectedEvent.start).getFullYear();
   const formattedDate = `${selectedYear}-${selectedMonth}-${selectedDate}`;
 
   useEffect(() => {
     const interval = setInterval(() => {
       fetchEventsCancha1();
       fetchEventsCancha2();
-    }, 1000);
+    }, 10000);
     return () => clearInterval(interval);
   }, []);
 
@@ -48,6 +55,10 @@ export function AdimistratorHome() {
     setSelectedEvent(null);
     setListPlayer("");
     setSelectedCancha("cancha1");
+  }
+  function handleCloseModal2() {
+    setAyuda(false);
+    setEventDetails(null);
   }
 
   async function handleConfirmReservation() {
@@ -64,7 +75,9 @@ export function AdimistratorHome() {
       const selectedDate = new Date(selectedEvent.start);
       const startOfWeek = new Date(
         selectedDate.setDate(
-          selectedDate.getDate() - selectedDate.getDay() + (selectedDate.getDay() === 0 ? -6 : 1)
+          selectedDate.getDate() -
+            selectedDate.getDay() +
+            (selectedDate.getDay() === 0 ? -6 : 1)
         )
       );
       const endOfWeek = new Date(
@@ -162,19 +175,27 @@ export function AdimistratorHome() {
           if (fieldId1) {
             const response = await eliminarHorarioCancha1(fieldId1);
             if (response.success) {
-              setEventsCancha1(eventsCancha1.filter((e) => e.IdField1Entity !== fieldId1));
+              setEventsCancha1(
+                eventsCancha1.filter((e) => e.IdField1Entity !== fieldId1)
+              );
               Swal.fire({
                 title: "¡Eliminado!",
                 text: "Se ha eliminado correctamente!",
                 icon: "success",
               });
               const notificationMessage = `Se eliminó la reserva de GERENCIA`;
-              await insertarNotificacion(notificationMessage, user?.IdUser || 0, response.IdArea);
+              await insertarNotificacion(
+                notificationMessage,
+                user?.IdUser || 0,
+                response.IdArea
+              );
             }
           } else if (fieldId2) {
             const response = await eliminarHorarioCancha2(fieldId2);
             if (response.success) {
-              setEventsCancha2(eventsCancha2.filter((e) => e.IdField2Entity !== fieldId2));
+              setEventsCancha2(
+                eventsCancha2.filter((e) => e.IdField2Entity !== fieldId2)
+              );
               Swal.fire({
                 title: "¡Eliminado!",
                 text: "Se ha eliminado correctamente!",
@@ -182,7 +203,11 @@ export function AdimistratorHome() {
               });
             }
             const notificationMessage = `Se eliminó la reserva de GERENCIA`;
-            await insertarNotificacion(notificationMessage, user?.IdUser || 0, response.IdArea);
+            await insertarNotificacion(
+              notificationMessage,
+              user?.IdUser || 0,
+              response.IdArea
+            );
           }
         } catch (error: any) {
           Swal.fire({
@@ -193,6 +218,24 @@ export function AdimistratorHome() {
         }
       }
     });
+  }
+
+  async function handleViewDetails(event: any) {
+    const fieldId1 = event.extendedProps.IdField1Entity;
+    const fieldId2 = event.extendedProps.IdField2Entity;
+    try {
+      if (fieldId1) {
+        const response = await obtenerHorarioCancha1PorId(fieldId1);
+        setEventDetails(response);
+        setAyuda(true);
+      } else if (fieldId2) {
+        const response = await obtenerHorarioCancha2PorId(fieldId2);
+        setEventDetails(response.data);
+        setAyuda(true);
+      }
+    } catch (error: any) {
+      console.error(error);
+    }
   }
 
   function renderEventContent(eventInfo: any) {
@@ -210,13 +253,31 @@ export function AdimistratorHome() {
         >
           ❌
         </span>
+        <span
+          className="view-icon"
+          onClick={() => handleViewDetails(eventInfo.event)}
+          style={{
+            cursor: "pointer",
+            position: "absolute",
+            top: "8px",
+            right: "24px",
+          }}
+        >
+          👁️
+        </span>
         <div className="fc-event-title">{eventInfo.event.title}</div>
-        <div className="fc-event-title">{eventInfo.event.extendedProps.area}</div>
+        <div className="fc-event-title">
+          {eventInfo.event.extendedProps.area}
+        </div>
       </div>
     );
   }
 
-  function renderCalendar(slotMinTime: any, slotMaxTime: any, eventsData: EventData[]) {
+  function renderCalendar(
+    slotMinTime: any,
+    slotMaxTime: any,
+    eventsData: EventData[]
+  ) {
     return (
       <div className="table-responsive">
         <FullCalendar
@@ -349,6 +410,59 @@ export function AdimistratorHome() {
         </div>
       )}
       {selectedEvent && <div className="modal-backdrop fade show"></div>}
+      {ayuda && (
+        <div
+          className="modal fade show"
+          id="exampleModal"
+          tabIndex={-1}
+          aria-labelledby="exampleModalLabel"
+          aria-hidden="true"
+          style={{ display: "block" }}
+        >
+          <div className="modal-dialog">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5 className="modal-title" id="exampleModalLabel">
+                  Detalles del evento
+                </h5>
+                <button
+                  type="button"
+                  className="btn-close"
+                  onClick={handleCloseModal2}
+                  aria-label="Close"
+                ></button>
+              </div>
+
+              <div className="modal-body">
+                {eventDetails && (
+                  <div>
+                    <p>
+                      Usuario:{" "}
+                      {eventDetails.FirstName + "" + eventDetails.LastName}
+                    </p>
+                    <p>Gerencia: {eventDetails.NameManagement}</p>
+                    <p>Area: {eventDetails.NameArea}</p>
+                    <p>Fecha: {eventDetails.DateDay}</p>
+                    <p>Hora Inicio: {eventDetails.StartTime}</p>
+                    <p>Hora Fin: {eventDetails.EndTime}</p>
+                    <p>Fecha: {eventDetails.DateDay}</p>
+                    <p>Lista de jugadores: {eventDetails.ListPlayer}</p>
+                  </div>
+                )}
+              </div>
+              <div className="modal-footer">
+                <button
+                  type="button"
+                  className="btn btn-secondary"
+                  onClick={handleCloseModal2}
+                >
+                  Cerrar
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

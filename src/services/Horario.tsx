@@ -69,6 +69,33 @@ export async function eliminarHorarioCancha1(
   }
 }
 
+//---------------------------------------------------------------- GET FIELD 1 BY ID
+export async function obtenerHorarioCancha1PorId(
+  id: number
+): Promise<any> {
+  try {
+    const response = await fetch(`${API_URL}/field1/getById/${id}`);
+    if (!response.ok) {
+      throw new Error("Error al obtener los datos");
+    }
+
+    const responseData = await response.json();
+    if (responseData.success) {
+      return responseData.data;
+    } else {
+      throw new Error(responseData.msg);
+    }
+  } catch (error) {
+    console.error("Error:", error);
+    return null;
+  }
+}
+
+
+
+
+
+
 //---------------------------------------------------------------- GET FIELD 2
 export async function obtenerHorarioCancha2(): Promise<Field[]> {
   try {
@@ -127,5 +154,28 @@ export async function eliminarHorarioCancha2(
     return responseData;
   } catch (error) {
     throw new Error("Error al eliminar el horario de la cancha 2 " + error);
+  }
+}
+
+
+//---------------------------------------------------------------- GET FIELD 2 BY ID
+export async function obtenerHorarioCancha2PorId(
+  id: number
+): Promise<any> {
+  try {
+    const response = await fetch(`${API_URL}/field2/getById/${id}`);
+    if (!response.ok) {
+      throw new Error("Error al obtener los datos");
+    }
+
+    const responseData = await response.json();
+    if (responseData.success) {
+      return responseData.data;
+    } else {
+      throw new Error(responseData.msg);
+    }
+  } catch (error) {
+    console.error("Error:", error);
+    return null;
   }
 }
