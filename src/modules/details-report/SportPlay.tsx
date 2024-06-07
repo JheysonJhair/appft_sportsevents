@@ -14,6 +14,12 @@ import {
 export function SportPlay() {
   const [eventsCancha1, setEventsCancha1] = useState<EventData[]>([]);
   const [eventsCancha2, setEventsCancha2] = useState<EventData[]>([]);
+  const [currentEventsCancha1, setCurrentEventsCancha1] = useState<EventData[]>(
+    []
+  );
+  const [currentEventsCancha2, setCurrentEventsCancha2] = useState<EventData[]>(
+    []
+  );
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -24,13 +30,27 @@ export function SportPlay() {
     return () => clearInterval(interval);
   }, []);
 
+  useEffect(() => {
+    const now = new Date();
+    const currentEvents1 = eventsCancha1.filter(
+      (event) => new Date(event.start) <= now && new Date(event.end) >= now
+    );
+    const currentEvents2 = eventsCancha2.filter(
+      (event) => new Date(event.start) <= now && new Date(event.end) >= now
+    );
+    setCurrentEventsCancha1(currentEvents1);
+    setCurrentEventsCancha2(currentEvents2);
+  }, [eventsCancha1, eventsCancha2]);
+
   async function fetchEventsCancha1() {
     try {
       const horarioCancha1 = await obtenerHorarioCancha1();
       const initialEventsCancha1: EventData[] = horarioCancha1.map((event) => ({
+        IdField1Entity: event.IdField1Entity,
         title: event.FirstName,
         area: event.NameArea,
         laboratorio: event.NameManagement,
+        jugadores: event.ListPlayer,
         start: `${event.DateDay}T${event.StartTime}`,
         end: `${event.DateDay}T${event.EndTime}`,
         color: "#44a7ea",
@@ -45,9 +65,11 @@ export function SportPlay() {
     try {
       const horarioCancha2 = await obtenerHorarioCancha2();
       const initialEventsCancha2: EventData[] = horarioCancha2.map((event) => ({
+        IdField2Entity: event.IdField2Entity,
         title: event.FirstName,
         area: event.NameArea,
         laboratorio: event.NameManagement,
+        jugadores: event.ListPlayer,
         start: `${event.DateDay}T${event.StartTime}`,
         end: `${event.DateDay}T${event.EndTime}`,
         color: "#fd3550",
@@ -113,21 +135,83 @@ export function SportPlay() {
             <div className="calendar-column px-4">
               <h5 className="card-title">OPERACIONES MINA (Cancha 1)</h5>
               <hr />
-              <h5>Turno mañana</h5>
               {renderCalendar("06:00:00", "09:00:00", eventsCancha1)}
-              <h5 className="pt-4">Turno tarde</h5>
               {renderCalendar("18:00:00", "21:00:00", eventsCancha1)}
             </div>
             <div className="calendar-column px-4">
-              <h5 className="card-title">TRABAJADORES (Cancha 2)</h5>
+              <h5 className="card-title">TRABAJADORES GERENCIAS (Cancha 2)</h5>
               <hr />
-              <h5>Turno mañana</h5>
               {renderCalendar("06:00:00", "09:00:00", eventsCancha2)}
-              <h5 className="pt-4">Turno tarde</h5>
               {renderCalendar("18:00:00", "21:00:00", eventsCancha2)}
             </div>
           </div>
         </div>
+        {currentEventsCancha1.length > 0 && (
+          <div className="card mt-4">
+            <div className="card-body">
+              <h5 className="card-title">Horario acual (Cancha 1)</h5>
+              <div className="table-responsive">
+                <table className="table table-striped">
+                  <thead>
+                    <tr>
+                      <th scope="col">Título</th>
+                      <th scope="col">Área</th>
+                      <th scope="col">Laboratorio</th>
+                      <th scope="col">Inicio</th>
+                      <th scope="col">Fin</th>
+                      <th scope="col">Jugadores</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {currentEventsCancha1.map((event, index) => (
+                      <tr key={index}>
+                        <td>{event.title}</td>
+                        <td>{event.area}</td>
+                        <td>{event.laboratorio}</td>
+                        <td>{new Date(event.start).toLocaleString()}</td>
+                        <td>{new Date(event.end).toLocaleString()}</td>
+                        <td>{event.jugadores}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        )}
+        {currentEventsCancha2.length > 0 && (
+          <div className="card mt-4">
+            <div className="card-body">
+              <h5 className="card-title">Horario acual (Cancha 2)</h5>
+              <div className="table-responsive">
+                <table className="table table-striped">
+                  <thead>
+                    <tr>
+                      <th scope="col">Título</th>
+                      <th scope="col">Área</th>
+                      <th scope="col">Laboratorio</th>
+                      <th scope="col">Inicio</th>
+                      <th scope="col">Fin</th>
+                      <th scope="col">Jugadores</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {currentEventsCancha2.map((event, index) => (
+                      <tr key={index}>
+                        <td>{event.title}</td>
+                        <td>{event.area}</td>
+                        <td>{event.laboratorio}</td>
+                        <td>{new Date(event.start).toLocaleString()}</td>
+                        <td>{new Date(event.end).toLocaleString()}</td>
+                        <td>{event.jugadores}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

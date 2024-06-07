@@ -266,6 +266,25 @@ function AppLayout() {
               </a>
             </li>
           </ul>
+          <div className="alert-container">
+            <div className="alert border-0 alert-dismissible fade show py-2">
+              <div className="d-flex align-items-center">
+                <div className="ms-3">
+                  <h6 className="mb-0">Notificación</h6>
+                  <div>
+                    No se registró debido a que están planteando una actividad
+                    por el día de Abancay.
+                  </div>
+                </div>
+              </div>
+              <button
+                type="button"
+                className="btn-close"
+                data-bs-dismiss="alert"
+                aria-label="Close"
+              />
+            </div>
+          </div>
         </div>
         <header>
           <div className="topbar d-flex align-items-center">

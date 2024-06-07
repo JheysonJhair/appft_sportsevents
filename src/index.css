@@ -32,3 +32,15 @@
   width: auto;
   max-width: 900px;
 }
+.alert-container {
+  position: absolute;
+  bottom: 0;
+  width: 90%;
+  display: flex;
+  justify-content: center;
+  z-index: 1000; 
+}
+
+.alert-container .alert {
+  width: auto;
+}

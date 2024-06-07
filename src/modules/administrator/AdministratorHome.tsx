@@ -68,7 +68,7 @@ export function AdimistratorHome() {
       if (!selectedEvent || !listPlayer.trim()) {
         Swal.fire({
           title: "Error",
-          text: "Debe ingresar la lista de jugadores",
+          text: "Debe ingresar un mensaje",
           icon: "error",
           confirmButtonText: "Aceptar",
         });
@@ -93,11 +93,13 @@ export function AdimistratorHome() {
         DateDay: formatDate(formattedDate),
         StartWeekend: formatDate2(startOfWeek),
         EndWeekend: formatDate2(endOfWeek),
-        ListPlayer: listPlayer,
+        ListPlayer: "NINGUNO",
       };
       let response: { msg: string; success: boolean };
       if (selectedCancha === "cancha1") {
         response = await crearHorarioCancha1(horario);
+        console.log(response, listPlayer);
+
       } else {
         response = await crearHorarioCancha2(horario);
       }
@@ -130,6 +132,7 @@ export function AdimistratorHome() {
         title: event.FirstName,
         area: event.NameArea,
         laboratorio: event.NameManagement,
+        jugadores: event.ListPlayer,
         start: `${event.DateDay}T${event.StartTime}`,
         end: `${event.DateDay}T${event.EndTime}`,
         color: event.NameArea === "Admin Sistema" ? "#2C3E50" : "#44a7ea",
@@ -148,6 +151,7 @@ export function AdimistratorHome() {
         title: event.FirstName,
         area: event.NameArea,
         laboratorio: event.NameManagement,
+        jugadores: event.ListPlayer,
         start: `${event.DateDay}T${event.StartTime}`,
         end: `${event.DateDay}T${event.EndTime}`,
         color: event.NameArea === "Admin Sistema" ? "#2C3E50" : "#ef8392",
@@ -376,7 +380,7 @@ export function AdimistratorHome() {
                 </p>
                 <div className="mb-3">
                   <label htmlFor="listPlayer" className="form-label">
-                    Lista de Jugadores
+                    Ingrese un mensaje de notificación
                   </label>
                   <textarea
                     className="form-control"

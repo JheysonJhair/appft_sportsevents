@@ -49,6 +49,7 @@ export function HomePage() {
       const initialEvents: EventData[] = horario.map((event) => ({
         title: event.FirstName,
         area: event.NameArea,
+        jugadores: event.ListPlayer,
         laboratorio: event.NameManagement,
         start: `${event.DateDay}T${event.StartTime}`,
         end: `${event.DateDay}T${event.EndTime}`,

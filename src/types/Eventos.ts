@@ -2,6 +2,7 @@ export interface EventData {
   title: string;
   area: string;
   laboratorio: string;
+  jugadores: string;
   start: string;
   end: string;
   color: string;
