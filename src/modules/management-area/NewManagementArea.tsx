@@ -93,7 +93,6 @@ export function NewManagementArea() {
           confirmButtonText: "Aceptar",
         });
         setNuevoGerencia({});
-        navigate("/management-area/");
       } else {
         Swal.fire({
           title: "Error",

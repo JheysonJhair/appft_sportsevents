@@ -111,12 +111,12 @@ export default function Login() {
               </div>
 
               <div className="col-12 mb-4">
-                <select
-                  className="form-select w-100 p-3"
+                <p
                   style={{ backgroundColor: "#eff0f4", textAlign: "center" }}
+                  className=" w-100 p-3"
                 >
-                  <option value="">LAS BAMBAS</option>
-                </select>
+                  INICIAR SESIÓN
+                </p>
               </div>
 
               <div className="form-body">

@@ -163,7 +163,7 @@ function AppLayout() {
                     <div className="parent-icon">
                       <i className="bx bx-football" />
                     </div>
-                    <div className="menu-title">Deporte en juego</div>
+                    <div className="menu-title">Reserva del día</div>
                   </NavLink>
                 </li>
 
@@ -173,7 +173,7 @@ function AppLayout() {
                     <div className="parent-icon">
                       <i className="bx bx-info-circle" />
                     </div>
-                    <div className="menu-title">Reportar suceso</div>
+                    <div className="menu-title">Informe</div>
                   </NavLink>
                 </li>
               </>
@@ -428,19 +428,6 @@ function AppLayout() {
                   </div>
                 </a>
                 <ul className="dropdown-menu dropdown-menu-end">
-                  <li>
-                    <a
-                      className="dropdown-item d-flex align-items-center"
-                      href="/"
-                    >
-                      <i className="bx bx-cog fs-5" />
-                      <span>Configuracion</span>
-                    </a>
-                  </li>
-
-                  <li>
-                    <div className="dropdown-divider mb-0" />
-                  </li>
                   <li>
                     <a
                       className="dropdown-item d-flex align-items-center"

@@ -230,7 +230,7 @@ export function DayReport() {
                 </div>
                 <div className="col-12">
                   <label htmlFor="input02" className="form-label">
-                    Descripcion del evento
+                    Reporte de infracción
                   </label>
                   <textarea
                     className={`form-control ${

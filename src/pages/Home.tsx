@@ -71,7 +71,7 @@ export function HomePage() {
       </div>
     );
   }
-
+  console.log(user?.IdUser);
   function handleSelectEvent(event: any) {
     if (user?.Rol === 2) {
       const startTime = new Date(event.start).getTime();
@@ -134,6 +134,7 @@ export function HomePage() {
         ListPlayer: listPlayer,
       };
       let response: { msg: string; success: boolean };
+
       if (user?.Rol === 1) {
         response = await crearHorarioCancha1(horario);
         if (response.success) {

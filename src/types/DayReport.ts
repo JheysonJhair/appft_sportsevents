@@ -6,3 +6,4 @@ export interface ReportDay {
   Date: string;
   NamePlayer: string;
 }
+

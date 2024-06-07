@@ -1,78 +1,98 @@
+import React, { useState } from "react";
 import Chart from "react-apexcharts";
 import { ApexOptions } from "apexcharts";
+import { saveAs } from 'file-saver';
+
+const API_URL = "https://esappsoccer.ccontrolz.com/api";
+
+interface Reservation {
+  IdField1Entity: number;
+  DateDay: string;
+  IdUser: number;
+  FirstName: string;
+  LastName: string;
+  Password: string;
+  Dni: string;
+  EmployeeCode: string;
+  Shift: string;
+  PhoneNumber: string;
+  Mail: string;
+  Rol: number;
+  Date: string;
+  IndActive: boolean;
+}
 
 export function Reportes() {
-  const dataBarra = {
-    series: [
-      {
-        data: [30, 40, 35, 50, 49, 60, 70, 91, 125],
-      },
-    ],
-    options: {
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
+  const [reservationData, setReservationData] = useState<Reservation[]>([]);
+
+  const fetchData = async () => {
+    try {
+      const requestBody = JSON.stringify({
+        StartDate: startDate,
+        EndDate: endDate,
+      });
+
+      const response = await fetch(`${API_URL}/user/GetUserByDateRange`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: requestBody,
+      });
+
+      const responseData = await response.json();
+
+      if (response.ok && responseData.success) {
+        setReservationData(responseData.data);
+      } else {
+        throw new Error("Error fetching reservation reports data.");
+      }
+    } catch (error) {
+      console.error("Error fetching reservation reports data: ", error);
+    }
+  };
+
+  const handleStartDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setStartDate(e.target.value);
+  };
+
+  const handleEndDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setEndDate(e.target.value);
+  };
+
+  const renderCharts = () => {
+    if (reservationData.length === 0) {
+      return <div>No hay datos disponibles</div>;
+    }
+
+    const categories = reservationData.map((reservation) => reservation.DateDay);
+    const data = reservationData.map((reservation) => reservation.IdField1Entity);
+
+    const options: ApexOptions = {
       chart: {
         type: "bar",
       },
       xaxis: {
-        categories: [
-          "Enero",
-          "Febrero",
-          "Marzo",
-          "Abril",
-          "Mayo",
-          "Junio",
-          "Julio",
-          "Agosto",
-          "Septiembre",
-        ],
+        categories: categories,
       },
-    } as ApexOptions,
+    };
+
+    return (
+      <Chart
+        options={options}
+        series={[{ data: data }]}
+        type="bar"
+        height={350}
+      />
+    );
   };
 
-  const dataCircular = {
-    series: [44, 55, 41, 17, 15],
-    options: {
-      chart: {
-        type: "donut",
-      },
-      labels: ["Equipo A", "Equipo B", "Equipo C", "Equipo D", "Equipo E"],
-    } as ApexOptions,
-  };
-  const dataMultiLinea = {
-    series: [
-      {
-        name: "Serie 1",
-        data: [30, 40, 35, 50, 49, 60, 70, 91, 125],
-      },
-      {
-        name: "Serie 2",
-        data: [42, 53, 28, 60, 72, 89, 95, 112, 135],
-      },
-      {
-        name: "Serie 3",
-        data: [20, 38, 45, 56, 61, 73, 82, 94, 105],
-      },
-    ],
-    options: {
-      chart: {
-        type: "line",
-      },
-      xaxis: {
-        categories: [
-          "Enero",
-          "Febrero",
-          "Marzo",
-          "Abril",
-          "Mayo",
-          "Junio",
-          "Julio",
-          "Agosto",
-          "Septiembre",
-        ],
-      },
-      legend: {
-        position: "top",
-      },
-    } as ApexOptions,
+  const handleDownloadExcel = () => {
+    const csvData = reservationData.map(reservation => Object.values(reservation).join(',')).join('\n');
+    const blob = new Blob([csvData], { type: 'text/csv;charset=utf-8' });
+    saveAs(blob, 'reservas.csv');
   };
 
   return (
@@ -97,46 +117,66 @@ export function Reportes() {
         </div>
         <div className="row">
           <div className="col-xl-12 mx-auto">
-            <h6 className="mb-0 text-uppercase">Column Chart</h6>
-            <hr />{" "}
-            <div className="card py-3">
-              <div className="card-body" style={{ paddingBottom: "25px" }}>
-                <Chart
-                  options={dataBarra.options}
-                  series={dataBarra.series}
-                  type="bar"
-                  height={350}
-                />{" "}
+            <div className="row mb-3">
+              <div className="col-md-3">
+                <input
+                  type="date"
+                  value={startDate}
+                  onChange={handleStartDateChange}
+                  className="form-control"
+                />
+              </div>
+              <div className="col-md-3">
+                <input
+                  type="date"
+                  value={endDate}
+                  onChange={handleEndDateChange}
+                  className="form-control"
+                />
+              </div>
+              <div className="col-md-3">
+                <button onClick={fetchData} className="btn btn-primary">Filtrar</button>
+              </div>
+              <div className="col-md-3">
+                <button onClick={handleDownloadExcel} className="btn btn-success">Descargar Excel</button>
               </div>
             </div>
-            <div className="row">
-              <div className="col-md-7">
-                <h6 className="mb-0 text-uppercase">Multi-Line Chart</h6>
-                <hr />{" "}
-                <div className="card py-3">
-                  <div className="card-body" style={{ paddingBottom: "25px" }}>
-                    <Chart
-                      options={dataMultiLinea.options}
-                      series={dataMultiLinea.series}
-                      type="line"
-                      height={350}
-                    />{" "}
-                  </div>
-                </div>
+            <div className="card py-3">
+              <div className="card-body" style={{ paddingBottom: "25px" }}>
+                {renderCharts()}
               </div>
-              <div className="col-md-5 ">
-                <h6 className="mb-0 text-uppercase">Pie Chart</h6>
-                <hr />
-                <div className="card py-3">
-                  <div className="card-body" style={{ paddingTop: "40px" ,paddingBottom: "40px" }}>
-                    <Chart
-                      options={dataCircular.options}
-                      series={dataCircular.series}
-                      type="donut"
-                      height={350}
-                    />
-                  </div>
-                </div>
+            </div>
+            <div className="card mt-3">
+              <div className="card-body">
+                <h5 className="card-title">Datos de reservas</h5>
+                <table className="table">
+                  <thead>
+                    <tr>
+                      <th>Nombre</th>
+                      <th>Apellido</th>
+                      <th>DNI</th>
+                      <th>Número de Teléfono</th>
+                      <th>Correo Electrónico</th>
+                      <th>Gerencia</th>
+                      <th>Area</th>
+                      <th>Turno</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {reservationData.map((reservation, index) => (
+                      <tr key={index}>
+                        <td>{reservation.FirstName}</td>
+                        <td>{reservation.LastName}</td>
+                        <td>{reservation.Dni}</td>
+                        <td>{reservation.PhoneNumber}</td>
+                        <td>{reservation.Mail}</td>
+                        <td>{reservation.Rol}</td>
+                        <td>{reservation.Rol}</td>
+                        <td>{reservation.Shift}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
               </div>
             </div>
           </div>

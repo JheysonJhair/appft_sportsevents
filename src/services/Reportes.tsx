@@ -40,10 +40,52 @@ export async function crearReporte(
 }
 
 //================================================================ REPORTS GRAPHICS
+// export const fetchReservationsByDateRange = async (
+//   startDate: string,
+//   endDate: string
+// ): Promise<ReportDay[]> => {
+//   try {
+//     const requestBody = JSON.stringify({
+//       StartDate: startDate,
+//       EndDate: endDate,
+//     });
+
+//     const response = await fetch(`${API_URL}/field1/GetField1ByDateRange`, {
+//       method: "POST",
+//       headers: {
+//         "Content-Type": "application/json",
+//       },
+//       body: requestBody,
+//     });
+
+//     const responseData = await response.json();
+
+//     if (response.ok && responseData.success) {
+//       return responseData.data as ReportDay[];
+//     } else {
+//       throw new Error("Error fetching reservation reports data.");
+//     }
+//   } catch (error) {
+//     throw new Error("Error fetching reservation reports data: " + error);
+//   }
+// };
+
+
+// types.ts
+export interface Reservation {
+  IdField1Entity: number;
+  StartTime: string;
+  EndTime: string;
+  DateDay: string;
+  DateRegister: string;
+  ListPlayer: string;
+}
+
+
 export const fetchReservationsByDateRange = async (
   startDate: string,
   endDate: string
-): Promise<ReportDay[]> => {
+): Promise<Reservation[]> => {
   try {
     const requestBody = JSON.stringify({
       StartDate: startDate,
@@ -61,7 +103,7 @@ export const fetchReservationsByDateRange = async (
     const responseData = await response.json();
 
     if (response.ok && responseData.success) {
-      return responseData.data as ReportDay[];
+      return responseData.data as Reservation[];
     } else {
       throw new Error("Error fetching reservation reports data.");
     }
