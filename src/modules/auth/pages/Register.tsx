@@ -20,7 +20,7 @@ export function Register(): JSX.Element {
     FirstName: "",
     LastName: "",
     Dni: "",
-    IdArea: "",
+    IdArea: 0,
     Shift: "",
     PhoneNumber: "",
     Mail: "",
@@ -30,6 +30,8 @@ export function Register(): JSX.Element {
   const [errorMessages, setErrorMessages] = useState<ErrorMessages>({});
   const [gerencias, setGerencias] = useState<Management[]>([]);
   const [areas, setAreas] = useState<any[]>([]);
+
+  const OPERACIONES_MINA_AREA_ID = 3;
 
   useEffect(() => {
     const getGerencias = async () => {
@@ -49,10 +51,24 @@ export function Register(): JSX.Element {
   ) => {
     const { name, value } = e.target;
 
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]: name === "Rol" ? Number(value) : value,
-    }));
+    if (name === "Rol" && value === "1") {
+      setFormData((prevData) => ({
+        ...prevData,
+        IdArea: OPERACIONES_MINA_AREA_ID,
+        Shift: "SIN TURNO",
+        [name]: Number(value),
+      }));
+    } else {
+      setFormData((prevData) => ({
+        ...prevData,
+        [name]:
+          name === "Rol"
+            ? Number(value)
+            : value && name === "IdArea"
+            ? Number(value)
+            : value,
+      }));
+    }
 
     setErrorMessages((prevErrors) => ({
       ...prevErrors,
@@ -170,7 +186,7 @@ export function Register(): JSX.Element {
                           Dni
                         </label>
                         <input
-                          type="text"
+                          type="number"
                           className={`form-control ${
                             errorMessages.Dni && "is-invalid"
                           }`}
@@ -185,29 +201,6 @@ export function Register(): JSX.Element {
                         {errorMessages.Dni && (
                           <div className="invalid-feedback">
                             {errorMessages.Dni}
-                          </div>
-                        )}
-                      </div>
-                      <div className="col-md-4  ">
-                        <label htmlFor="inputTurno" className="form-label">
-                          Turno
-                        </label>
-                        <select
-                          className={`form-select ${
-                            errorMessages.Shift && "is-invalid"
-                          }`}
-                          id="inputTurno"
-                          name="Shift"
-                          aria-label="Default select example"
-                          onChange={handleInputChange}
-                        >
-                          <option>Seleccionar turno</option>
-                          <option value="Mañana">Mañana</option>
-                          <option value="Noche">Noche</option>
-                        </select>
-                        {errorMessages.Shift && (
-                          <div className="invalid-feedback">
-                            {errorMessages.Shift}
                           </div>
                         )}
                       </div>
@@ -234,6 +227,31 @@ export function Register(): JSX.Element {
                           </div>
                         )}
                       </div>
+                      {formData.Rol == 2 && (
+                        <div className="col-md-4">
+                          <label htmlFor="inputTurno" className="form-label">
+                            Turno
+                          </label>
+                          <select
+                            className={`form-select ${
+                              errorMessages.Shift && "is-invalid"
+                            }`}
+                            id="inputTurno"
+                            name="Shift"
+                            aria-label="Default select example"
+                            onChange={handleInputChange}
+                          >
+                            <option>Seleccionar turno</option>
+                            <option value="Mañana">Mañana</option>
+                            <option value="Noche">Noche</option>
+                          </select>
+                          {errorMessages.Shift && (
+                            <div className="invalid-feedback">
+                              {errorMessages.Shift}
+                            </div>
+                          )}
+                        </div>
+                      )}
                       <div className="col-12">
                         <label htmlFor="inputNombres" className="form-label">
                           Nombres
@@ -299,7 +317,7 @@ export function Register(): JSX.Element {
                           Teléfono
                         </label>
                         <input
-                          type="text"
+                          type="number"
                           className={`form-control ${
                             errorMessages.PhoneNumber && "is-invalid"
                           }`}
@@ -317,62 +335,68 @@ export function Register(): JSX.Element {
                           </div>
                         )}
                       </div>
-                      <div className="col-md-6">
-                        <label htmlFor="inputGerencia" className="form-label">
-                          Gerencia
-                        </label>
-                        <select
-                          className={`form-select ${
-                            errorMessages.IdArea && "is-invalid"
-                          }`}
-                          id="inputGerencia"
-                          name="Gerencia"
-                          aria-label="Default select example"
-                          onChange={handleInputChange}
-                        >
-                          <option>Seleccionar Gerencia</option>
-                          {gerencias.map((gerencia) => (
-                            <option
-                              key={gerencia.IdManagement}
-                              value={gerencia.IdManagement}
+                      {formData.Rol == 2 && (
+                        <>
+                          <div className="col-md-6">
+                            <label
+                              htmlFor="inputGerencia"
+                              className="form-label"
                             >
-                              {gerencia.NameManagement}
-                            </option>
-                          ))}
-                        </select>
-                        {errorMessages.IdArea && (
-                          <div className="invalid-feedback">
-                            {errorMessages.IdArea}
+                              Gerencia
+                            </label>
+                            <select
+                              className={`form-select ${
+                                errorMessages.IdArea && "is-invalid"
+                              }`}
+                              id="inputGerencia"
+                              name="Gerencia"
+                              aria-label="Default select example"
+                              onChange={handleInputChange}
+                            >
+                              <option>Seleccionar Gerencia</option>
+                              {gerencias.map((gerencia) => (
+                                <option
+                                  key={gerencia.IdManagement}
+                                  value={gerencia.IdManagement}
+                                >
+                                  {gerencia.NameManagement}
+                                </option>
+                              ))}
+                            </select>
+                            {errorMessages.IdArea && (
+                              <div className="invalid-feedback">
+                                {errorMessages.IdArea}
+                              </div>
+                            )}
                           </div>
-                        )}
-                      </div>
-                      <div className="col-md-6">
-                        <label htmlFor="inputArea" className="form-label">
-                          Área
-                        </label>
-                        <select
-                          className={`form-select ${
-                            errorMessages.IdArea && "is-invalid"
-                          }`}
-                          id="inputArea"
-                          name="IdArea"
-                          aria-label="Default select example"
-                          onChange={handleInputChange}
-                        >
-                          <option>Seleccionar área</option>
-                          {areas.map((area) => (
-                            <option key={area.id} value={area.IdArea}>
-                              {area.NameArea}
-                            </option>
-                          ))}
-                        </select>
-                        {errorMessages.IdArea && (
-                          <div className="invalid-feedback">
-                            {errorMessages.IdArea}
+                          <div className="col-md-6">
+                            <label htmlFor="inputArea" className="form-label">
+                              Área
+                            </label>
+                            <select
+                              className={`form-select ${
+                                errorMessages.IdArea && "is-invalid"
+                              }`}
+                              id="inputArea"
+                              name="IdArea"
+                              aria-label="Default select example"
+                              onChange={handleInputChange}
+                            >
+                              <option>Seleccionar área</option>
+                              {areas.map((area) => (
+                                <option key={area.id} value={area.IdArea}>
+                                  {area.NameArea}
+                                </option>
+                              ))}
+                            </select>
+                            {errorMessages.IdArea && (
+                              <div className="invalid-feedback">
+                                {errorMessages.IdArea}
+                              </div>
+                            )}
                           </div>
-                        )}
-                      </div>
-
+                        </>
+                      )}
                       <div className="col-12">
                         <div className="d-grid">
                           <button type="submit" className="btn btn-danger">

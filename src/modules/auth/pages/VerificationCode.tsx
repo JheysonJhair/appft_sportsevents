@@ -1,8 +1,9 @@
 import React, { useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, NavLink } from "react-router-dom";
 import Swal from "sweetalert2";
 import { verificarCodigo } from "../../../services/Usuario";
 import { crearUsuario } from "../../../services/Usuario";
+import { User } from "../../../types/User";
 
 export default function VerificationCode() {
   const navigate = useNavigate();
@@ -11,18 +12,22 @@ export default function VerificationCode() {
     email: string;
     formData: any;
   };
-
   const [code, setCode] = useState("");
 
   const handleCodeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setCode(e.target.value);
   };
 
+  const usuarioParaEnviar: Partial<User> = {
+    ...formData,
+  };
+  delete usuarioParaEnviar.Gerencia;
+
   const handleVerify = async () => {
     try {
       const response = await verificarCodigo(email, code);
       if (response.value) {
-        const userResponse = await crearUsuario(formData);
+        const userResponse = await crearUsuario(usuarioParaEnviar);
         if (userResponse.success) {
           Swal.fire({
             title: "<strong>Información de inicio de sesión</strong>",
@@ -39,7 +44,7 @@ export default function VerificationCode() {
             confirmButtonText: `
               <i class="fa fa-thumbs-up"></i> ¡Entendido!
             `,
-            confirmButtonAriaLabel: "Thumbs up, great!"
+            confirmButtonAriaLabel: "Thumbs up, great!",
           });
 
           navigate("/login");
@@ -101,13 +106,10 @@ export default function VerificationCode() {
                       >
                         Verificar
                       </button>
-                      <a
-                        href="authentication-signin.html"
-                        className="btn btn-light"
-                      >
+                      <NavLink to="/register" className="btn btn-light">
                         <i className="bx bx-arrow-back me-1" />
                         Volver atrás
-                      </a>
+                      </NavLink>
                     </div>
                   </div>
                 </div>

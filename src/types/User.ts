@@ -5,7 +5,7 @@ export interface User {
   Password?: string;
   Dni: string;
   EmployeeCode?: string;
-  IdArea?: string;
+  IdArea?: number | string;
   Gerencia?: string;
   Shift: string;
   PhoneNumber: string;
@@ -25,7 +25,7 @@ export interface ErrorMessages {
   Dni?: string;
   EmployeeCode?: string;
   Gerencia?: string;
-  IdArea?: string;
+  IdArea?: number | string;
   Shift?: string;
   PhoneNumber?: string;
   Mail?: string;
