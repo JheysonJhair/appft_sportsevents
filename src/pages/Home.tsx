@@ -45,7 +45,6 @@ export function HomePage() {
       } else {
         throw new Error("Rol de usuario no válido");
       }
-      console.log(horario);
       const initialEvents: EventData[] = horario.map((event) => ({
         title: event.FirstName,
         area: event.NameArea,
@@ -133,8 +132,6 @@ export function HomePage() {
         EndWeekend: formatDate2(endOfWeek),
         ListPlayer: listPlayer,
       };
-      console.log(horario);
-      console.log(horario.StartWeekend, horario.EndWeekend);
       let response: { msg: string; success: boolean };
       if (user?.Rol === 1) {
         response = await crearHorarioCancha1(horario);
@@ -171,7 +168,7 @@ export function HomePage() {
           confirmButtonText: "Aceptar",
         });
       }
-      setShowAlert(true); // Show alert after successful registration
+      setShowAlert(true); 
     } catch (error) {
       console.error("Error al confirmar reserva:", error);
     } finally {

@@ -44,8 +44,6 @@ export function AdimistratorField() {
   async function fetchEventsCancha2() {
     try {
       const horarioCancha2 = await obtenerHorarioCancha2();
-      console.log("hola");
-      console.log(horarioCancha2);
       const initialEventsCancha2: EventData[] = horarioCancha2.map((event) => ({
         title: event.FirstName,
         area: event.NameArea,

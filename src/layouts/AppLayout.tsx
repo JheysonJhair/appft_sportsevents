@@ -6,7 +6,7 @@ import { getWeather } from "../services/weather";
 import { User } from "../types/User";
 import { Notification } from "../types/Notification";
 import { Weather } from "../types/Weather";
-import { fetchNotifications } from "../services/Notification";
+import { traerNotificacionesArea } from "../services/Notification";
 
 function AppLayout() {
   const [notificationCount, setNotificationCount] = useState<number>(0);
@@ -62,15 +62,14 @@ function AppLayout() {
   useEffect(() => {
     const fetchAndSetNotifications = async () => {
       if (user) {
-        const notificationsData = await fetchNotifications(user);
-        console.log(`Number of notifications: ${notificationsData.length}`);
+        const notificationsData = await traerNotificacionesArea(user);
         setNotifications(notificationsData);
         setNotificationCount(notificationsData.length);
       }
     };
 
     fetchAndSetNotifications();
-    const intervalId = setInterval(fetchAndSetNotifications, 1000);
+    const intervalId = setInterval(fetchAndSetNotifications, 60000);
 
     return () => clearInterval(intervalId);
   }, [user]);
@@ -372,7 +371,6 @@ function AppLayout() {
                         {notifications.map((notification) => (
                           <a
                             key={notification.IdNotification}
-                            href="javascript:;"
                             className="dropdown-item"
                           >
                             <div className="d-flex align-items-center">

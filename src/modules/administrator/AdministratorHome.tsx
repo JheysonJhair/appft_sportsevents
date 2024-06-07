@@ -196,6 +196,12 @@ export function AdimistratorHome() {
                 text: "Se ha eliminado correctamente!",
                 icon: "success",
               });
+              const notificationMessage = `Se eliminó la reserva de GERENCIA`;
+              await insertarNotificacion(
+                notificationMessage,
+                user?.IdUser || 0,
+                response.IdArea
+              );
             }
           } else if (fieldId2) {
             const response = await eliminarHorarioCancha2(fieldId2);
@@ -209,10 +215,13 @@ export function AdimistratorHome() {
                 icon: "success",
               });
             }
+            const notificationMessage = `Se eliminó la reserva de GERENCIA`;
+            await insertarNotificacion(
+              notificationMessage,
+              user?.IdUser || 0,
+              response.IdArea
+            );
           }
-
-          const notificationMessage = `Se eliminó la reserva del area de GERENCIA`;
-          await insertarNotificacion(notificationMessage, user?.IdUser || 0, 1);
         } catch (error: any) {
           Swal.fire({
             title: "Error!",

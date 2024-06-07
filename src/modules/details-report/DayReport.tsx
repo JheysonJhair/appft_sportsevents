@@ -101,7 +101,7 @@ export function DayReport() {
           icon: "success",
           confirmButtonText: "Aceptar",
         });
-        navigate("/reports/");
+        navigate("/administrator-field/");
       } else {
         Swal.fire({
           title: "Error",
