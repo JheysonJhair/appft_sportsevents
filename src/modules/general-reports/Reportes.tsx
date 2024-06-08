@@ -44,11 +44,11 @@ export function Reportes() {
       const reservationData2 = await fetchChannel2Data(startDate, endDate);
       setReservationData2(reservationData2);
 
-      // const administratorReportsData = await fetchAdministratorReports(
-      //   startDate,
-      //   endDate
-      // );
-      // setAdministratorReports(administratorReportsData);
+       const administratorReportsData = await fetchAdministratorReports(
+         startDate,
+         endDate
+       );
+       setAdministratorReports(administratorReportsData);
 
       const administratorReservationsData =
         await fetchAdministratorReservations(startDate, endDate);
