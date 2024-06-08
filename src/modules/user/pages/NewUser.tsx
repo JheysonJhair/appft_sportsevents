@@ -52,13 +52,32 @@ export function NewUser() {
 
     if (name === "Rol") {
       setShowAdditionalFields(value === "1" || value === "2");
+
       if (value === "1") {
+        const operacionMinaId =
+          gerencias.find((g) => g.NameManagement === "OPERACIONES MINA")
+            ?.IdManagement || 0;
+
         setNuevoUsuario((prevUsuario) => ({
           ...prevUsuario,
+          Gerencia: operacionMinaId,
           Shift: "SIN TURNO",
+        }));
+
+        try {
+          const areasData = await fetchAreasByManagementId(operacionMinaId);
+          setAreas(areasData.data);
+        } catch (error) {
+          console.error(error);
+        }
+      } else {
+        setNuevoUsuario((prevUsuario) => ({
+          ...prevUsuario,
+          Gerencia: undefined,
         }));
       }
     }
+
     setNuevoUsuario((prevUsuario) => ({
       ...prevUsuario,
       [name]:
@@ -73,6 +92,7 @@ export function NewUser() {
       ...prevErrors,
       [name]: validateField(name, value),
     }));
+
     if (name === "Gerencia") {
       try {
         const areasData = await fetchAreasByManagementId(value);
@@ -372,35 +392,47 @@ export function NewUser() {
                       <div className="col-sm-8">
                         <div className="input-group">
                           <span className="input-group-text">
-                            <i className="bx bx-user-circle" />
+                            <i className="bx bx-building" />
                           </span>
                           <select
                             className={`form-select ${
-                              errorMessages.IdArea && "is-invalid"
+                              errorMessages.Rol === "1" ? "is-invalid" : ""
                             }`}
                             id="input07"
                             name="Gerencia"
-                            aria-label="Default select example"
                             onChange={handleInputChange}
+                            value={nuevoUsuario.Gerencia || ""}
+                            disabled={nuevoUsuario.Rol === 1}
                           >
-                            <option>Seleccionar Gerencia</option>
+                            <option value="">Seleccionar gerencia</option>
                             {gerencias
-                            .filter(
-                              (gerencia) =>
-                                gerencia.NameManagement !== "SISTEMA"
-                            )
-                            .map((gerencia) => (
-                              <option
-                                key={gerencia.IdManagement}
-                                value={gerencia.IdManagement}
-                              >
-                                {gerencia.NameManagement}
-                              </option>
-                            ))}
+                              .filter((gerencia) => {
+                                if (nuevoUsuario.Rol === 2) {
+                                  return (
+                                    gerencia.NameManagement !==
+                                      "OPERACIONES MINA" &&
+                                    gerencia.NameManagement !== "SISTEMA"
+                                  );
+                                }
+                                return true;
+                              })
+                              .map((gerencia) => (
+                                <option
+                                  key={gerencia.IdManagement}
+                                  value={gerencia.IdManagement}
+                                  disabled={
+                                    nuevoUsuario.Rol !== 1 &&
+                                    gerencia.NameManagement ===
+                                      "OPERACIONES MINA"
+                                  }
+                                >
+                                  {gerencia.NameManagement}
+                                </option>
+                              ))}
                           </select>
-                          {errorMessages.IdArea && (
+                          {errorMessages.Rol === "1" && (
                             <div className="invalid-feedback">
-                              {errorMessages.IdArea}
+                              {errorMessages.Rol}
                             </div>
                           )}
                         </div>
@@ -444,7 +476,7 @@ export function NewUser() {
                       </div>
                     </div>
 
-                    {nuevoUsuario.Rol !== 1 && ( 
+                    {nuevoUsuario.Rol !== 1 && (
                       <div className="row mb-3">
                         <label
                           htmlFor="input09"
@@ -480,6 +512,7 @@ export function NewUser() {
                     )}
                   </>
                 )}
+
                 <div className="row mt-4">
                   <div className="col"></div>
                   <div className="col-auto ml-auto">

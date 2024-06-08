@@ -5,7 +5,8 @@ export interface Field {
   LastName: string;
   NameArea: string;
   NameManagement: string;
-
+  areaIdArea:number;
+  
   IdUser?: number;
   StartTime: string;
   EndTime: string;

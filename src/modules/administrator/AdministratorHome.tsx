@@ -99,7 +99,6 @@ export function AdimistratorHome() {
       if (selectedCancha === "cancha1") {
         response = await crearHorarioCancha1(horario);
         console.log(response, listPlayer);
-
       } else {
         response = await crearHorarioCancha2(horario);
       }
@@ -135,7 +134,7 @@ export function AdimistratorHome() {
         jugadores: event.ListPlayer,
         start: `${event.DateDay}T${event.StartTime}`,
         end: `${event.DateDay}T${event.EndTime}`,
-        color: event.NameArea === "Admin Sistema" ? "#2C3E50" : "#44a7ea",
+        color: event.areaIdArea === 1 ? "#2C3E50" : "#44a7ea",
         IdField1Entity: event.IdField1Entity,
       }));
       setEventsCancha1(initialEventsCancha1);
@@ -143,7 +142,7 @@ export function AdimistratorHome() {
       console.error("Error al obtener el horario de la Cancha 1:", error);
     }
   }
-  
+
   async function fetchEventsCancha2() {
     try {
       const horarioCancha2 = await obtenerHorarioCancha2();
@@ -154,7 +153,7 @@ export function AdimistratorHome() {
         jugadores: event.ListPlayer,
         start: `${event.DateDay}T${event.StartTime}`,
         end: `${event.DateDay}T${event.EndTime}`,
-        color: event.NameArea === "Admin Sistema" ? "#2C3E50" : "#ef8392",
+        color: event.areaIdArea === 1 ? "#2C3E50" : "#ef8392",
         IdField2Entity: event.IdField2Entity,
       }));
       setEventsCancha2(initialEventsCancha2);
@@ -162,7 +161,6 @@ export function AdimistratorHome() {
       console.error("Error al obtener el horario de la Cancha 2:", error);
     }
   }
-  
 
   async function handleDelete(event: any) {
     const fieldId1 = event.extendedProps.IdField1Entity;
@@ -254,7 +252,7 @@ export function AdimistratorHome() {
           style={{
             cursor: "pointer",
             position: "absolute",
-            top: "8px",
+            top: "0px",
             right: "8px",
           }}
         >
@@ -270,7 +268,7 @@ export function AdimistratorHome() {
           style={{
             cursor: "pointer",
             position: "absolute",
-            top: "8px",
+            top: "0px",
             right: "28px",
           }}
         >
@@ -434,7 +432,7 @@ export function AdimistratorHome() {
           tabIndex={-1}
           aria-labelledby="exampleModalLabel"
           aria-hidden="true"
-          style={{ display: "block", marginTop: "90px"}}
+          style={{ display: "block", marginTop: "90px" }}
         >
           <div className="modal-dialog">
             <div className="modal-content">

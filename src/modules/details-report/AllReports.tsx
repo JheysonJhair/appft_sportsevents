@@ -60,13 +60,7 @@ export function AllReport() {
                 <tbody>
                   {reports.map((report, index) => (
                     <tr key={index}>
-                      <td>
-                        {report.IdUser === 1
-                          ? "OPERACIONES MINA"
-                          : report.IdUser === 2
-                          ? "TRABAJADOR GERENCIA"
-                          : report.IdUser}
-                      </td>
+                      <td>ADMIN. CANCHA</td>
                       <td>{report.Date}</td>
                       <td>{report.NamePlayer}</td>
                       <td>{report.Description}</td>

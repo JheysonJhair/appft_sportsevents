@@ -6,6 +6,7 @@ import { enviarVerificacionEmail } from "../../../services/Usuario";
 import { User, ErrorMessages } from "../../../types/User";
 import { fetchGerencias } from "../../../services/Gerencia";
 import { fetchAreasByManagementId } from "../../../services/Area";
+import { fetchUserDataByDNI } from "../../../services/Login";
 import { Management } from "../../../types/Management";
 import {
   validateRequiredField,
@@ -49,21 +50,40 @@ export function Register(): JSX.Element {
   ) => {
     const { name, value } = e.target;
 
-    if (name === "Rol" && value === "1") {
-      setFormData((prevData) => ({
-        ...prevData,
-        Shift: "SIN TURNO",
-        [name]: Number(value),
-      }));
+    if (name === "Rol") {
+      const updatedRol = Number(value);
+      if (updatedRol === 1) {
+        setFormData((prevData) => ({
+          ...prevData,
+          Shift: "SIN TURNO",
+          [name]: updatedRol,
+          Gerencia: "OPERACIONES MINA",
+        }));
+
+        // Fetch areas for "OPERACIONES MINA"
+        try {
+          const gerenciaOperaciones = gerencias.find(
+            (gerencia) => gerencia.NameManagement === "OPERACIONES MINA"
+          );
+          if (gerenciaOperaciones) {
+            const areasData = await fetchAreasByManagementId(
+              gerenciaOperaciones.IdManagement
+            );
+            setAreas(areasData.data);
+          }
+        } catch (error) {
+          console.error(error);
+        }
+      } else {
+        setFormData((prevData) => ({
+          ...prevData,
+          [name]: updatedRol,
+        }));
+      }
     } else {
       setFormData((prevData) => ({
         ...prevData,
-        [name]:
-          name === "Rol"
-            ? Number(value)
-            : value && name === "IdArea"
-            ? Number(value)
-            : value,
+        [name]: name === "IdArea" ? Number(value) : value,
       }));
     }
 
@@ -155,6 +175,31 @@ export function Register(): JSX.Element {
     }
   };
 
+  const handleSearchDNI = async () => {
+    try {
+      const userData = await fetchUserDataByDNI(formData.Dni);
+      setFormData((prevData) => ({
+        ...prevData,
+        FirstName: userData.nombres,
+        LastName: `${userData.apellido_paterno} ${userData.apellido_materno}`,
+      }));
+      Swal.fire({
+        title: "Datos Encontrados!",
+        text: "Los datos han sido cargados exitosamente.",
+        icon: "success",
+        confirmButtonText: "Aceptar",
+      });
+    } catch (error) {
+      Swal.fire({
+        title: "Error!",
+        text: "No se pudieron obtener los datos. Verifique el DNI ingresado.",
+        icon: "error",
+        confirmButtonText: "Aceptar",
+      });
+      console.error(error);
+    }
+  };
+
   return (
     <div className="d-flex align-items-center justify-content-center my-4">
       <div className="container">
@@ -178,28 +223,37 @@ export function Register(): JSX.Element {
                   </div>
                   <div className="form-body">
                     <form className="row g-3" onSubmit={handleSubmit}>
-                      <div className="col-md-3">
+                      <div className="col-md-4">
                         <label htmlFor="inputDni" className="form-label">
                           Dni
                         </label>
-                        <input
-                          type="number"
-                          className={`form-control ${
-                            errorMessages.Dni && "is-invalid"
-                          }`}
-                          id="inputDni"
-                          name="Dni"
-                          placeholder="0000000"
-                          maxLength={8}
-                          pattern="\d{8}"
-                          title="Ingrese 8 dígitos"
-                          onChange={handleInputChange}
-                        />
-                        {errorMessages.Dni && (
-                          <div className="invalid-feedback">
-                            {errorMessages.Dni}
-                          </div>
-                        )}
+                        <div className="input-group">
+                          <input
+                            type="number"
+                            className={`form-control ${
+                              errorMessages.Dni && "is-invalid"
+                            }`}
+                            id="inputDni"
+                            name="Dni"
+                            placeholder="0000000"
+                            maxLength={8}
+                            pattern="\d{8}"
+                            title="Ingrese 8 dígitos"
+                            onChange={handleInputChange}
+                          />
+                          <button
+                            type="button"
+                            className="btn btn-outline-secondary"
+                            onClick={handleSearchDNI}
+                          >
+                            <i className="bx bx-search"></i>
+                          </button>
+                          {errorMessages.Dni && (
+                            <div className="invalid-feedback">
+                              {errorMessages.Dni}
+                            </div>
+                          )}
+                        </div>
                       </div>
                       <div className="col-md-5">
                         <label htmlFor="inputRol" className="form-label">
@@ -225,7 +279,7 @@ export function Register(): JSX.Element {
                         )}
                       </div>
                       {formData.Rol == 2 && (
-                        <div className="col-md-4">
+                        <div className="col-md-3">
                           <label htmlFor="inputTurno" className="form-label">
                             Turno
                           </label>
@@ -262,6 +316,7 @@ export function Register(): JSX.Element {
                           name="FirstName"
                           placeholder="Ingrese su nombre"
                           onChange={handleInputChange}
+                          value={formData.FirstName}
                         />
                         {errorMessages.FirstName && (
                           <div className="invalid-feedback">
@@ -282,6 +337,7 @@ export function Register(): JSX.Element {
                           name="LastName"
                           placeholder="Ingrese sus apellidos"
                           onChange={handleInputChange}
+                          value={formData.LastName}
                         />
                         {errorMessages.LastName && (
                           <div className="invalid-feedback">
@@ -332,68 +388,90 @@ export function Register(): JSX.Element {
                           </div>
                         )}
                       </div>
-
-                      <div className="col-md-6">
-                        <label htmlFor="inputGerencia" className="form-label">
-                          Gerencia
-                        </label>
-                        <select
-                          className={`form-select ${
-                            errorMessages.IdArea && "is-invalid"
-                          }`}
-                          id="inputGerencia"
-                          name="Gerencia"
-                          aria-label="Default select example"
-                          onChange={handleInputChange}
-                        >
-                          <option>Seleccionar Gerencia</option>
-                          {gerencias
-                            .filter(
-                              (gerencia) =>
-                                gerencia.NameManagement !== "SISTEMA"
-                            )
-                            .map((gerencia) => (
-                              <option
-                                key={gerencia.IdManagement}
-                                value={gerencia.IdManagement}
-                              >
-                                {gerencia.NameManagement}
-                              </option>
-                            ))}
-                        </select>
-                        {errorMessages.IdArea && (
-                          <div className="invalid-feedback">
-                            {errorMessages.IdArea}
+                      {(formData.Rol === 1 || formData.Rol === 2) && (
+                        <>
+                          <div className="col-md-6">
+                            <label
+                              htmlFor="inputGerencia"
+                              className="form-label"
+                            >
+                              Gerencia
+                            </label>
+                            <select
+                              className={`form-select ${
+                                errorMessages.IdArea && "is-invalid"
+                              }`}
+                              id="inputGerencia"
+                              name="Gerencia"
+                              aria-label="Default select example"
+                              onChange={handleInputChange}
+                              value={
+                                formData.Rol === 1
+                                  ? gerencias.find(
+                                      (gerencia) =>
+                                        gerencia.NameManagement ===
+                                        "OPERACIONES MINA"
+                                    )?.IdManagement || ""
+                                  : formData.Gerencia
+                              }
+                              disabled={formData.Rol === 1}
+                            >
+                              <option>Seleccionar Gerencia</option>
+                              {gerencias
+                                .filter((gerencia) => {
+                                  if (formData.Rol === 2) {
+                                    return (
+                                      gerencia.NameManagement !==
+                                        "OPERACIONES MINA" &&
+                                      gerencia.NameManagement !== "SISTEMA"
+                                    );
+                                  }
+                                  return true;
+                                })
+                                .map((gerencia) => (
+                                  <option
+                                    key={gerencia.IdManagement}
+                                    value={gerencia.IdManagement}
+                                  >
+                                    {gerencia.NameManagement}
+                                  </option>
+                                ))}
+                            </select>
+                            {errorMessages.IdArea && (
+                              <div className="invalid-feedback">
+                                {errorMessages.IdArea}
+                              </div>
+                            )}
                           </div>
-                        )}
-                      </div>
-                      <div className="col-md-6">
-                        <label htmlFor="inputArea" className="form-label">
-                          Área
-                        </label>
-                        <select
-                          className={`form-select ${
-                            errorMessages.IdArea && "is-invalid"
-                          }`}
-                          id="inputArea"
-                          name="IdArea"
-                          aria-label="Default select example"
-                          onChange={handleInputChange}
-                        >
-                          <option>Seleccionar área</option>
-                          {areas.map((area) => (
-                            <option key={area.id} value={area.IdArea}>
-                              {area.NameArea}
-                            </option>
-                          ))}
-                        </select>
-                        {errorMessages.IdArea && (
-                          <div className="invalid-feedback">
-                            {errorMessages.IdArea}
-                          </div>
-                        )}
-                      </div>
 
+                          <div className="col-md-6">
+                            <label htmlFor="inputArea" className="form-label">
+                              Área
+                            </label>
+                            <select
+                              className={`form-select ${
+                                errorMessages.IdArea && "is-invalid"
+                              }`}
+                              id="inputArea"
+                              name="IdArea"
+                              aria-label="Default select example"
+                              onChange={handleInputChange}
+                            >
+                              <option>Seleccionar área</option>
+                              {areas.map((area) => (
+                                <option key={area.id} value={area.IdArea}>
+                                  {area.NameArea}
+                                </option>
+                              ))}
+                            </select>
+                            {errorMessages.IdArea && (
+                              <div className="invalid-feedback">
+                                {errorMessages.IdArea}
+                              </div>
+                            )}
+                          </div>
+                        </>
+                      )}
                       <div className="col-12">
                         <div className="d-grid">
                           <button type="submit" className="btn btn-danger">

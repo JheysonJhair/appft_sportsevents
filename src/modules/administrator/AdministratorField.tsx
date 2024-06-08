@@ -34,7 +34,7 @@ export function AdimistratorField() {
         jugadores: event.ListPlayer,
         start: `${event.DateDay}T${event.StartTime}`,
         end: `${event.DateDay}T${event.EndTime}`,
-        color: event.NameArea === "Admin Sistema" ? "#2C3E50" : "#44a7ea",
+        color: event.NameArea === "ADMINISTRADOR DEL SISTEMA" ? "#2C3E50" : "#44a7ea",
       }));
       setEventsCancha1(initialEventsCancha1);
     } catch (error) {
@@ -52,7 +52,7 @@ export function AdimistratorField() {
         jugadores: event.ListPlayer,
         start: `${event.DateDay}T${event.StartTime}`,
         end: `${event.DateDay}T${event.EndTime}`,
-        color: event.NameArea === "Admin Sistema" ? "#2C3E50" : "#fd3550",
+        color: event.NameArea === "ADMINISTRADOR DEL SISTEMA" ? "#2C3E50" : "#fd3550",
       }));
       setEventsCancha2(initialEventsCancha2);
     } catch (error) {
