@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-
 import { fetchGerencias } from "../../services/Gerencia";
 import { fetchAreas } from "../../services/Area";
 import { Management } from "../../types/Management";
@@ -12,7 +11,7 @@ export function ManagementArea() {
   const [currentAreas, setCurrentAreas] = useState<Area[]>([]);
   const [currentPageGerencias, setCurrentPageGerencias] = useState(1);
   const [currentPageAreas, setCurrentPageAreas] = useState(1);
-  const [itemsPerPage] = useState(9);
+  const [itemsPerPage] = useState(11);
   const [searchTermGerencias, setSearchTermGerencias] = useState("");
   const [searchTermAreas, setSearchTermAreas] = useState("");
 
@@ -130,16 +129,19 @@ export function ManagementArea() {
               </table>
             </div>
             <ul className="pagination justify-content-center">
-              {filteredGerencias.map((_, index) => (
-                <li key={index} className="page-item">
-                  <button
-                    onClick={() => paginateGerencias(index + 1)}
-                    className="page-link"
-                  >
-                    {index + 1}
-                  </button>
-                </li>
-              ))}
+              {Array.from(
+                { length: Math.ceil(filteredGerencias.length / itemsPerPage) },
+                (_, index) => (
+                  <li key={index} className="page-item">
+                    <button
+                      onClick={() => paginateGerencias(index + 1)}
+                      className="page-link"
+                    >
+                      {index + 1}
+                    </button>
+                  </li>
+                )
+              )}
             </ul>
           </div>
           <div className="col-12 col-lg-7 ">
@@ -177,16 +179,19 @@ export function ManagementArea() {
               </table>
             </div>
             <ul className="pagination justify-content-center">
-              {filteredAreas.map((_, index) => (
-                <li key={index} className="page-item">
-                  <button
-                    onClick={() => paginateAreas(index + 1)}
-                    className="page-link"
-                  >
-                    {index + 1}
-                  </button>
-                </li>
-              ))}
+              {Array.from(
+                { length: Math.ceil(filteredAreas.length / itemsPerPage) },
+                (_, index) => (
+                  <li key={index} className="page-item">
+                    <button
+                      onClick={() => paginateAreas(index + 1)}
+                      className="page-link"
+                    >
+                      {index + 1}
+                    </button>
+                  </li>
+                )
+              )}
             </ul>
           </div>
         </div>

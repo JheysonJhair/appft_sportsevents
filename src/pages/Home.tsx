@@ -53,7 +53,7 @@ export function HomePage() {
         laboratorio: event.NameManagement,
         start: `${event.DateDay}T${event.StartTime}`,
         end: `${event.DateDay}T${event.EndTime}`,
-        color: event.NameArea === "Admin Sistema" ? "#2C3E50" : "#44a7ea",
+        color: event.areaIdArea === 1 ? "#2C3E50" : "#44a7ea",
       }));
 
       setEvents(initialEvents);
@@ -276,7 +276,7 @@ export function HomePage() {
 
               <div className="modal-body">
                 <p>Usuario: {user?.FirstName}</p>
-                <p>Área: {user?.EmployeeCode}</p>
+                <p>Área: {user?.NameArea}</p>
                 <p>
                   Horario: {selectedEvent && formatHour(selectedEvent.start)} a{" "}
                   {selectedEvent && formatHour(selectedEvent.end)}

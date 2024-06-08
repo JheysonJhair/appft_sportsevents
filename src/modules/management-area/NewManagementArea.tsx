@@ -27,7 +27,10 @@ export function NewManagementArea() {
     const getGerencias = async () => {
       try {
         const gerenciasData = await fetchGerencias();
-        setGerencias(gerenciasData);
+        const filteredGerencias = gerenciasData.filter(
+          (gerencia) => gerencia.NameManagement !== "SISTEMA"
+        );
+        setGerencias(filteredGerencias);
       } catch (error) {
         console.error(error);
       }
@@ -65,7 +68,6 @@ export function NewManagementArea() {
     name: string,
     value: string | undefined
   ): string | null => {
-    console.log(name);
     return validateRequiredField(value);
   };
 

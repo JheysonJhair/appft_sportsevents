@@ -18,6 +18,22 @@ export interface ReportReservationField1 {
   ListPlayer: string;
 }
 
+export interface User {
+  IdUser: number;
+  FirstName: string;
+  LastName: string;
+  Password: string;
+  Dni: string;
+  EmployeeCode: string;
+  Shift: string;
+  PhoneNumber: string;
+  Mail: string;
+  Rol: number;
+  Date: string;
+  IndActive: boolean;
+  NameArea: string;
+}
+
 export interface ReportReservationField2 {
   IdField2Entity: number;
   StartTime: string;
@@ -25,6 +41,7 @@ export interface ReportReservationField2 {
   DateDay: string;
   DateRegister: string;
   ListPlayer: string;
+  User: User;
 }
 
 export interface ReportAdministrator {
@@ -36,10 +53,9 @@ export interface ReportAdministrator {
 }
 
 export interface ReportAdministratorReservation {
-  IdReport: number;
-  StartTime: string;
-  EndTime: string;
-  DateDay: string;
+  IdNotificationAll: number;
   DateRegister: string;
+  DateDay: string;
+  Time: string;
   Message: string;
 }

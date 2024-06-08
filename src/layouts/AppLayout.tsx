@@ -6,7 +6,11 @@ import { getWeather } from "../services/weather";
 import { User } from "../types/User";
 import { Notification } from "../types/Notification";
 import { Weather } from "../types/Weather";
-import { traerNotificacionesArea } from "../services/Notification";
+import {
+  getLastNotification,
+  traerNotificacionesArea,
+} from "../services/Notification";
+import { formatDate3 } from "../utils/util";
 
 function AppLayout() {
   const [notificationCount, setNotificationCount] = useState<number>(0);
@@ -21,6 +25,8 @@ function AppLayout() {
   const [weatherToday, setWeatherToday] = useState<Weather | null>(null);
   const [weatherTomorrow, setWeatherTomorrow] = useState<Weather | null>(null);
   const [notifications, setNotifications] = useState<Notification[]>([]);
+  const [latestNotification, setLatestNotification] =
+    useState<Notification | null>(null);
   const { user } = useAuth() as { user: User };
 
   useEffect(() => {
@@ -58,6 +64,19 @@ function AppLayout() {
 
     fetchWeather();
   }, []);
+  useEffect(() => {
+    const fetchLatestNotification = async () => {
+      try {
+        const response = await getLastNotification();
+        if (response.success && response.data) {
+          setLatestNotification(response.data);
+        }
+      } catch (error) {
+        console.error("Error fetching latest notification:", error);
+      }
+    };
+    fetchLatestNotification();
+  }, []);
 
   useEffect(() => {
     const fetchAndSetNotifications = async () => {
@@ -69,7 +88,7 @@ function AppLayout() {
     };
 
     fetchAndSetNotifications();
-    const intervalId = setInterval(fetchAndSetNotifications, 60000);
+    const intervalId = setInterval(fetchAndSetNotifications, 5000);
 
     return () => clearInterval(intervalId);
   }, [user]);
@@ -256,9 +275,24 @@ function AppLayout() {
                 </li>
               </>
             )}
+            <li>
+              <a
+                href="../../assets/manual_usuario.pdf"
+                download
+                target="_blank"
+              >
+                <div className="parent-icon">
+                  <i className="bx bx-book" />
+                </div>
+                <div className="menu-title">Manual de usuario</div>
+              </a>
+            </li>
 
             <li>
-              <a href="https://jheysonjhairpro.ccontrolz.com/" target="_blank">
+              <a
+                href="https://www.linkedin.com/in/jheysonjhairpro/"
+                target="_blank"
+              >
                 <div className="parent-icon">
                   <i className="bx bx-support" />
                 </div>
@@ -266,25 +300,25 @@ function AppLayout() {
               </a>
             </li>
           </ul>
-          <div className="alert-container">
-            <div className="alert border-0 alert-dismissible fade show py-2">
-              <div className="d-flex align-items-center">
-                <div className="ms-3">
-                  <h6 className="mb-0">Notificación</h6>
-                  <div>
-                    No se registró debido a que están planteando una actividad
-                    por el día de Abancay.
+          {latestNotification && (
+            <div className="alert-container">
+              <div className="alert border-0 alert-dismissible fade show py-2">
+                <div className="d-flex align-items-center">
+                  <div className="ms-3">
+                    <h6 className="mb-0">Ultima Notificación</h6>
+                    <div>{formatDate3(latestNotification.DateDay)}</div>
+                    <div>{latestNotification.Message}</div>
                   </div>
                 </div>
+                <button
+                  type="button"
+                  className="btn-close"
+                  data-bs-dismiss="alert"
+                  aria-label="Close"
+                />
               </div>
-              <button
-                type="button"
-                className="btn-close"
-                data-bs-dismiss="alert"
-                aria-label="Close"
-              />
             </div>
-          </div>
+          )}
         </div>
         <header>
           <div className="topbar d-flex align-items-center">
@@ -402,7 +436,7 @@ function AppLayout() {
                               </div>
                               <div className="flex-grow-1">
                                 <h6 className="msg-name">
-                                  Alerta, se eliminó un evento!
+                                  Alerta, se eliminó una reserva!
                                 </h6>
                                 <p className="msg-info">
                                   {notification.Message}

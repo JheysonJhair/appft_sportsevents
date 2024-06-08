@@ -20,7 +20,10 @@ import {
   obtenerHorarioCancha1PorId,
   obtenerHorarioCancha2PorId,
 } from "../../services/Horario";
-import { insertarNotificacion } from "../../services/Notification";
+import {
+  insertarNotificacion,
+  insertNotification,
+} from "../../services/Notification";
 
 export function AdimistratorHome() {
   const { user } = useAuth();
@@ -45,7 +48,7 @@ export function AdimistratorHome() {
     const interval = setInterval(() => {
       fetchEventsCancha1();
       fetchEventsCancha2();
-    }, 10000);
+    }, 800);
     return () => clearInterval(interval);
   }, []);
 
@@ -98,7 +101,6 @@ export function AdimistratorHome() {
       let response: { msg: string; success: boolean };
       if (selectedCancha === "cancha1") {
         response = await crearHorarioCancha1(horario);
-        console.log(response, listPlayer);
       } else {
         response = await crearHorarioCancha2(horario);
       }
@@ -109,6 +111,11 @@ export function AdimistratorHome() {
           icon: "success",
           confirmButtonText: "Aceptar",
         });
+        await insertNotification(
+          formattedDate,
+          formatHour(selectedEvent.start),
+          listPlayer
+        );
       } else {
         Swal.fire({
           title: "Error!",
@@ -188,7 +195,7 @@ export function AdimistratorHome() {
                 text: "Se ha eliminado correctamente!",
                 icon: "success",
               });
-              const notificationMessage = `Se eliminó la reserva de GERENCIA`;
+              const notificationMessage = `Se eliminó la reserva de tú area`;
               await insertarNotificacion(
                 notificationMessage,
                 user?.IdUser || 0,
@@ -366,7 +373,7 @@ export function AdimistratorHome() {
 
               <div className="modal-body">
                 <p>Usuario: {user?.FirstName}</p>
-                <p>Área: {user?.EmployeeCode}</p>
+                <p>Área: {user?.NameArea}</p>
                 <p>
                   Horario: {selectedEvent && formatHour(selectedEvent.start)} a{" "}
                   {selectedEvent && formatHour(selectedEvent.end)}
@@ -453,14 +460,23 @@ export function AdimistratorHome() {
                   <div>
                     <p>
                       Usuario:{" "}
-                      {eventDetails.FirstName + " " + eventDetails.LastName}
+                      {eventDetails.FirstName && eventDetails.LastName
+                        ? eventDetails.FirstName + " " + eventDetails.LastName
+                        : "SIN REGISTRO"}
                     </p>
-                    <p>Gerencia: {eventDetails.NameManagement}</p>
-                    <p>Area: {eventDetails.NameArea}</p>
-                    <p>Fecha: {eventDetails.DateDay}</p>
-                    <p>Hora Inicio: {eventDetails.StartTime}</p>
-                    <p>Hora Fin: {eventDetails.EndTime}</p>
-                    <p>Lista de jugadores: {eventDetails.ListPlayer}</p>
+                    <p>
+                      Gerencia: {eventDetails.NameManagement || "SIN REGISTRO"}
+                    </p>
+                    <p>Area: {eventDetails.NameArea || "SIN REGISTRO"}</p>
+                    <p>Fecha: {eventDetails.DateDay || "SIN REGISTRO"}</p>
+                    <p>
+                      Hora Inicio: {eventDetails.StartTime || "SIN REGISTRO"}
+                    </p>
+                    <p>Hora Fin: {eventDetails.EndTime || "SIN REGISTRO"}</p>
+                    <p>
+                      Lista de jugadores:{" "}
+                      {eventDetails.ListPlayer || "SIN REGISTRO"}
+                    </p>
                   </div>
                 )}
               </div>

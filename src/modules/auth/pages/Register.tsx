@@ -60,7 +60,6 @@ export function Register(): JSX.Element {
           Gerencia: "OPERACIONES MINA",
         }));
 
-        // Fetch areas for "OPERACIONES MINA"
         try {
           const gerenciaOperaciones = gerencias.find(
             (gerencia) => gerencia.NameManagement === "OPERACIONES MINA"

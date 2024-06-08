@@ -1,5 +1,5 @@
 const API_URL = "https://esappsoccer.ccontrolz.com/api";
-
+import axios from "axios"; // Asegúrate de importar axios
 //---------------------------------------------------------------- GET AREA ID NOTIFICATION
 export const traerNotificacionesArea = async (user: any) => {
   try {
@@ -58,5 +58,42 @@ export async function insertarNotificacion(
   } catch (error) {
     console.error("Error al insertar la notificación:", error);
     throw error;
+  }
+}
+
+//---------------------------------------------------------------- GET .NOTIFICATION LAST
+export const getLastNotification = async () => {
+  try {
+    const response = await fetch(
+      "http://esappsoccer.ccontrolz.com/api/notification-all/getLast"
+    );
+    if (!response.ok) {
+      throw new Error("Failed to fetch latest notification");
+    }
+    return await response.json();
+  } catch (error) {
+    console.error("Error fetching latest notification:", error);
+    return { success: false, msg: "Error fetching latest notification", error };
+  }
+};
+
+//---------------------------------------------------------------- POST .NOTIFICATION LAST
+export async function insertNotification(
+  dateDay: any,
+  time: any,
+  message: any
+) {
+  try {
+    const response = await axios.post(
+      "http://esappsoccer.ccontrolz.com/api/notification-all/insert",
+      {
+        DateDay: dateDay,
+        Time: time,
+        Message: message,
+      }
+    );
+    console.log(response.data); 
+  } catch (error) {
+    console.error("Error al insertar notificación:", error);
   }
 }

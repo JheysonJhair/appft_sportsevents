@@ -56,7 +56,7 @@ export function NewUser() {
       if (value === "1") {
         const operacionMinaId =
           gerencias.find((g) => g.NameManagement === "OPERACIONES MINA")
-            ?.IdManagement || 0;
+            ?.IdManagement || 1;
 
         setNuevoUsuario((prevUsuario) => ({
           ...prevUsuario,
@@ -156,7 +156,6 @@ export function NewUser() {
         Shift: nuevoUsuario.Shift || "SIN TURNO",
         IdArea: nuevoUsuario.IdArea ? Number(nuevoUsuario.IdArea) : 1,
       };
-      console.log(usuarioParaEnviar);
       delete usuarioParaEnviar.Gerencia;
 
       let response: { msg: string; success: boolean };

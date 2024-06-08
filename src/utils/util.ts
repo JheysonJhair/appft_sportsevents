@@ -19,3 +19,11 @@ export function formatDate2(date: Date): string {
   const day = String(date.getDate()).padStart(2, "0");
   return `${year}-${month}-${day}`;
 }
+
+export const formatDate3 = (dateString: any) => {
+  const date = new Date(dateString);
+  const day = date.getDate().toString().padStart(2, "0");
+  const month = (date.getMonth() + 1).toString().padStart(2, "0"); 
+  const year = date.getFullYear();
+  return `${day}/${month}/${year}`;
+};

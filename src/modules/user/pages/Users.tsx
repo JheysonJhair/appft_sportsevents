@@ -55,7 +55,6 @@ export function Users() {
 
       if (confirmacion.isConfirmed) {
         const response = await eliminarUsuario(id);
-        console.log(response);
         const updatedUsuarios = usuarios.filter(
           (usuario) => usuario.IdUser !== id
         );
@@ -185,7 +184,15 @@ export function Users() {
             <tbody>
               {filteredUsuarios.map((usuario, index) => (
                 <tr key={index}>
-                  <td>{usuario.NameArea}</td>
+                  <td>
+                    {[
+                      "ADMINISTRADOR DEL SISTEMA",
+                      "ADMINISTRADOR DE LA CANCHA",
+                    ].includes(usuario.NameArea || "")
+                      ? "ADMINISTRADOR"
+                      : usuario.NameArea || ""}
+                  </td>
+
                   <td>{usuario.FirstName}</td>
                   <td>{usuario.LastName}</td>
                   <td>{usuario.Password}</td>
@@ -193,12 +200,12 @@ export function Users() {
                   <td>{usuario.PhoneNumber}</td>
                   <td>{usuario.Mail}</td>
                   <td>{usuario.Shift !== "" ? usuario.Shift : "Sin turno"}</td>
-                  <td>
+                  <th>
                     {usuario.Rol === 1 && "OPERACIONES MINA"}
                     {usuario.Rol === 2 && "TRAB. GERENCIAS"}
                     {usuario.Rol === 3 && "ADMIN. CANCHA"}
                     {usuario.Rol === 4 && "ADMINISTRADOR"}
-                  </td>
+                  </th>
                   <td>
                     {usuario.IndActive ? (
                       <button

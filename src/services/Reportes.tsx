@@ -41,6 +41,7 @@ export async function crearReporte(
 
 //================================================================ REPORTS GRAPHICS
 
+//================================================================ USER
 export async function fetchUserData(startDate: string, endDate: string) {
   const requestBody = JSON.stringify({
     StartDate: startDate,
@@ -64,6 +65,7 @@ export async function fetchUserData(startDate: string, endDate: string) {
   }
 }
 
+//================================================================ FIELD 1
 export async function fetchReservationData(startDate: string, endDate: string) {
   const requestBody = JSON.stringify({
     StartDate: startDate,
@@ -87,6 +89,7 @@ export async function fetchReservationData(startDate: string, endDate: string) {
   }
 }
 
+//================================================================ FIELD 2
 export async function fetchChannel2Data(startDate: string, endDate: string) {
   const requestBody = JSON.stringify({
     StartDate: startDate,
@@ -110,13 +113,17 @@ export async function fetchChannel2Data(startDate: string, endDate: string) {
   }
 }
 
-export async function fetchAdministratorReports(startDate: string, endDate: string) {
+//================================================================ INFORMES
+export async function fetchAdministratorReports(
+  startDate: string,
+  endDate: string
+) {
   const requestBody = JSON.stringify({
     StartDate: startDate,
     EndDate: endDate,
   });
 
-  const response = await fetch(`${API_URL}/reportAdministratorByDateRange`, {
+  const response = await fetch(`${API_URL}//`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -133,19 +140,26 @@ export async function fetchAdministratorReports(startDate: string, endDate: stri
   }
 }
 
-export async function fetchAdministratorReservations(startDate: string, endDate: string) {
+//================================================================ NOTIFICATION
+export async function fetchAdministratorReservations(
+  startDate: string,
+  endDate: string
+) {
   const requestBody = JSON.stringify({
     StartDate: startDate,
     EndDate: endDate,
   });
 
-  const response = await fetch(`${API_URL}/reservas/reportAdministratorByDateRange`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: requestBody,
-  });
+  const response = await fetch(
+    `${API_URL}/notification-all/ReportNotification/`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: requestBody,
+    }
+  );
 
   const responseData = await response.json();
 

@@ -44,11 +44,11 @@ export function Reportes() {
       const reservationData2 = await fetchChannel2Data(startDate, endDate);
       setReservationData2(reservationData2);
 
-      const administratorReportsData = await fetchAdministratorReports(
-        startDate,
-        endDate
-      );
-      setAdministratorReports(administratorReportsData);
+      // const administratorReportsData = await fetchAdministratorReports(
+      //   startDate,
+      //   endDate
+      // );
+      // setAdministratorReports(administratorReportsData);
 
       const administratorReservationsData =
         await fetchAdministratorReservations(startDate, endDate);
@@ -221,7 +221,7 @@ export function Reportes() {
                               " a " +
                               reservation.EndTime}
                           </td>
-                          <td>USUARIOS</td>
+                          <td>Operaciones Mina</td>
                           <td>{reservation.ListPlayer}</td>
                         </tr>
                       ))}
@@ -243,7 +243,7 @@ export function Reportes() {
             <hr />
             <div className="card mt-3">
               <div className="card-body">
-                <h5 className="card-title">Datos de trabajadores gerencias</h5>
+                <h5 className="card-title">Datos de reservas</h5>
                 <div className="table-responsive">
                   <table className="table">
                     <thead>
@@ -266,8 +266,8 @@ export function Reportes() {
                               " a " +
                               reservation2.EndTime}
                           </td>
-                          <td>USUARIOS</td>
-                          <td>AREAS</td>
+                          <td>Trabajador gerencia</td>
+                          <td>{reservation2.User.NameArea}</td>
                           <td>{reservation2.ListPlayer}</td>
                         </tr>
                       ))}
@@ -344,11 +344,7 @@ export function Reportes() {
                           <tr key={index}>
                             <td>{administratorReservations.DateRegister}</td>
                             <td>{administratorReservations.DateDay}</td>
-                            <td>
-                              {administratorReservations.StartTime +
-                                " a " +
-                                administratorReservations.EndTime}
-                            </td>
+                            <td>{administratorReservations.Time}</td>
                             <td>{administratorReservations.Message}</td>
                           </tr>
                         )
