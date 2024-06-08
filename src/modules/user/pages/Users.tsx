@@ -55,6 +55,7 @@ export function Users() {
 
       if (confirmacion.isConfirmed) {
         const response = await eliminarUsuario(id);
+        console.log(response);
         const updatedUsuarios = usuarios.filter(
           (usuario) => usuario.IdUser !== id
         );

@@ -69,6 +69,7 @@ export function NewManagementArea() {
     value: string | undefined
   ): string | null => {
     return validateRequiredField(value);
+    console.log(name)
   };
 
   const handleRegistrarGerencia = async () => {
