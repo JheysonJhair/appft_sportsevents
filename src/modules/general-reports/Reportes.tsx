@@ -176,8 +176,8 @@ export function Reportes() {
                           <td>{user.Dni}</td>
                           <td>{user.PhoneNumber}</td>
                           <td>{user.Mail}</td>
-                          <td>GERENCIA</td>
-                          <td>AREA</td>
+                          <td>{user.NameManagement}</td>
+                          <td>{user.NameArea}</td>
                           <td>{user.Shift}</td>
                         </tr>
                       ))}

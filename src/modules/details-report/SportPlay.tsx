@@ -156,7 +156,7 @@ export function SportPlay() {
                     <tr>
                       <th scope="col">Título</th>
                       <th scope="col">Área</th>
-                      <th scope="col">Laboratorio</th>
+                      <th scope="col">Gerencia</th>
                       <th scope="col">Inicio</th>
                       <th scope="col">Fin</th>
                       <th scope="col">Jugadores</th>
@@ -189,7 +189,7 @@ export function SportPlay() {
                     <tr>
                       <th scope="col">Título</th>
                       <th scope="col">Área</th>
-                      <th scope="col">Laboratorio</th>
+                      <th scope="col">Gerencia</th>
                       <th scope="col">Inicio</th>
                       <th scope="col">Fin</th>
                       <th scope="col">Jugadores</th>

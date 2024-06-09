@@ -7,6 +7,8 @@ export interface ReportUser {
   Mail: string;
   Rol: number;
   Shift: string;
+  NameArea: string;
+  NameManagement: string;
 }
 
 export interface ReportReservationField1 {

@@ -29,7 +29,10 @@ export function DayReport() {
     const getGerencias = async () => {
       try {
         const gerenciasData = await fetchGerencias();
-        setGerencias(gerenciasData);
+        const filteredGerencias = gerenciasData.filter(
+          (gerencia) => gerencia.NameManagement !== "SISTEMA"
+        );
+        setGerencias(filteredGerencias);
       } catch (error) {
         console.error(error);
       }
