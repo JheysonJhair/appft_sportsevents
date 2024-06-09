@@ -64,9 +64,7 @@ export async function insertarNotificacion(
 //---------------------------------------------------------------- GET .NOTIFICATION LAST
 export const getLastNotification = async () => {
   try {
-    const response = await fetch(
-      "http://esappsoccer.ccontrolz.com/api/notification-all/getLast"
-    );
+    const response = await fetch(`${API_URL}/notification-all/getLast`);
     if (!response.ok) {
       throw new Error("Failed to fetch latest notification");
     }
@@ -84,15 +82,12 @@ export async function insertNotification(
   message: any
 ) {
   try {
-    const response = await axios.post(
-      "http://esappsoccer.ccontrolz.com/api/notification-all/insert",
-      {
-        DateDay: dateDay,
-        Time: time,
-        Message: message,
-      }
-    );
-    console.log(response.data); 
+    const response = await axios.post(`${API_URL}/notification-all/insert`, {
+      DateDay: dateDay,
+      Time: time,
+      Message: message,
+    });
+    console.log(response.data);
   } catch (error) {
     console.error("Error al insertar notificación:", error);
   }
