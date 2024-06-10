@@ -171,10 +171,9 @@ export function Users() {
             <thead>
               <tr>
                 <th>Area</th>
-                <th>Nombres</th>
-                <th>Apellidos</th>
-                <th>Contraseña</th>
+                <th>Nombres y apellidos</th>
                 <th>DNI</th>
+                <th>Contraseña</th>
                 <th>Teléfono</th>
                 <th>Email</th>
                 <th>Turno</th>
@@ -194,10 +193,9 @@ export function Users() {
                       : usuario.NameArea || ""}
                   </td>
 
-                  <td>{usuario.FirstName}</td>
-                  <td>{usuario.LastName}</td>
-                  <td>{usuario.Password}</td>
+                  <td>{usuario.FirstName + " "+ usuario.LastName}</td>
                   <td>{usuario.Dni}</td>
+                  <td>{usuario.Password}</td>
                   <td>{usuario.PhoneNumber}</td>
                   <td>{usuario.Mail}</td>
                   <td>{usuario.Shift !== "" ? usuario.Shift : "Sin turno"}</td>

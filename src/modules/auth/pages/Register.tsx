@@ -203,7 +203,7 @@ export function Register(): JSX.Element {
     <div className="d-flex align-items-center justify-content-center my-4">
       <div className="container">
         <div className="row">
-          <div className="col-lg-6 mx-auto">
+          <div className="col-lg-7 mx-auto">
             <div className="card mb-0">
               <div className="card-body">
                 <div className="py-3 px-4">
@@ -234,7 +234,7 @@ export function Register(): JSX.Element {
                             }`}
                             id="inputDni"
                             name="Dni"
-                            placeholder="0000000"
+                            placeholder="Tu dni"
                             maxLength={8}
                             pattern="\d{8}"
                             title="Ingrese 8 dígitos"
@@ -254,7 +254,7 @@ export function Register(): JSX.Element {
                           )}
                         </div>
                       </div>
-                      <div className="col-md-5">
+                      <div className="col-md-4">
                         <label htmlFor="inputRol" className="form-label">
                           Rol
                         </label>
@@ -278,7 +278,7 @@ export function Register(): JSX.Element {
                         )}
                       </div>
                       {formData.Rol == 2 && (
-                        <div className="col-md-3">
+                        <div className="col-md-4">
                           <label htmlFor="inputTurno" className="form-label">
                             Turno
                           </label>
@@ -313,7 +313,7 @@ export function Register(): JSX.Element {
                           }`}
                           id="inputNombres"
                           name="FirstName"
-                          placeholder="Ingrese su nombre"
+                          placeholder="Ingrese sus nombres"
                           onChange={handleInputChange}
                           value={formData.FirstName}
                         />
@@ -355,7 +355,7 @@ export function Register(): JSX.Element {
                           }`}
                           id="inputEmail"
                           name="Mail"
-                          placeholder="example@user.com"
+                          placeholder="usuario@correo.com"
                           onChange={handleInputChange}
                         />
                         {errorMessages.Mail && (
@@ -375,7 +375,7 @@ export function Register(): JSX.Element {
                           }`}
                           id="inputTelefono"
                           name="PhoneNumber"
-                          placeholder="000000000"
+                          placeholder="Tu teléfono"
                           maxLength={9}
                           pattern="\d{9}"
                           title="Ingrese 9 dígitos"

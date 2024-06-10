@@ -300,25 +300,26 @@ function AppLayout() {
               </a>
             </li>
           </ul>
-          {latestNotification && (
-            <div className="alert-container">
-              <div className="alert border-0 alert-dismissible fade show py-2">
-                <div className="d-flex align-items-center">
-                  <div className="ms-3">
-                    <h6 className="mb-0">Ultima Notificación</h6>
-                    <div>{formatDate3(latestNotification.DateDay)}</div>
-                    <div>{latestNotification.Message}</div>
+          {!document.querySelector(".wrapper")?.classList.contains("toggled") &&
+            latestNotification && (
+              <div className="alert-container">
+                <div className="alert border-0 alert-dismissible fade show py-2">
+                  <div className="d-flex align-items-center">
+                    <div className="ms-3">
+                      <h6 className="mb-0">Última Notificación</h6>
+                      <div>{formatDate3(latestNotification.DateDay)}</div>
+                      <div>{latestNotification.Message}</div>
+                    </div>
                   </div>
+                  <button
+                    type="button"
+                    className="btn-close"
+                    data-bs-dismiss="alert"
+                    aria-label="Close"
+                  />
                 </div>
-                <button
-                  type="button"
-                  className="btn-close"
-                  data-bs-dismiss="alert"
-                  aria-label="Close"
-                />
               </div>
-            </div>
-          )}
+            )}
         </div>
         <header>
           <div className="topbar d-flex align-items-center">

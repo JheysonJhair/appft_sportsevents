@@ -9,11 +9,15 @@ import { EventData } from "../../types/Eventos";
 import {
   obtenerHorarioCancha1,
   obtenerHorarioCancha2,
+  obtenerHorarioCancha1PorId,
+  obtenerHorarioCancha2PorId,
 } from "../../services/Horario";
 
 export function AdimistratorField() {
   const [eventsCancha1, setEventsCancha1] = useState<EventData[]>([]);
   const [eventsCancha2, setEventsCancha2] = useState<EventData[]>([]);
+  const [eventDetails, setEventDetails] = useState<any>(null);
+  const [ayuda, setAyuda] = useState<any>(false);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -28,6 +32,7 @@ export function AdimistratorField() {
     try {
       const horarioCancha1 = await obtenerHorarioCancha1();
       const initialEventsCancha1: EventData[] = horarioCancha1.map((event) => ({
+        IdField1Entity: event.IdField1Entity,
         title: event.FirstName,
         area: event.NameArea,
         laboratorio: event.NameManagement,
@@ -44,11 +49,15 @@ export function AdimistratorField() {
       console.error("Error al obtener el horario de la Cancha 1:", error);
     }
   }
-
+  function handleCloseModal2() {
+    setAyuda(false);
+    setEventDetails(null);
+  }
   async function fetchEventsCancha2() {
     try {
       const horarioCancha2 = await obtenerHorarioCancha2();
       const initialEventsCancha2: EventData[] = horarioCancha2.map((event) => ({
+        IdField2Entity: event.IdField2Entity,
         title: event.FirstName,
         area: event.NameArea,
         laboratorio: event.NameManagement,
@@ -66,12 +75,51 @@ export function AdimistratorField() {
     }
   }
 
+  async function handleViewDetails(event: any) {
+    const fieldId1 = event.extendedProps.IdField1Entity;
+    const fieldId2 = event.extendedProps.IdField2Entity;
+    try {
+      if (fieldId1) {
+        const response = await obtenerHorarioCancha1PorId(fieldId1);
+        setEventDetails(response);
+        setAyuda(true);
+      } else if (fieldId2) {
+        const response = await obtenerHorarioCancha2PorId(fieldId2);
+        setEventDetails(response);
+        setAyuda(true);
+      }
+    } catch (error: any) {
+      console.error(error);
+    }
+  }
+
   function renderEventContent(eventInfo: any) {
+    const truncateText = (text: string, maxLength: number) => {
+      return text.length > maxLength
+        ? text.substring(0, maxLength) + "..."
+        : text;
+    };
     return (
       <div>
+        <span
+          className="view-icon"
+          onClick={() => handleViewDetails(eventInfo.event)}
+          style={{
+            cursor: "pointer",
+            position: "absolute",
+            top: "0px",
+            right: "4px",
+          }}
+        >
+          <i
+            className="bx bx-show"
+            title="Ver"
+            style={{ fontSize: "17px", color: "#FFF" }}
+          ></i>
+        </span>
         <div className="fc-event-title">{eventInfo.event.title}</div>
         <div className="fc-event-title">
-          {eventInfo.event.extendedProps.area}
+          {truncateText(eventInfo.event.extendedProps.area, 18)}
         </div>
       </div>
     );
@@ -129,6 +177,68 @@ export function AdimistratorField() {
           </div>
         </div>
       </div>
+      {ayuda && (
+        <div
+          className="modal fade show"
+          id="exampleModal"
+          tabIndex={-1}
+          aria-labelledby="exampleModalLabel"
+          aria-hidden="true"
+          style={{ display: "block", marginTop: "90px" }}
+        >
+          <div className="modal-dialog">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5 className="modal-title" id="exampleModalLabel">
+                  Detalles de la reserva
+                </h5>
+                <button
+                  type="button"
+                  className="btn-close"
+                  onClick={handleCloseModal2}
+                  aria-label="Close"
+                ></button>
+              </div>
+
+              <div className="modal-body">
+                {eventDetails && (
+                  <div>
+                    <p>
+                      Usuario:{" "}
+                      {eventDetails.FirstName && eventDetails.LastName
+                        ? eventDetails.FirstName + " " + eventDetails.LastName
+                        : "SIN REGISTRO"}
+                    </p>
+                    <p>
+                      Gerencia: {eventDetails.NameManagement || "SIN REGISTRO"}
+                    </p>
+                    <p>Area: {eventDetails.NameArea || "SIN REGISTRO"}</p>
+                    <p>Fecha: {eventDetails.DateDay || "SIN REGISTRO"}</p>
+                    <p>
+                      Hora Inicio: {eventDetails.StartTime || "SIN REGISTRO"}
+                    </p>
+                    <p>Hora Fin: {eventDetails.EndTime || "SIN REGISTRO"}</p>
+                    <p>
+                      Lista de jugadores:{" "}
+                      {eventDetails.ListPlayer || "SIN REGISTRO"}
+                    </p>
+                  </div>
+                )}
+              </div>
+              <div className="modal-footer">
+                <button
+                  type="button"
+                  className="btn btn-secondary"
+                  onClick={handleCloseModal2}
+                >
+                  Cerrar
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+      {ayuda && <div className="modal-backdrop fade show"></div>}
     </div>
   );
 }

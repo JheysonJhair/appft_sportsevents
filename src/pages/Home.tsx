@@ -14,6 +14,8 @@ import {
   obtenerHorarioCancha2,
   crearHorarioCancha1,
   crearHorarioCancha2,
+  obtenerHorarioCancha1PorId,
+  obtenerHorarioCancha2PorId,
 } from "../services/Horario";
 import { formatHour, formatDate, formatDate2 } from "../utils/util";
 
@@ -23,7 +25,8 @@ export function HomePage() {
   const [selectedEvent, setSelectedEvent] = useState<EventData | null>(null);
   const [listPlayer, setListPlayer] = useState<string>("");
   const [showAlert, setShowAlert] = useState(false);
-
+  const [eventDetails, setEventDetails] = useState<any>(null);
+  const [ayuda, setAyuda] = useState<any>(false);
   const selectedDate = selectedEvent && new Date(selectedEvent.start).getDate();
   const selectedMonth =
     selectedEvent && new Date(selectedEvent.start).getMonth() + 1;
@@ -54,6 +57,8 @@ export function HomePage() {
         start: `${event.DateDay}T${event.StartTime}`,
         end: `${event.DateDay}T${event.EndTime}`,
         color: event.areaIdArea === 1 ? "#2C3E50" : "#44a7ea",
+        IdField2Entity: event.IdField2Entity,
+        IdField1Entity: event.IdField1Entity,
       }));
 
       setEvents(initialEvents);
@@ -61,13 +66,52 @@ export function HomePage() {
       console.error("Error al obtener el horario:", error);
     }
   }
-
+  function handleCloseModal2() {
+    setAyuda(false);
+    setEventDetails(null);
+  }
+  async function handleViewDetails(event: any) {
+    const fieldId1 = event.extendedProps.IdField1Entity;
+    const fieldId2 = event.extendedProps.IdField2Entity;
+    try {
+      if (fieldId1) {
+        const response = await obtenerHorarioCancha1PorId(fieldId1);
+        setEventDetails(response);
+        setAyuda(true);
+      } else if (fieldId2) {
+        const response = await obtenerHorarioCancha2PorId(fieldId2);
+        setEventDetails(response);
+        setAyuda(true);
+      }
+    } catch (error: any) {
+      console.error(error);
+    }
+  }
   function renderEventContent(eventInfo: any) {
+    const truncateText = (text: string, maxLength: number) => {
+      return text.length > maxLength ? text.substring(0, maxLength) + '...' : text;
+    };
     return (
       <div>
+                <span
+          className="view-icon"
+          onClick={() => handleViewDetails(eventInfo.event)}
+          style={{
+            cursor: "pointer",
+            position: "absolute",
+            top: "0px",
+            right: "4px",
+          }}
+        >
+          <i
+            className="bx bx-show"
+            title="Ver"
+            style={{ fontSize: "17px", color: "#FFF" }}
+          ></i>
+        </span>
         <div className="fc-event-title">{eventInfo.event.title}</div>
         <div className="fc-event-title">
-          {eventInfo.event.extendedProps.area}
+          {truncateText(eventInfo.event.extendedProps.area, 16)}
         </div>
       </div>
     );
@@ -344,6 +388,68 @@ export function HomePage() {
           />
         </div>
       )}
+            {ayuda && (
+        <div
+          className="modal fade show"
+          id="exampleModal"
+          tabIndex={-1}
+          aria-labelledby="exampleModalLabel"
+          aria-hidden="true"
+          style={{ display: "block", marginTop: "90px" }}
+        >
+          <div className="modal-dialog">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5 className="modal-title" id="exampleModalLabel">
+                  Detalles de la reserva
+                </h5>
+                <button
+                  type="button"
+                  className="btn-close"
+                  onClick={handleCloseModal2}
+                  aria-label="Close"
+                ></button>
+              </div>
+
+              <div className="modal-body">
+                {eventDetails && (
+                  <div>
+                    <p>
+                      Usuario:{" "}
+                      {eventDetails.FirstName && eventDetails.LastName
+                        ? eventDetails.FirstName + " " + eventDetails.LastName
+                        : "SIN REGISTRO"}
+                    </p>
+                    <p>
+                      Gerencia: {eventDetails.NameManagement || "SIN REGISTRO"}
+                    </p>
+                    <p>Area: {eventDetails.NameArea || "SIN REGISTRO"}</p>
+                    <p>Fecha: {eventDetails.DateDay || "SIN REGISTRO"}</p>
+                    <p>
+                      Hora Inicio: {eventDetails.StartTime || "SIN REGISTRO"}
+                    </p>
+                    <p>Hora Fin: {eventDetails.EndTime || "SIN REGISTRO"}</p>
+                    <p>
+                      Lista de jugadores:{" "}
+                      {eventDetails.ListPlayer || "SIN REGISTRO"}
+                    </p>
+                  </div>
+                )}
+              </div>
+              <div className="modal-footer">
+                <button
+                  type="button"
+                  className="btn btn-secondary"
+                  onClick={handleCloseModal2}
+                >
+                  Cerrar
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+      {ayuda && <div className="modal-backdrop fade show"></div>}
     </div>
   );
 }

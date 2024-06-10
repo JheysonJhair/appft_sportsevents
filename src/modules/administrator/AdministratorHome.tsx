@@ -66,22 +66,6 @@ export function AdimistratorHome() {
     setEventDetails(null);
   }
 
-  function getCurrentDate() {
-    const now = new Date();
-    const year = now.getFullYear();
-    const month = String(now.getMonth() + 1).padStart(2, "0");
-    const day = String(now.getDate()).padStart(2, "0");
-    return `${year}-${month}-${day}`;
-  }
-
-  function getCurrentTime() {
-    const now = new Date();
-    const hours = String(now.getHours()).padStart(2, "0");
-    const minutes = String(now.getMinutes()).padStart(2, "0");
-    const seconds = String(now.getSeconds()).padStart(2, "0");
-    return `${hours}:${minutes}:${seconds}`;
-  }
-
   async function handleConfirmReservation() {
     try {
       if (!selectedEvent || !listPlayer.trim()) {
@@ -128,10 +112,15 @@ export function AdimistratorHome() {
           confirmButtonText: "Aceptar",
         });
 
-        const currentDate = getCurrentDate();
-        const currentTime = getCurrentTime();
+        const eventDate = formatDate2(selectedEvent.start);
+        const eventStartTime = formatHour(selectedEvent.start);
+        const eventEndTime = formatHour(selectedEvent.end);
 
-        await insertNotification(currentDate, currentTime, listPlayer);
+        await insertNotification(
+          eventDate,
+          eventStartTime + " " + eventEndTime,
+          listPlayer
+        );
       } else {
         Swal.fire({
           title: "Error!",
@@ -157,6 +146,7 @@ export function AdimistratorHome() {
         jugadores: event.ListPlayer,
         start: `${event.DateDay}T${event.StartTime}`,
         end: `${event.DateDay}T${event.EndTime}`,
+        turno: event.Shift,
         color: event.areaIdArea === 1 ? "#2C3E50" : "#44a7ea",
         IdField1Entity: event.IdField1Entity,
       }));
@@ -176,6 +166,7 @@ export function AdimistratorHome() {
         jugadores: event.ListPlayer,
         start: `${event.DateDay}T${event.StartTime}`,
         end: `${event.DateDay}T${event.EndTime}`,
+        turno: event.Shift,
         color: event.areaIdArea === 1 ? "#2C3E50" : "#ef8392",
         IdField2Entity: event.IdField2Entity,
       }));
@@ -188,6 +179,29 @@ export function AdimistratorHome() {
   async function handleDelete(event: any) {
     const fieldId1 = event.extendedProps.IdField1Entity;
     const fieldId2 = event.extendedProps.IdField2Entity;
+    const area = event.extendedProps.area;
+    const turno = event.extendedProps.turno;
+
+    const selectedDate = new Date(event.start);
+    const startOfWeek = new Date(
+      selectedDate.setDate(
+        selectedDate.getDate() -
+          selectedDate.getDay() +
+          (selectedDate.getDay() === 0 ? -6 : 1)
+      )
+    );
+    const endOfWeek = new Date(
+      selectedDate.setDate(selectedDate.getDate() - selectedDate.getDay() + 7)
+    );
+
+    const inicioSemana = `${startOfWeek.getFullYear()}-${(
+      startOfWeek.getMonth() + 1
+    )
+      .toString()
+      .padStart(2, "0")}-${startOfWeek.getDate().toString().padStart(2, "0")}`;
+    const finSemana = `${endOfWeek.getFullYear()}-${(endOfWeek.getMonth() + 1)
+      .toString()
+      .padStart(2, "0")}-${endOfWeek.getDate().toString().padStart(2, "0")}`;
 
     Swal.fire({
       title: "¿Estás seguro?",
@@ -219,28 +233,60 @@ export function AdimistratorHome() {
               );
             }
           } else if (fieldId2) {
-            const response = await eliminarHorarioCancha2(fieldId2);
-            if (response.success) {
-              setEventsCancha2(
-                eventsCancha2.filter((e) => e.IdField2Entity !== fieldId2)
+            if (area == "ADMINISTRADOR DEL SISTEMA") {
+              const response = await eliminarHorarioCancha2(
+                fieldId2,
+                turno,
+                area,
+                inicioSemana + "-" + finSemana,
+                1
               );
-              Swal.fire({
-                title: "¡Eliminado!",
-                text: "Se ha eliminado correctamente!",
-                icon: "success",
-              });
+              if (response.success) {
+                setEventsCancha2(
+                  eventsCancha2.filter((e) => e.IdField2Entity !== fieldId2)
+                );
+                Swal.fire({
+                  title: "¡Eliminado!",
+                  text: "Se ha eliminado correctamente!",
+                  icon: "success",
+                });
+              }
+              const notificationMessage = `Se eliminó la reserva de GERENCIA`;
+              await insertarNotificacion(
+                notificationMessage,
+                user?.IdUser || 0,
+                response.IdArea
+              );
+            } else {
+              const response = await eliminarHorarioCancha2(
+                fieldId2,
+                turno,
+                area,
+                inicioSemana + "-" + finSemana,
+                10
+              );
+              if (response.success) {
+                setEventsCancha2(
+                  eventsCancha2.filter((e) => e.IdField2Entity !== fieldId2)
+                );
+                Swal.fire({
+                  title: "¡Eliminado!",
+                  text: "Se ha eliminado correctamente!",
+                  icon: "success",
+                });
+              }
+              const notificationMessage = `Se eliminó la reserva de GERENCIA`;
+              await insertarNotificacion(
+                notificationMessage,
+                user?.IdUser || 0,
+                response.IdArea
+              );
             }
-            const notificationMessage = `Se eliminó la reserva de GERENCIA`;
-            await insertarNotificacion(
-              notificationMessage,
-              user?.IdUser || 0,
-              response.IdArea
-            );
           }
         } catch (error: any) {
           Swal.fire({
             title: "Error!",
-            text: "Error al eliminar el evento: " + error.message,
+            text: "Error",
             icon: "error",
           });
         }
@@ -267,6 +313,12 @@ export function AdimistratorHome() {
   }
 
   function renderEventContent(eventInfo: any) {
+    const truncateText = (text: string, maxLength: number) => {
+      return text.length > maxLength
+        ? text.substring(0, maxLength) + "..."
+        : text;
+    };
+
     return (
       <div style={{ position: "relative", padding: "4px" }}>
         <span
@@ -303,7 +355,7 @@ export function AdimistratorHome() {
         </span>
         <div className="fc-event-title">{eventInfo.event.title}</div>
         <div className="fc-event-title">
-          {eventInfo.event.extendedProps.area}
+          {truncateText(eventInfo.event.extendedProps.area, 16)}
         </div>
       </div>
     );
@@ -461,7 +513,7 @@ export function AdimistratorHome() {
             <div className="modal-content">
               <div className="modal-header">
                 <h5 className="modal-title" id="exampleModalLabel">
-                  Detalles del evento
+                  Detalles de la reserva
                 </h5>
                 <button
                   type="button"
