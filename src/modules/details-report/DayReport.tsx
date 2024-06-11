@@ -7,6 +7,7 @@ import { ReportDay } from "../../types/DayReport";
 import { fetchGerencias } from "../../services/Gerencia";
 import { fetchAreasByManagementId } from "../../services/Area";
 import { Management } from "../../types/Management";
+import { fetchUserDataByDNI } from "../../services/Login"; 
 
 export function DayReport() {
   const navigate = useNavigate();
@@ -67,11 +68,55 @@ export function DayReport() {
   };
 
   const validateField = (name: string, value: string): string => {
-    if (!value) {
-      console.log(name);
+    if (
+      !value &&
+      (name === "NamePlayer" || name === "Description" || name === "IdArea")
+    ) {
       return "Este campo es obligatorio";
     }
     return "";
+  };
+
+  const handleBuscarJugador = async () => {
+    const dni = reporte.Dni;
+    if (!dni) {
+      Swal.fire({
+        title: "Error",
+        text: "Por favor ingrese un DNI válido.",
+        icon: "warning",
+        confirmButtonText: "Aceptar",
+      });
+      return;
+    }
+
+    try {
+      const response = await fetchUserDataByDNI(dni);
+      if (response) {
+        setReporte((prevReporte) => ({
+          ...prevReporte,
+          NamePlayer:
+            response.nombres +
+            response.apellido_paterno +
+            " " +
+            response.apellido_materno,
+        }));
+      } else {
+        Swal.fire({
+          title: "Error",
+          text: response.msg,
+          icon: "warning",
+          confirmButtonText: "Aceptar",
+        });
+      }
+    } catch (error) {
+      Swal.fire({
+        title: "Error!",
+        text: "Opps, algo salió mal al buscar el jugador!",
+        icon: "error",
+        confirmButtonText: "Aceptar",
+      });
+      console.error("Error al buscar el jugador:", error);
+    }
   };
 
   const handleRegistrarReporte = async () => {
@@ -83,7 +128,7 @@ export function DayReport() {
     if (missingFields.length > 0) {
       Swal.fire({
         title: "Error!",
-        text: "Por favor complete los siguientes campos obligatorios:",
+        text: "Por favor complete todos los campos",
         icon: "error",
         confirmButtonText: "Aceptar",
       });
@@ -127,7 +172,7 @@ export function DayReport() {
   return (
     <div className="page-wrapper ">
       <div className="page-content">
-        <div className="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
+        <div className="page-breadcrumb d-none d-sm-flex align-items-center ">
           <div className="breadcrumb-title pe-3">Reporte</div>
           <div className="ps-3">
             <nav aria-label="breadcrumb">
@@ -144,7 +189,7 @@ export function DayReport() {
             </nav>
           </div>
         </div>
-        <div className="row px-5 py-4 justify-content-center">
+        <div className="row px-5 py-2 justify-content-center">
           <div className="col-lg-7 mb-3">
             <img
               src="assets/images/report.svg"
@@ -211,6 +256,31 @@ export function DayReport() {
                     </div>
                   )}
                 </div>
+                <div className="col-md-6">
+                  <label htmlFor="inputDni" className="form-label">
+                    Dni
+                  </label>
+                  <div className="input-group">
+                    <input
+                      type="number"
+                      className="form-control"
+                      id="inputDni"
+                      name="Dni"
+                      placeholder="Tu dni"
+                      maxLength={8}
+                      pattern="\d{8}"
+                      title="Ingrese 8 dígitos"
+                      onChange={handleInputChange}
+                    />
+                    <button
+                      type="button"
+                      className="btn btn-outline-secondary"
+                      onClick={handleBuscarJugador}
+                    >
+                      <i className="bx bx-search"></i>
+                    </button>
+                  </div>
+                </div>
                 <div className="col-12">
                   <label htmlFor="input01" className="form-label">
                     Jugador agredido
@@ -224,6 +294,7 @@ export function DayReport() {
                     name="NamePlayer"
                     placeholder="Ingrese nombre del jugador"
                     onChange={handleInputChange}
+                    value={reporte.NamePlayer} // Añade el valor del estado
                   />
                   {errorMessages.NamePlayer && (
                     <div className="invalid-feedback">

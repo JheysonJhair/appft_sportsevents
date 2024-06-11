@@ -9,6 +9,7 @@ import { Weather } from "../types/Weather";
 import {
   getLastNotification,
   traerNotificacionesArea,
+  eliminarNotificacion,
 } from "../services/Notification";
 import { formatDate3 } from "../utils/util";
 
@@ -76,6 +77,9 @@ function AppLayout() {
       }
     };
     fetchLatestNotification();
+    const intervalId = setInterval(fetchLatestNotification, 20000);
+
+    return () => clearInterval(intervalId);
   }, []);
 
   useEffect(() => {
@@ -88,7 +92,7 @@ function AppLayout() {
     };
 
     fetchAndSetNotifications();
-    const intervalId = setInterval(fetchAndSetNotifications, 5000);
+    const intervalId = setInterval(fetchAndSetNotifications, 20000);
 
     return () => clearInterval(intervalId);
   }, [user]);
@@ -307,7 +311,7 @@ function AppLayout() {
                   <div className="d-flex align-items-center">
                     <div className="ms-3">
                       <h6 className="mb-0">Última Notificación</h6>
-                      <div>{formatDate3(latestNotification.DateDay)}</div>
+                      <div>{formatDate3(latestNotification.DateRegister)}</div>
                       <div>{latestNotification.Message}</div>
                     </div>
                   </div>
@@ -384,10 +388,7 @@ function AppLayout() {
                       style={{ marginRight: "30px" }}
                     >
                       <h6 className="m-0" style={{ fontSize: "13px" }}>
-                        Turno:{" "}
-                        {user?.Shift !== "SIN TURNO"
-                          ? user?.Shift
-                          : "Deshabilitado"}
+                        TURNO: {user?.Shift}
                       </h6>
                     </div>
                   </li>
@@ -400,14 +401,7 @@ function AppLayout() {
                       style={{ fontSize: "24px", color: "#2C3E50" }}
                     ></i>
                     <h6 className="m-0" style={{ fontSize: "13px" }}>
-                      Area:{" "}
-                      {[
-                        "ADMINISTRADOR",
-                        "ADMIN CANCHA",
-                        "OPERACIONES MINA",
-                      ].includes(user?.NameArea ?? "")
-                        ? "Deshabilitado"
-                        : user?.NameArea}
+                      AREA: {user?.NameArea}
                     </h6>
                   </li>
                   <li className="nav-item dropdown dropdown-large">
@@ -446,6 +440,40 @@ function AppLayout() {
                                   {notification.Date}
                                 </p>
                               </div>
+                              <i
+                                onClick={() => {
+                                  if (
+                                    notification.IdNotification !== undefined
+                                  ) {
+                                    eliminarNotificacion(
+                                      notification.IdNotification
+                                    )
+                                      .then(() => {
+                                        setNotifications(
+                                          notifications.filter(
+                                            (n) =>
+                                              n.IdNotification !==
+                                              notification.IdNotification
+                                          )
+                                        );
+                                        setNotificationCount(
+                                          notificationCount - 1
+                                        );
+                                      })
+                                      .catch((error) =>
+                                        console.error(
+                                          "Error eliminando la notificación:",
+                                          error
+                                        )
+                                      );
+                                  }
+                                }}
+                                className="bx bx-trash text-danger"
+                                style={{
+                                  fontSize: "20px",
+                                  cursor: `pointer`,
+                                }}
+                              ></i>
                             </div>
                           </a>
                         ))}
@@ -480,7 +508,7 @@ function AppLayout() {
                         : user?.Rol === 3
                         ? "ADMIN. CANCHA"
                         : user?.Rol === 4
-                        ? "ADMINISTRADOR"
+                        ? "ADMIN. SISTEMA"
                         : ""}
                     </p>
                   </div>

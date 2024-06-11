@@ -22,8 +22,6 @@ export function formatDate2(date: any): string {
 
 export const formatDate3 = (dateString: any) => {
   const date = new Date(dateString);
-  date.setDate(date.getDate() + 1);
-
   const day = date.getDate().toString().padStart(2, "0");
   const month = (date.getMonth() + 1).toString().padStart(2, "0");
   const year = date.getFullYear();

@@ -6,5 +6,6 @@ export interface ReportDay {
   Description: string;
   Date: string;
   NamePlayer: string;
+  Dni?: string;
 }
 

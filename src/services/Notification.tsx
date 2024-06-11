@@ -1,5 +1,5 @@
 const API_URL = "https://esappsoccer.ccontrolz.com/api";
-import axios from "axios"; // Asegúrate de importar axios
+import axios from "axios";
 //---------------------------------------------------------------- GET AREA ID NOTIFICATION
 export const traerNotificacionesArea = async (user: any) => {
   try {
@@ -92,3 +92,18 @@ export async function insertNotification(
     console.error("Error al insertar notificación:", error);
   }
 }
+
+//---------------------------------------------------------------- DELETE NOTIFICATION
+export const eliminarNotificacion = async (id: number) => {
+  console.log("jola"+id)
+  try {
+    const response = await axios.delete(`${API_URL}/notification/${id}`);
+    if (!response.data.success) {
+      throw new Error("Error al eliminar la notificación");
+    }
+    return response.data;
+  } catch (error) {
+    console.error("Error al eliminar la notificación:", error);
+    throw error;
+  }
+};

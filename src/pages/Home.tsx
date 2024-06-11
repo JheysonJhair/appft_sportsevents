@@ -18,6 +18,7 @@ import {
   obtenerHorarioCancha2PorId,
 } from "../services/Horario";
 import { formatHour, formatDate, formatDate2 } from "../utils/util";
+import { fetchUserDataByDNI } from "../services/Login";
 
 export function HomePage() {
   const { user } = useAuth();
@@ -35,7 +36,7 @@ export function HomePage() {
   const formattedDate = `${selectedYear}-${selectedMonth}-${selectedDate}`;
 
   useEffect(() => {
-    const intervalId = setInterval(fetchEvents, 1000);
+    const intervalId = setInterval(fetchEvents, 2000);
     return () => clearInterval(intervalId);
   }, []);
 
@@ -66,6 +67,47 @@ export function HomePage() {
       console.error("Error al obtener el horario:", error);
     }
   }
+  async function handleAddPlayer() {
+    const inputDni = document.getElementById("inputDni") as HTMLInputElement;
+    const dni = inputDni.value.trim();
+
+    if (dni.length !== 8 || isNaN(Number(dni))) {
+      Swal.fire({
+        title: "Error",
+        text: "Debe ingresar un DNI válido de 8 dígitos",
+        icon: "error",
+        confirmButtonText: "Aceptar",
+      });
+      return;
+    }
+
+    try {
+      const response = await fetchUserDataByDNI(dni);
+      if (response ) {
+        const playerName = `${response.nombres} ${response.apellido_paterno} ${response.apellido_materno}`;
+        setListPlayer((prevList) =>
+          prevList ? `${prevList}, ${playerName}` : playerName
+        );
+        inputDni.value = ""; // Limpiar el campo después de agregar
+      } else {
+        Swal.fire({
+          title: "Error",
+          text: "No se encontró información para el DNI ingresado",
+          icon: "error",
+          confirmButtonText: "Aceptar",
+        });
+      }
+    } catch (error) {
+      console.error("Error al consultar la RENIEC:", error);
+      Swal.fire({
+        title: "Error",
+        text: "Ocurrió un error al consultar la información del DNI",
+        icon: "error",
+        confirmButtonText: "Aceptar",
+      });
+    }
+  }
+
   function handleCloseModal2() {
     setAyuda(false);
     setEventDetails(null);
@@ -89,11 +131,13 @@ export function HomePage() {
   }
   function renderEventContent(eventInfo: any) {
     const truncateText = (text: string, maxLength: number) => {
-      return text.length > maxLength ? text.substring(0, maxLength) + '...' : text;
+      return text.length > maxLength
+        ? text.substring(0, maxLength) + "..."
+        : text;
     };
     return (
       <div>
-                <span
+        <span
           className="view-icon"
           onClick={() => handleViewDetails(eventInfo.event)}
           style={{
@@ -331,9 +375,33 @@ export function HomePage() {
                     new Date(selectedEvent.start).toLocaleDateString()}
                 </p>
                 <div className="mb-3">
-                  <label htmlFor="listPlayer" className="form-label">
-                    Lista de Jugadores
-                  </label>
+                  <div className="row">
+                    <label htmlFor="listPlayer" className="form-label">
+                      Lista de Jugadores
+                    </label>
+                    <div className="col-md-5 mb-3">
+                      <div className="input-group">
+                        <input
+                          type="number"
+                          className="form-control"
+                          id="inputDni"
+                          name="Dni"
+                          placeholder="Dni"
+                          maxLength={8}
+                          pattern="\d{8}"
+                          title="Ingrese 8 dígitos"
+                        />
+                        <button
+                          type="button"
+                          className="btn btn-outline-secondary"
+                          onClick={handleAddPlayer}
+                        >
+                          <i className="bx bx-plus"></i>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+
                   <textarea
                     className="form-control"
                     id="listPlayer"
@@ -388,7 +456,7 @@ export function HomePage() {
           />
         </div>
       )}
-            {ayuda && (
+      {ayuda && (
         <div
           className="modal fade show"
           id="exampleModal"

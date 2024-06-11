@@ -24,6 +24,7 @@
   pointer-events: none;
   opacity: 0.5;
 }
+/* Alerta */
 .alert-bottom-right {
   position: fixed;
   bottom: 20px;
@@ -43,4 +44,8 @@
 }
 .alert-container .alert {
   width: auto;
+}
+/* Celldas */
+.special-day-cell {
+  background-color: #fffadf4d !important; 
 }

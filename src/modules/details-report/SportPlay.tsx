@@ -45,16 +45,27 @@ export function SportPlay() {
   async function fetchEventsCancha1() {
     try {
       const horarioCancha1 = await obtenerHorarioCancha1();
-      const initialEventsCancha1: EventData[] = horarioCancha1.map((event) => ({
-        IdField1Entity: event.IdField1Entity,
-        title: event.FirstName,
-        area: event.NameArea,
-        laboratorio: event.NameManagement,
-        jugadores: event.ListPlayer,
-        start: `${event.DateDay}T${event.StartTime}`,
-        end: `${event.DateDay}T${event.EndTime}`,
-        color: "#44a7ea",
-      }));
+      const initialEventsCancha1: EventData[] = horarioCancha1.map((event) => {
+        const startTime = new Date(`${event.DateDay}T${event.StartTime}`);
+        const color =
+          startTime.getHours() >= 9 && startTime.getHours() < 13
+            ? "#2C3E50"
+            : event.areaIdArea === 1
+            ? "#2C3E50"
+            : "#44a7ea";
+        return {
+          title: event.FirstName,
+          area: event.NameArea,
+          laboratorio: event.NameManagement,
+          jugadores: event.ListPlayer,
+          start: `${event.DateDay}T${event.StartTime}`,
+          end: `${event.DateDay}T${event.EndTime}`,
+          turno: event.Shift,
+          color: color,
+          IdField1Entity: event.IdField1Entity,
+        };
+      });
+
       setEventsCancha1(initialEventsCancha1);
     } catch (error) {
       console.error("Error al obtener el horario de la Cancha 1:", error);
@@ -64,22 +75,32 @@ export function SportPlay() {
   async function fetchEventsCancha2() {
     try {
       const horarioCancha2 = await obtenerHorarioCancha2();
-      const initialEventsCancha2: EventData[] = horarioCancha2.map((event) => ({
-        IdField2Entity: event.IdField2Entity,
-        title: event.FirstName,
-        area: event.NameArea,
-        laboratorio: event.NameManagement,
-        jugadores: event.ListPlayer,
-        start: `${event.DateDay}T${event.StartTime}`,
-        end: `${event.DateDay}T${event.EndTime}`,
-        color: "#fd3550",
-      }));
+      const initialEventsCancha2: EventData[] = horarioCancha2.map((event) => {
+        const startTime = new Date(`${event.DateDay}T${event.StartTime}`);
+        const color =
+          startTime.getHours() >= 9 && startTime.getHours() < 18
+            ? "#2C3E50"
+            : event.areaIdArea === 1
+            ? "#2C3E50"
+            : "#ed6173";
+        return {
+          title: event.FirstName,
+          area: event.NameArea,
+          laboratorio: event.NameManagement,
+          jugadores: event.ListPlayer,
+          start: `${event.DateDay}T${event.StartTime}`,
+          end: `${event.DateDay}T${event.EndTime}`,
+          turno: event.Shift,
+          color: color,
+          IdField2Entity: event.IdField2Entity,
+        };
+      });
+
       setEventsCancha2(initialEventsCancha2);
     } catch (error) {
       console.error("Error al obtener el horario de la Cancha 2:", error);
     }
   }
-
   function renderEventContent(eventInfo: any) {
     return (
       <div>
@@ -126,7 +147,41 @@ export function SportPlay() {
       </div>
     );
   }
-
+  function renderSpecialCalendar(
+    slotMinTime: any,
+    slotMaxTime: any,
+    eventsData: EventData[]
+  ) {
+    return (
+      <div className="table-responsive py-4">
+        <FullCalendar
+          plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
+          locales={[esLocale]}
+          locale="es"
+          headerToolbar={{
+            left: "",
+            center: "",
+            right: "",
+          }}
+          initialView="timeGridDay"
+          initialDate={new Date()}
+          nowIndicator={true}
+          dayMaxEvents={true}
+          editable={false}
+          selectable={true}
+          slotMinTime={slotMinTime}
+          slotMaxTime={slotMaxTime}
+          contentHeight="auto"
+          allDaySlot={false}
+          slotLabelInterval={{ hour: 1 }}
+          slotLabelFormat={{ hour: "numeric", hour12: true }}
+          selectOverlap={false}
+          events={eventsData}
+          eventContent={renderEventContent}
+        />
+      </div>
+    );
+  }
   return (
     <div className="page-wrapper">
       <div className="page-content">
@@ -136,12 +191,14 @@ export function SportPlay() {
               <h5 className="card-title">OPERACIONES MINA (Cancha 1)</h5>
               <hr />
               {renderCalendar("06:00:00", "09:00:00", eventsCancha1)}
+              {renderSpecialCalendar("09:00:00", "18:00:00", eventsCancha1)}
               {renderCalendar("18:00:00", "21:00:00", eventsCancha1)}
             </div>
             <div className="calendar-column px-4">
               <h5 className="card-title">TRABAJADORES GERENCIAS (Cancha 2)</h5>
               <hr />
               {renderCalendar("06:00:00", "09:00:00", eventsCancha2)}
+              {renderSpecialCalendar("09:00:00", "18:00:00", eventsCancha2)}
               {renderCalendar("18:00:00", "21:00:00", eventsCancha2)}
             </div>
           </div>

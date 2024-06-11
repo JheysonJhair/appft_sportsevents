@@ -184,16 +184,8 @@ export function Users() {
             <tbody>
               {filteredUsuarios.map((usuario, index) => (
                 <tr key={index}>
-                  <td>
-                    {[
-                      "ADMINISTRADOR DEL SISTEMA",
-                      "ADMINISTRADOR DE LA CANCHA",
-                    ].includes(usuario.NameArea || "")
-                      ? "ADMINISTRADOR"
-                      : usuario.NameArea || ""}
-                  </td>
-
-                  <td>{usuario.FirstName + " "+ usuario.LastName}</td>
+                  <td>{usuario.NameArea}</td>
+                  <td>{usuario.FirstName + " " + usuario.LastName}</td>
                   <td>{usuario.Dni}</td>
                   <td>{usuario.Password}</td>
                   <td>{usuario.PhoneNumber}</td>

@@ -49,35 +49,49 @@ export function NewUser() {
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
-
+  
     if (name === "Rol") {
       setShowAdditionalFields(value === "1" || value === "2");
-
+      console.log(value);
+      let updatedUsuario = { ...nuevoUsuario };
       if (value === "1") {
         const operacionMinaId =
           gerencias.find((g) => g.NameManagement === "OPERACIONES MINA")
             ?.IdManagement || 1;
-
-        setNuevoUsuario((prevUsuario) => ({
-          ...prevUsuario,
+  
+        updatedUsuario = {
+          ...updatedUsuario,
           Gerencia: operacionMinaId,
           Shift: "SIN TURNO",
-        }));
-
+        };
+  
         try {
           const areasData = await fetchAreasByManagementId(operacionMinaId);
           setAreas(areasData.data);
         } catch (error) {
           console.error(error);
         }
+      } else if (value === "3") {
+        updatedUsuario = {
+          ...updatedUsuario,
+          IdArea: 2, 
+          Shift: "SIN TURNO",
+        };
+      }else if (value === "4") {
+          updatedUsuario = {
+            ...updatedUsuario,
+            IdArea: 1, 
+            Shift: "SIN TURNO",
+          };
       } else {
-        setNuevoUsuario((prevUsuario) => ({
-          ...prevUsuario,
+        updatedUsuario = {
+          ...updatedUsuario,
           Gerencia: undefined,
-        }));
+        };
       }
+      setNuevoUsuario(updatedUsuario);
     }
-
+  
     setNuevoUsuario((prevUsuario) => ({
       ...prevUsuario,
       [name]:
@@ -87,12 +101,12 @@ export function NewUser() {
           ? Number(value)
           : value,
     }));
-
+  
     setErrorMessages((prevErrors) => ({
       ...prevErrors,
       [name]: validateField(name, value),
     }));
-
+  
     if (name === "Gerencia") {
       try {
         const areasData = await fetchAreasByManagementId(value);
@@ -102,7 +116,7 @@ export function NewUser() {
       }
     }
   };
-
+  
   const validateField = (
     name: string,
     value: string | undefined
@@ -154,10 +168,10 @@ export function NewUser() {
       const usuarioParaEnviar: Partial<User> = {
         ...nuevoUsuario,
         Shift: nuevoUsuario.Shift || "SIN TURNO",
-        IdArea: nuevoUsuario.IdArea ? Number(nuevoUsuario.IdArea) : 1,
       };
       delete usuarioParaEnviar.Gerencia;
-
+      
+      console.log(usuarioParaEnviar)
       let response: { msg: string; success: boolean };
       response = await crearUsuario(usuarioParaEnviar);
       if (response.success) {
