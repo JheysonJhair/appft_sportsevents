@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import { useLocation, useNavigate, NavLink } from "react-router-dom";
 import Swal from "sweetalert2";
+
+import { User } from "../../../types/User";
 import { verificarCodigo } from "../../../services/Usuario";
 import { crearUsuario } from "../../../services/Usuario";
-import { User } from "../../../types/User";
 
 export default function VerificationCode() {
   const navigate = useNavigate();
@@ -22,6 +23,8 @@ export default function VerificationCode() {
     ...formData,
   };
   delete usuarioParaEnviar.Gerencia;
+
+  //---------------------------------------------------------------- VERIFICATION OK
   const handleVerify = async () => {
     try {
       const response = await verificarCodigo(email, code);

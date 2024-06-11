@@ -2,12 +2,12 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 
-import { crearReporte } from "../../services/Reportes";
+import { Management } from "../../types/Management";
 import { ReportDay } from "../../types/DayReport";
+import { fetchUserDataByDNI } from "../../services/Login";
+import { crearReporte } from "../../services/Reportes";
 import { fetchGerencias } from "../../services/Gerencia";
 import { fetchAreasByManagementId } from "../../services/Area";
-import { Management } from "../../types/Management";
-import { fetchUserDataByDNI } from "../../services/Login"; 
 
 export function DayReport() {
   const navigate = useNavigate();
@@ -26,6 +26,7 @@ export function DayReport() {
   const [gerencias, setGerencias] = useState<Management[]>([]);
   const [areas, setAreas] = useState<any[]>([]);
 
+  //---------------------------------------------------------------- GET MANAGEMENT
   useEffect(() => {
     const getGerencias = async () => {
       try {
@@ -42,6 +43,7 @@ export function DayReport() {
     getGerencias();
   }, []);
 
+  //---------------------------------------------------------------- INPUT CHANGE
   const handleInputChange = async (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
@@ -67,16 +69,7 @@ export function DayReport() {
     }
   };
 
-  const validateField = (name: string, value: string): string => {
-    if (
-      !value &&
-      (name === "NamePlayer" || name === "Description" || name === "IdArea")
-    ) {
-      return "Este campo es obligatorio";
-    }
-    return "";
-  };
-
+  //------------------------------- RENIEC
   const handleBuscarJugador = async () => {
     const dni = reporte.Dni;
     if (!dni) {
@@ -119,6 +112,18 @@ export function DayReport() {
     }
   };
 
+  //------------------------------- VALIDATION
+  const validateField = (name: string, value: string): string => {
+    if (
+      !value &&
+      (name === "NamePlayer" || name === "Description" || name === "IdArea")
+    ) {
+      return "Este campo es obligatorio";
+    }
+    return "";
+  };
+
+  //---------------------------------------------------------------- POST REPORT
   const handleRegistrarReporte = async () => {
     const requiredFields = ["IdArea", "NamePlayer", "Description"];
     const missingFields = requiredFields.filter(
@@ -152,7 +157,7 @@ export function DayReport() {
         navigate("/administrator-field/");
       } else {
         Swal.fire({
-          title: "Error",
+          title: "Alerta",
           text: response.msg,
           icon: "warning",
           confirmButtonText: "Aceptar",

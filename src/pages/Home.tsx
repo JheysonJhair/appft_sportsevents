@@ -7,8 +7,10 @@ import esLocale from "@fullcalendar/core/locales/es";
 import Swal from "sweetalert2";
 
 import { useAuth } from "../hooks/AuthContext";
+import { formatHour, formatDate, formatDate2 } from "../utils/util";
 import { EventData } from "../types/Eventos";
 import { Field } from "../types/Field";
+import { fetchUserDataByDNI } from "../services/Login";
 import {
   obtenerHorarioCancha1,
   obtenerHorarioCancha2,
@@ -17,17 +19,17 @@ import {
   obtenerHorarioCancha1PorId,
   obtenerHorarioCancha2PorId,
 } from "../services/Horario";
-import { formatHour, formatDate, formatDate2 } from "../utils/util";
-import { fetchUserDataByDNI } from "../services/Login";
 
 export function HomePage() {
   const { user } = useAuth();
-  const [events, setEvents] = useState<EventData[]>([]);
   const [selectedEvent, setSelectedEvent] = useState<EventData | null>(null);
-  const [listPlayer, setListPlayer] = useState<string>("");
   const [showAlert, setShowAlert] = useState(false);
-  const [eventDetails, setEventDetails] = useState<any>(null);
   const [ayuda, setAyuda] = useState<any>(false);
+
+  const [events, setEvents] = useState<EventData[]>([]);
+  const [listPlayer, setListPlayer] = useState<string>("");
+  const [eventDetails, setEventDetails] = useState<any>(null);
+
   const selectedDate = selectedEvent && new Date(selectedEvent.start).getDate();
   const selectedMonth =
     selectedEvent && new Date(selectedEvent.start).getMonth() + 1;
@@ -35,6 +37,7 @@ export function HomePage() {
     selectedEvent && new Date(selectedEvent.start).getFullYear();
   const formattedDate = `${selectedYear}-${selectedMonth}-${selectedDate}`;
 
+  //---------------------------------------------------------------- GET DATA FIELD 1 AND 2 - RENDER
   useEffect(() => {
     const intervalId = setInterval(fetchEvents, 2000);
     return () => clearInterval(intervalId);
@@ -67,68 +70,7 @@ export function HomePage() {
       console.error("Error al obtener el horario:", error);
     }
   }
-  async function handleAddPlayer() {
-    const inputDni = document.getElementById("inputDni") as HTMLInputElement;
-    const dni = inputDni.value.trim();
 
-    if (dni.length !== 8 || isNaN(Number(dni))) {
-      Swal.fire({
-        title: "Error",
-        text: "Debe ingresar un DNI válido de 8 dígitos",
-        icon: "error",
-        confirmButtonText: "Aceptar",
-      });
-      return;
-    }
-
-    try {
-      const response = await fetchUserDataByDNI(dni);
-      if (response ) {
-        const playerName = `${response.nombres} ${response.apellido_paterno} ${response.apellido_materno}`;
-        setListPlayer((prevList) =>
-          prevList ? `${prevList}, ${playerName}` : playerName
-        );
-        inputDni.value = ""; // Limpiar el campo después de agregar
-      } else {
-        Swal.fire({
-          title: "Error",
-          text: "No se encontró información para el DNI ingresado",
-          icon: "error",
-          confirmButtonText: "Aceptar",
-        });
-      }
-    } catch (error) {
-      console.error("Error al consultar la RENIEC:", error);
-      Swal.fire({
-        title: "Error",
-        text: "Ocurrió un error al consultar la información del DNI",
-        icon: "error",
-        confirmButtonText: "Aceptar",
-      });
-    }
-  }
-
-  function handleCloseModal2() {
-    setAyuda(false);
-    setEventDetails(null);
-  }
-  async function handleViewDetails(event: any) {
-    const fieldId1 = event.extendedProps.IdField1Entity;
-    const fieldId2 = event.extendedProps.IdField2Entity;
-    try {
-      if (fieldId1) {
-        const response = await obtenerHorarioCancha1PorId(fieldId1);
-        setEventDetails(response);
-        setAyuda(true);
-      } else if (fieldId2) {
-        const response = await obtenerHorarioCancha2PorId(fieldId2);
-        setEventDetails(response);
-        setAyuda(true);
-      }
-    } catch (error: any) {
-      console.error(error);
-    }
-  }
   function renderEventContent(eventInfo: any) {
     const truncateText = (text: string, maxLength: number) => {
       return text.length > maxLength
@@ -160,6 +102,8 @@ export function HomePage() {
       </div>
     );
   }
+
+  //---------------------------------------------------------------- SELECT EVENT - REGISTER
   function handleSelectEvent(event: any) {
     if (user?.Rol === 2) {
       const startTime = new Date(event.start).getTime();
@@ -183,12 +127,6 @@ export function HomePage() {
       setSelectedEvent(event);
     }
   }
-
-  function handleCloseModal() {
-    setSelectedEvent(null);
-    setListPlayer("");
-  }
-
   async function handleConfirmReservation() {
     try {
       if (!selectedEvent || !listPlayer.trim()) {
@@ -264,6 +202,74 @@ export function HomePage() {
     } finally {
       handleCloseModal();
     }
+  }
+  function handleCloseModal() {
+    setSelectedEvent(null);
+    setListPlayer("");
+  }
+
+  //---------------------------------------------RENIEC LIST
+  async function handleAddPlayer() {
+    const inputDni = document.getElementById("inputDni") as HTMLInputElement;
+    const dni = inputDni.value.trim();
+
+    if (dni.length !== 8 || isNaN(Number(dni))) {
+      Swal.fire({
+        title: "Error",
+        text: "Debe ingresar un DNI válido de 8 dígitos",
+        icon: "error",
+        confirmButtonText: "Aceptar",
+      });
+      return;
+    }
+
+    try {
+      const response = await fetchUserDataByDNI(dni);
+      if (response) {
+        const playerName = `${response.nombres} ${response.apellido_paterno} ${response.apellido_materno}`;
+        setListPlayer((prevList) =>
+          prevList ? `${prevList}, ${playerName}` : playerName
+        );
+        inputDni.value = "";
+      } else {
+        Swal.fire({
+          title: "Error",
+          text: "No se encontró información para el DNI ingresado",
+          icon: "error",
+          confirmButtonText: "Aceptar",
+        });
+      }
+    } catch (error) {
+      Swal.fire({
+        title: "Error",
+        text: "Ocurrió un error al consultar la información del DNI",
+        icon: "error",
+        confirmButtonText: "Aceptar",
+      });
+    }
+  }
+
+  //---------------------------------------------------------------- VIEW EVENT
+  async function handleViewDetails(event: any) {
+    const fieldId1 = event.extendedProps.IdField1Entity;
+    const fieldId2 = event.extendedProps.IdField2Entity;
+    try {
+      if (fieldId1) {
+        const response = await obtenerHorarioCancha1PorId(fieldId1);
+        setEventDetails(response);
+        setAyuda(true);
+      } else if (fieldId2) {
+        const response = await obtenerHorarioCancha2PorId(fieldId2);
+        setEventDetails(response);
+        setAyuda(true);
+      }
+    } catch (error: any) {
+      console.error(error);
+    }
+  }
+  function handleCloseModal2() {
+    setAyuda(false);
+    setEventDetails(null);
   }
 
   return (
@@ -433,29 +439,6 @@ export function HomePage() {
         </div>
       )}
       {selectedEvent && <div className="modal-backdrop fade show"></div>}
-
-      {showAlert && (
-        <div className="alert alert-danger border-0 bg-danger alert-dismissible fade show py-2 alert-bottom-right">
-          <div className="d-flex align-items-center">
-            <div className="font-35 text-white">
-              <i className="bx bx-info-square" />
-            </div>
-            <div className="ms-3">
-              <h6 className="mb-0 text-white">Nota importante!</h6>
-              <div className="text-white">
-                No te olvides de llevar tu photocheck
-              </div>
-            </div>
-          </div>
-          <button
-            type="button"
-            className="btn-close"
-            data-bs-dismiss="alert"
-            aria-label="Close"
-            onClick={() => setShowAlert(false)}
-          />
-        </div>
-      )}
       {ayuda && (
         <div
           className="modal fade show"
@@ -518,6 +501,28 @@ export function HomePage() {
         </div>
       )}
       {ayuda && <div className="modal-backdrop fade show"></div>}
+      {showAlert && (
+        <div className="alert alert-danger border-0 bg-danger alert-dismissible fade show py-2 alert-bottom-right">
+          <div className="d-flex align-items-center">
+            <div className="font-35 text-white">
+              <i className="bx bx-info-square" />
+            </div>
+            <div className="ms-3">
+              <h6 className="mb-0 text-white">Nota importante!</h6>
+              <div className="text-white">
+                No te olvides de llevar tu photocheck
+              </div>
+            </div>
+          </div>
+          <button
+            type="button"
+            className="btn-close"
+            data-bs-dismiss="alert"
+            aria-label="Close"
+            onClick={() => setShowAlert(false)}
+          />
+        </div>
+      )}
     </div>
   );
 }

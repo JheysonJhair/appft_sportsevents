@@ -2,9 +2,9 @@ import { Outlet, NavLink } from "react-router-dom";
 import { useEffect, useState } from "react";
 
 import { useAuth } from "../hooks/AuthContext";
-import { getWeather } from "../services/weather";
 import { User } from "../types/User";
 import { Notification } from "../types/Notification";
+import { getWeather } from "../services/weather";
 import { Weather } from "../types/Weather";
 import {
   getLastNotification,
@@ -14,6 +14,7 @@ import {
 import { formatDate3 } from "../utils/util";
 
 function AppLayout() {
+  const { user } = useAuth() as { user: User };
   const [notificationCount, setNotificationCount] = useState<number>(0);
   const [currentDate, setCurrentDate] = useState<{
     small: string;
@@ -28,8 +29,8 @@ function AppLayout() {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [latestNotification, setLatestNotification] =
     useState<Notification | null>(null);
-  const { user } = useAuth() as { user: User };
 
+  //---------------------------------------------------------------- GET API TEMPERATURE
   useEffect(() => {
     const optionsSmall: Intl.DateTimeFormatOptions = {
       year: "2-digit",
@@ -65,6 +66,8 @@ function AppLayout() {
 
     fetchWeather();
   }, []);
+
+  //---------------------------------------------------------------- GET NOTIFICATION LAST
   useEffect(() => {
     const fetchLatestNotification = async () => {
       try {
@@ -82,6 +85,7 @@ function AppLayout() {
     return () => clearInterval(intervalId);
   }, []);
 
+  //---------------------------------------------------------------- GET NOTIFICATIONS
   useEffect(() => {
     const fetchAndSetNotifications = async () => {
       if (user) {
@@ -97,6 +101,7 @@ function AppLayout() {
     return () => clearInterval(intervalId);
   }, [user]);
 
+  //---------------------------------------------------------------- SCRIPTS
   useEffect(() => {
     const scriptPaths = [
       "../assets/js/bootstrap.bundle.min.js",

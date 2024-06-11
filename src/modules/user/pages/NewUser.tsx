@@ -2,36 +2,23 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 
-import { Management } from "../../../types/Management";
-import { User } from "../../../types/User";
-import { crearUsuario } from "../../../services/Usuario";
-import { fetchGerencias } from "../../../services/Gerencia";
-import { fetchAreasByManagementId } from "../../../services/Area";
 import {
   validateRequiredField,
   validateDNI,
   validateEmail,
   validatePhoneNumber,
 } from "../../../utils/validations";
+import { Management } from "../../../types/Management";
+import { User } from "../../../types/User";
+import { crearUsuario } from "../../../services/Usuario";
+import { fetchGerencias } from "../../../services/Gerencia";
+import { fetchAreasByManagementId } from "../../../services/Area";
 
 export function NewUser() {
   const navigate = useNavigate();
   const [nuevoUsuario, setNuevoUsuario] = useState<Partial<User>>({});
   const [gerencias, setGerencias] = useState<Management[]>([]);
   const [areas, setAreas] = useState<any[]>([]);
-
-  useEffect(() => {
-    const getGerencias = async () => {
-      try {
-        const gerenciasData = await fetchGerencias();
-        setGerencias(gerenciasData);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-
-    getGerencias();
-  }, []);
 
   const [errorMessages, setErrorMessages] = useState({
     FirstName: "",
@@ -45,11 +32,25 @@ export function NewUser() {
   });
   const [showAdditionalFields, setShowAdditionalFields] = useState(false);
 
+  //---------------------------------------------------------------- GET MANAGEMENTS
+  useEffect(() => {
+    const getGerencias = async () => {
+      try {
+        const gerenciasData = await fetchGerencias();
+        setGerencias(gerenciasData);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    getGerencias();
+  }, []);
+
+  //---------------------------------------------------------------- INPUT CHANGE
   const handleInputChange = async (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
-  
+
     if (name === "Rol") {
       setShowAdditionalFields(value === "1" || value === "2");
       console.log(value);
@@ -58,13 +59,13 @@ export function NewUser() {
         const operacionMinaId =
           gerencias.find((g) => g.NameManagement === "OPERACIONES MINA")
             ?.IdManagement || 1;
-  
+
         updatedUsuario = {
           ...updatedUsuario,
           Gerencia: operacionMinaId,
           Shift: "SIN TURNO",
         };
-  
+
         try {
           const areasData = await fetchAreasByManagementId(operacionMinaId);
           setAreas(areasData.data);
@@ -74,15 +75,15 @@ export function NewUser() {
       } else if (value === "3") {
         updatedUsuario = {
           ...updatedUsuario,
-          IdArea: 2, 
+          IdArea: 2,
           Shift: "SIN TURNO",
         };
-      }else if (value === "4") {
-          updatedUsuario = {
-            ...updatedUsuario,
-            IdArea: 1, 
-            Shift: "SIN TURNO",
-          };
+      } else if (value === "4") {
+        updatedUsuario = {
+          ...updatedUsuario,
+          IdArea: 1,
+          Shift: "SIN TURNO",
+        };
       } else {
         updatedUsuario = {
           ...updatedUsuario,
@@ -91,7 +92,7 @@ export function NewUser() {
       }
       setNuevoUsuario(updatedUsuario);
     }
-  
+
     setNuevoUsuario((prevUsuario) => ({
       ...prevUsuario,
       [name]:
@@ -101,12 +102,12 @@ export function NewUser() {
           ? Number(value)
           : value,
     }));
-  
+
     setErrorMessages((prevErrors) => ({
       ...prevErrors,
       [name]: validateField(name, value),
     }));
-  
+
     if (name === "Gerencia") {
       try {
         const areasData = await fetchAreasByManagementId(value);
@@ -116,7 +117,8 @@ export function NewUser() {
       }
     }
   };
-  
+
+  //---------------------------------------- VALIDATION
   const validateField = (
     name: string,
     value: string | undefined
@@ -135,8 +137,8 @@ export function NewUser() {
     }
   };
 
+  //---------------------------------------------------------------- POST USER
   type UsuarioKey = keyof Partial<User>;
-
   const handleRegistrarUsuario = async () => {
     try {
       const requiredFields: UsuarioKey[] = [
@@ -170,8 +172,7 @@ export function NewUser() {
         Shift: nuevoUsuario.Shift || "SIN TURNO",
       };
       delete usuarioParaEnviar.Gerencia;
-      
-      console.log(usuarioParaEnviar)
+
       let response: { msg: string; success: boolean };
       response = await crearUsuario(usuarioParaEnviar);
       if (response.success) {

@@ -19,6 +19,7 @@
 /* Estilos de la aplicación */
 @import url("../src/assets/plugins/vectormap/jquery-jvectormap-2.0.2.css");
 
+/* Cancha desabilitada */
 .disabled {
   cursor: not-allowed;
   pointer-events: none;
@@ -45,7 +46,7 @@
 .alert-container .alert {
   width: auto;
 }
-/* Celldas */
+/* Celdas */
 .special-day-cell {
-  background-color: #fffadf4d !important; 
+  background-color: #fffadf4d !important;
 }

@@ -1,6 +1,6 @@
 export interface Notification {
-  IdNotification?: number ;
-  IdNotificationAll?:number;
+  IdNotification?: number;
+  IdNotificationAll?: number;
   IndViewed: boolean;
   Date: string;
 
@@ -9,5 +9,5 @@ export interface Notification {
   Time: string;
   Message: string;
   IdUsername?: number;
-  IdManagement?:number;
+  IdManagement?: number;
 }

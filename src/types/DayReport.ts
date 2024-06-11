@@ -8,4 +8,3 @@ export interface ReportDay {
   NamePlayer: string;
   Dni?: string;
 }
-

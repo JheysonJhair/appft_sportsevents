@@ -1,12 +1,6 @@
 import React, { useState } from "react";
 import { saveAs } from "file-saver";
-import {
-  fetchUserData,
-  fetchReservationData,
-  fetchChannel2Data,
-  fetchAdministratorReports,
-  fetchAdministratorReservations,
-} from "../../services/Reportes";
+
 import {
   ReportUser,
   ReportReservationField1,
@@ -14,14 +8,23 @@ import {
   ReportAdministrator,
   ReportAdministratorReservation,
 } from "../../types/Reports";
+import {
+  fetchUserData,
+  fetchReservationData,
+  fetchChannel2Data,
+  fetchAdministratorReports,
+  fetchAdministratorReservations,
+} from "../../services/Reportes";
 
 export function Reportes() {
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
+
   const [userData, setUserData] = useState<ReportUser[]>([]);
   const [reservationData, setReservationData] = useState<
     ReportReservationField1[]
   >([]);
+
   const [reservationData2, setReservationData2] = useState<
     ReportReservationField2[]
   >([]);
@@ -29,10 +32,20 @@ export function Reportes() {
   const [administratorReports, setAdministratorReports] = useState<
     ReportAdministrator[]
   >([]);
+
   const [administratorReservations, setAdministratorReservations] = useState<
     ReportAdministratorReservation[]
   >([]);
 
+  const handleStartDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setStartDate(e.target.value);
+  };
+
+  const handleEndDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setEndDate(e.target.value);
+  };
+
+  //---------------------------------------------------------------- GET DATA
   const fetchData = async () => {
     try {
       const userData = await fetchUserData(startDate, endDate);
@@ -44,11 +57,11 @@ export function Reportes() {
       const reservationData2 = await fetchChannel2Data(startDate, endDate);
       setReservationData2(reservationData2);
 
-       const administratorReportsData = await fetchAdministratorReports(
-         startDate,
-         endDate
-       );
-       setAdministratorReports(administratorReportsData);
+      const administratorReportsData = await fetchAdministratorReports(
+        startDate,
+        endDate
+      );
+      setAdministratorReports(administratorReportsData);
 
       const administratorReservationsData =
         await fetchAdministratorReservations(startDate, endDate);
@@ -58,14 +71,7 @@ export function Reportes() {
     }
   };
 
-  const handleStartDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setStartDate(e.target.value);
-  };
-
-  const handleEndDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setEndDate(e.target.value);
-  };
-
+  //---------------------------------------------------------------- DOWNLOAD EXCEL
   const handleDownloadUserExcel = () => {
     const csvData = userData
       .map((user) => Object.values(user).join(","))
@@ -89,6 +95,7 @@ export function Reportes() {
     const blob = new Blob([csvData], { type: "text/csv;charset=utf-8" });
     saveAs(blob, "reservasTrabajadoresGerencias.csv");
   };
+
   const handleDownloadAdministratorReportsExcel = () => {
     const csvData = administratorReports
       .map((report) => Object.values(report).join(","))
@@ -104,6 +111,7 @@ export function Reportes() {
     const blob = new Blob([csvData], { type: "text/csv;charset=utf-8" });
     saveAs(blob, "reservasAdministrador.csv");
   };
+
   return (
     <div className="page-wrapper">
       <div className="page-content">

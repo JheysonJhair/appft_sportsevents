@@ -19,6 +19,7 @@ export function AdimistratorField() {
   const [eventDetails, setEventDetails] = useState<any>(null);
   const [ayuda, setAyuda] = useState<any>(false);
 
+  //---------------------------------------------------------------- GET FIELD 1 AND 2
   useEffect(() => {
     const interval = setInterval(() => {
       fetchEventsCancha1();
@@ -57,10 +58,7 @@ export function AdimistratorField() {
       console.error("Error al obtener el horario de la Cancha 1:", error);
     }
   }
-  function handleCloseModal2() {
-    setAyuda(false);
-    setEventDetails(null);
-  }
+
   async function fetchEventsCancha2() {
     try {
       const horarioCancha2 = await obtenerHorarioCancha2();
@@ -91,6 +89,7 @@ export function AdimistratorField() {
     }
   }
 
+  //---------------------------------------------------------------- VIEW EVENT
   async function handleViewDetails(event: any) {
     const fieldId1 = event.extendedProps.IdField1Entity;
     const fieldId2 = event.extendedProps.IdField2Entity;
@@ -109,6 +108,12 @@ export function AdimistratorField() {
     }
   }
 
+  function handleCloseModal2() {
+    setAyuda(false);
+    setEventDetails(null);
+  }
+
+  //---------------------------------------------------------------- RENDER
   function renderEventContent(eventInfo: any) {
     const truncateText = (text: string, maxLength: number) => {
       return text.length > maxLength
@@ -175,6 +180,7 @@ export function AdimistratorField() {
       </div>
     );
   }
+
   function renderSpecialCalendar(
     slotMinTime: any,
     slotMaxTime: any,
@@ -210,6 +216,7 @@ export function AdimistratorField() {
       </div>
     );
   }
+
   return (
     <div className="page-wrapper">
       <div className="page-content">

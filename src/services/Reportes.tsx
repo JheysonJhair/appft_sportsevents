@@ -1,18 +1,23 @@
 import { ReportDay } from "../types/DayReport";
 
 const API_URL = "https://esappsoccer.ccontrolz.com/api";
+
 //---------------------------------------------------------------- GET REPORTS
 export const fetchReports = async (): Promise<ReportDay[]> => {
   try {
     const response = await fetch(`${API_URL}/report`);
+    if (!response.ok) {
+      throw new Error("API: Error al obtener los reportes");
+    }
     const data = await response.json();
     if (data.success) {
       return data.data as ReportDay[];
     } else {
-      throw new Error("Error fetching report data.");
+      throw new Error(`API: ${data.msg}`);
     }
   } catch (error) {
-    throw new Error("Error fetching report data.");
+    console.error("API: Error al obtener los reportes", error);
+    throw new Error("API: Error al obtener los reportes");
   }
 };
 
@@ -29,87 +34,114 @@ export async function crearReporte(
       body: JSON.stringify(reporte),
     });
     if (!response.ok) {
-      throw new Error("Error al crear el reporte");
+      throw new Error("API: Error al crear el reporte");
     }
-    const responseData: { msg: string; success: boolean } =
-      await response.json();
+    const responseData: { msg: string; success: boolean } = await response.json();
     return responseData;
   } catch (error) {
-    throw new Error("Error al crear el reporte: " + error);
+    console.error("API: Error al crear el reporte", error);
+    throw new Error(`API: Error al crear el reporte: ${error}`);
   }
 }
 
-//================================================================ REPORTS GRAPHICS
+///////////////////////////////////////////////////////////////////////////////////// REPORTS GRAPHICS
 
 //================================================================ USER
 export async function fetchUserData(startDate: string, endDate: string) {
-  const requestBody = JSON.stringify({
-    StartDate: startDate,
-    EndDate: endDate,
-  });
+  try {
+    const requestBody = JSON.stringify({
+      StartDate: startDate,
+      EndDate: endDate,
+    });
 
-  const response = await fetch(`${API_URL}/user/GetUserByDateRange`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: requestBody,
-  });
+    const response = await fetch(`${API_URL}/user/GetUserByDateRange`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: requestBody,
+    });
 
-  const responseData = await response.json();
+    if (!response.ok) {
+      throw new Error("API: Error al obtener los datos de usuario");
+    }
 
-  if (response.ok && responseData.success) {
-    return responseData.data;
-  } else {
-    throw new Error("Error fetching user data.");
+    const responseData = await response.json();
+
+    if (responseData.success) {
+      return responseData.data;
+    } else {
+      throw new Error(`API: ${responseData.msg}`);
+    }
+  } catch (error) {
+    console.error("API: Error al obtener los datos de usuario", error);
+    throw new Error("API: Error al obtener los datos de usuario");
   }
 }
 
 //================================================================ FIELD 1
 export async function fetchReservationData(startDate: string, endDate: string) {
-  const requestBody = JSON.stringify({
-    StartDate: startDate,
-    EndDate: endDate,
-  });
+  try {
+    const requestBody = JSON.stringify({
+      StartDate: startDate,
+      EndDate: endDate,
+    });
 
-  const response = await fetch(`${API_URL}/field1/GetField1ByDateRange`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: requestBody,
-  });
+    const response = await fetch(`${API_URL}/field1/GetField1ByDateRange`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: requestBody,
+    });
 
-  const responseData = await response.json();
+    if (!response.ok) {
+      throw new Error("API: Error al obtener los datos de reservación del campo 1");
+    }
 
-  if (response.ok && responseData.success) {
-    return responseData.data;
-  } else {
-    throw new Error("Error fetching reservation data.");
+    const responseData = await response.json();
+
+    if (responseData.success) {
+      return responseData.data;
+    } else {
+      throw new Error(`API: ${responseData.msg}`);
+    }
+  } catch (error) {
+    console.error("API: Error al obtener los datos de reservación del campo 1", error);
+    throw new Error("API: Error al obtener los datos de reservación del campo 1");
   }
 }
 
 //================================================================ FIELD 2
 export async function fetchChannel2Data(startDate: string, endDate: string) {
-  const requestBody = JSON.stringify({
-    StartDate: startDate,
-    EndDate: endDate,
-  });
+  try {
+    const requestBody = JSON.stringify({
+      StartDate: startDate,
+      EndDate: endDate,
+    });
 
-  const response = await fetch(`${API_URL}/field2/GetField2ByDateRange`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: requestBody,
-  });
+    const response = await fetch(`${API_URL}/field2/GetField2ByDateRange`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: requestBody,
+    });
 
-  const responseData = await response.json();
+    if (!response.ok) {
+      throw new Error("API: Error al obtener los datos de reservación del campo 2");
+    }
 
-  if (response.ok && responseData.success) {
-    return responseData.data;
-  } else {
-    throw new Error("Error fetching channel2 data.");
+    const responseData = await response.json();
+
+    if (responseData.success) {
+      return responseData.data;
+    } else {
+      throw new Error(`API: ${responseData.msg}`);
+    }
+  } catch (error) {
+    console.error("API: Error al obtener los datos de reservación del campo 2", error);
+    throw new Error("API: Error al obtener los datos de reservación del campo 2");
   }
 }
 
@@ -118,25 +150,34 @@ export async function fetchAdministratorReports(
   startDate: string,
   endDate: string
 ) {
-  const requestBody = JSON.stringify({
-    StartDate: startDate,
-    EndDate: endDate,
-  });
+  try {
+    const requestBody = JSON.stringify({
+      StartDate: startDate,
+      EndDate: endDate,
+    });
 
-  const response = await fetch(`${API_URL}/report/reporte/`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: requestBody,
-  });
+    const response = await fetch(`${API_URL}/report/reporte/`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: requestBody,
+    });
 
-  const responseData = await response.json();
+    if (!response.ok) {
+      throw new Error("API: Error al obtener los informes del administrador");
+    }
 
-  if (response.ok && responseData.success) {
-    return responseData.data;
-  } else {
-    throw new Error("Error fetching administrator reports data.");
+    const responseData = await response.json();
+
+    if (responseData.success) {
+      return responseData.data;
+    } else {
+      throw new Error(`API: ${responseData.msg}`);
+    }
+  } catch (error) {
+    console.error("API: Error al obtener los informes del administrador", error);
+    throw new Error("API: Error al obtener los informes del administrador");
   }
 }
 
@@ -145,27 +186,36 @@ export async function fetchAdministratorReservations(
   startDate: string,
   endDate: string
 ) {
-  const requestBody = JSON.stringify({
-    StartDate: startDate,
-    EndDate: endDate,
-  });
+  try {
+    const requestBody = JSON.stringify({
+      StartDate: startDate,
+      EndDate: endDate,
+    });
 
-  const response = await fetch(
-    `${API_URL}/notification-all/ReportNotification/`,
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: requestBody,
+    const response = await fetch(
+      `${API_URL}/notification-all/ReportNotification/`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: requestBody,
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error("API: Error al obtener las reservas del administrador");
     }
-  );
 
-  const responseData = await response.json();
+    const responseData = await response.json();
 
-  if (response.ok && responseData.success) {
-    return responseData.data;
-  } else {
-    throw new Error("Error fetching administrator reservations data.");
+    if (responseData.success) {
+      return responseData.data;
+    } else {
+      throw new Error(`API: ${responseData.msg}`);
+    }
+  } catch (error) {
+    console.error("API: Error al obtener las reservas del administrador", error);
+    throw new Error("API: Error al obtener las reservas del administrador");
   }
 }

@@ -2,28 +2,20 @@ import { useState, useEffect } from "react";
 import { FaTrash, FaLock, FaUnlock } from "react-icons/fa";
 import Swal from "sweetalert2";
 
+import { User } from "../../../types/User";
 import {
   obtenerUsuarios,
   eliminarUsuario,
   bloquearUsuario,
   desbloquearUsuario,
 } from "../../../services/Usuario";
-import { User } from "../../../types/User";
 
 export function Users() {
   const [usuarios, setUsuarios] = useState<User[]>([]);
+
   const [currentPage, setCurrentPage] = useState(1);
   const [UsuariosPerPage] = useState(9);
   const [searchTerm, setSearchTerm] = useState("");
-
-  useEffect(() => {
-    const fetchData = async () => {
-      const data = await obtenerUsuarios();
-      setUsuarios(data);
-    };
-
-    fetchData();
-  }, []);
 
   const indexOfLastUsuario = currentPage * UsuariosPerPage;
   const indexOfFirstUsuario = indexOfLastUsuario - UsuariosPerPage;
@@ -33,13 +25,22 @@ export function Users() {
   );
 
   const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
-
   const filteredUsuarios = currentUsuarios.filter((usuario) =>
     Object.values(usuario).some((value) =>
       value.toString().toLowerCase().includes(searchTerm.toLowerCase())
     )
   );
 
+  //---------------------------------------------------------------- GET USERS
+  useEffect(() => {
+    const fetchData = async () => {
+      const data = await obtenerUsuarios();
+      setUsuarios(data);
+    };
+    fetchData();
+  }, []);
+
+  //---------------------------------------------------------------- GET DELETE
   const handleEliminarUsuario = async (id: number) => {
     try {
       const confirmacion = await Swal.fire({
@@ -68,11 +69,11 @@ export function Users() {
         );
       }
     } catch (error) {
-      console.error("Error al eliminar el usuario:", error);
       Swal.fire("Error", "Hubo un error al eliminar el usuario", "error");
     }
   };
 
+  //---------------------------------------------------------------- GET BLOCK
   const handleBloquearUsuario = async (id: number) => {
     try {
       const confirmacion = await Swal.fire({
@@ -96,11 +97,11 @@ export function Users() {
         Swal.fire("¡Bloqueado!", "El usuario ha sido bloqueado.", "success");
       }
     } catch (error) {
-      console.error("Error al bloquear el usuario:", error);
       Swal.fire("Error", "Hubo un error al bloquear el usuario", "error");
     }
   };
 
+  //---------------------------------------------------------------- GET UNLOCK
   const handleDesbloquearUsuario = async (id: number) => {
     try {
       const confirmacion = await Swal.fire({
@@ -128,7 +129,6 @@ export function Users() {
         );
       }
     } catch (error) {
-      console.error("Error al desbloquear el usuario:", error);
       Swal.fire("Error", "Hubo un error al desbloquear el usuario", "error");
     }
   };

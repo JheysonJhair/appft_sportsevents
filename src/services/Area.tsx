@@ -10,7 +10,7 @@ export async function fetchAreasByManagementId(gerenciaId: any) {
   const data = await response.json();
 
   if (!response.ok) {
-    throw new Error(data.msg || "Error fetching areas data");
+    throw new Error("API: Error fetching areas data");
   }
   return data;
 }
@@ -23,10 +23,10 @@ export const fetchAreas = async (): Promise<Area[]> => {
     if (data.success) {
       return data.data as Area[];
     } else {
-      throw new Error("Error fetching gerencias data.");
+      throw new Error("API: Error fetching gerencias data.");
     }
   } catch (error) {
-    throw new Error("Error fetching gerencias data.");
+    throw new Error("API: Error fetching gerencias data.");
   }
 };
 

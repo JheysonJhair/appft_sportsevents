@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from "react";
+
+import { Area } from "../../types/Area";
 import { fetchGerencias } from "../../services/Gerencia";
 import { fetchAreas } from "../../services/Area";
 import { Management } from "../../types/Management";
-import { Area } from "../../types/Area";
 
 export function ManagementArea() {
   const [, setGerencias] = useState<Management[]>([]);
   const [, setAreas] = useState<Area[]>([]);
+
   const [currentGerencias, setCurrentGerencias] = useState<Management[]>([]);
   const [currentAreas, setCurrentAreas] = useState<Area[]>([]);
   const [currentPageGerencias, setCurrentPageGerencias] = useState(1);
@@ -14,24 +16,6 @@ export function ManagementArea() {
   const [itemsPerPage] = useState(11);
   const [searchTermGerencias, setSearchTermGerencias] = useState("");
   const [searchTermAreas, setSearchTermAreas] = useState("");
-
-  useEffect(() => {
-    const getGerenciasAndAreas = async () => {
-      try {
-        const gerenciasData = await fetchGerencias();
-        setGerencias(gerenciasData);
-        setCurrentGerencias(gerenciasData);
-
-        const areasData = await fetchAreas();
-        setAreas(areasData);
-        setCurrentAreas(areasData);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-
-    getGerenciasAndAreas();
-  }, []);
 
   const paginateGerencias = (pageNumber: number) => {
     setCurrentPageGerencias(pageNumber);
@@ -74,6 +58,25 @@ export function ManagementArea() {
     indexOfFirstArea,
     indexOfLastArea
   );
+
+  //---------------------------------------------------------------- GET MANAGEMENT AND AREA
+  useEffect(() => {
+    const getGerenciasAndAreas = async () => {
+      try {
+        const gerenciasData = await fetchGerencias();
+        setGerencias(gerenciasData);
+        setCurrentGerencias(gerenciasData);
+
+        const areasData = await fetchAreas();
+        setAreas(areasData);
+        setCurrentAreas(areasData);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    getGerenciasAndAreas();
+  }, []);
 
   return (
     <div className="page-wrapper">

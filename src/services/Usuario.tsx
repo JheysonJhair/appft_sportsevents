@@ -1,10 +1,12 @@
 import axios from "axios";
 import { User } from "../types/User";
+
 interface ApiResponse {
   msg: string;
   success: boolean;
   data: User[];
 }
+
 const API_URL = "https://esappsoccer.ccontrolz.com/api";
 
 //---------------------------------------------------------------- GET USER
@@ -12,15 +14,15 @@ export async function obtenerUsuarios(): Promise<User[]> {
   try {
     const response = await fetch(`${API_URL}/user`);
     if (!response.ok) {
-      throw new Error("Error al obtener los datos");
+      throw new Error("API: Error al obtener los datos de usuarios");
     }
     const responseData: ApiResponse = await response.json();
     if (!responseData.success) {
-      throw new Error(responseData.msg);
+      throw new Error(`API: ${responseData.msg}`);
     }
     return responseData.data;
   } catch (error) {
-    console.error("Error:", error);
+    console.error("API: Error al obtener los usuarios", error);
     return [];
   }
 }
@@ -37,11 +39,11 @@ export const enviarVerificacionEmail = async (email: string) => {
     });
 
     if (!response.ok) {
-      throw new Error("Error al enviar");
+      throw new Error("API: Error al enviar la verificación de email");
     }
     return response;
   } catch (error) {
-    console.error("Error al enviar el email", error);
+    console.error("API: Error al enviar la verificación de email", error);
     throw error;
   }
 };
@@ -54,7 +56,7 @@ export const verificarCodigo = async (Email: string, Code: string) => {
     });
     return response.data;
   } catch (error) {
-    console.error("Error al verificar el código", error);
+    console.error("API: Error al verificar el código", error);
     throw error;
   }
 };
@@ -72,13 +74,12 @@ export async function crearUsuario(
       body: JSON.stringify(usuario),
     });
     if (!response.ok) {
-      throw new Error("Error al crear el usuario");
+      throw new Error("API: Error al crear el usuario");
     }
-    const responseData: { msg: string; success: boolean } =
-      await response.json();
+    const responseData: { msg: string; success: boolean } = await response.json();
     return responseData;
   } catch (error) {
-    throw new Error("Error al crear el usuario: " + error);
+    throw new Error(`API: Error al crear el usuario: ${error}`);
   }
 }
 
@@ -94,10 +95,10 @@ export async function actualizarUsuario(usuario: Partial<User>): Promise<void> {
       body: JSON.stringify(usuario),
     });
     if (!response.ok) {
-      throw new Error("Error al actualizar el usuario");
+      throw new Error("API: Error al actualizar el usuario");
     }
   } catch (error) {
-    throw new Error("Error al actualizar el usuario: " + error);
+    throw new Error(`API: Error al actualizar el usuario: ${error}`);
   }
 }
 
@@ -109,15 +110,15 @@ export async function obtenerUsuarioPorId(
     const url = `${API_URL}/user/${usuarioId}`;
     const response = await fetch(url);
     if (!response.ok) {
-      throw new Error("Error al obtener el usuario");
+      throw new Error("API: Error al obtener el usuario por ID");
     }
     const responseData: ApiResponse = await response.json();
     if (!responseData.success) {
-      throw new Error(responseData.msg);
+      throw new Error(`API: ${responseData.msg}`);
     }
     return responseData.data[0] || null;
   } catch (error) {
-    console.error("Error:", error);
+    console.error("API: Error al obtener el usuario por ID", error);
     return null;
   }
 }
@@ -130,11 +131,11 @@ export async function eliminarUsuario(usuarioId: number): Promise<void> {
       method: "DELETE",
     });
     if (!response.ok) {
-      throw new Error("Error al eliminar el usuario");
+      throw new Error("API: Error al eliminar el usuario");
     }
     return response.json();
   } catch (error) {
-    throw new Error("Error al eliminar el usuario: " + error);
+    throw new Error(`API: Error al eliminar el usuario: ${error}`);
   }
 }
 
@@ -145,12 +146,12 @@ export async function bloquearUsuario(id: number) {
       method: "PUT",
     });
     if (!response.ok) {
-      throw new Error("Error al bloquear el usuario");
+      throw new Error("API: Error al bloquear el usuario");
     }
     return response.json();
   } catch (error) {
-    console.error("Error al bloquear el usuario:", error);
-    throw new Error("Hubo un error al bloquear el usuario");
+    console.error("API: Error al bloquear el usuario", error);
+    throw new Error("API: Hubo un error al bloquear el usuario");
   }
 }
 
@@ -161,11 +162,10 @@ export async function desbloquearUsuario(id: number) {
       method: "PUT",
     });
     if (!response.ok) {
-      throw new Error("Error al desbloquear el usuario");
+      throw new Error("API: Error al desbloquear el usuario");
     }
     return response.json();
   } catch (error) {
-    console.error("Error al desbloquear el usuario:", error);
-    throw new Error("Hubo un error al desbloquear el usuario");
+    throw new Error("API: Hubo un error al desbloquear el usuario");
   }
 }

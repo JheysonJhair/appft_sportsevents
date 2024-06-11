@@ -2,12 +2,12 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 
+import { validateRequiredField } from "../../utils/validations";
 import { Management } from "../../types/Management";
 import { Area } from "../../types/Area";
 import { fetchGerencias } from "../../services/Gerencia";
 import { crearGerencia } from "../../services/Gerencia";
 import { crearArea } from "../../services/Area";
-import { validateRequiredField } from "../../utils/validations";
 
 export function NewManagementArea() {
   const navigate = useNavigate();
@@ -23,6 +23,7 @@ export function NewManagementArea() {
     NameManagement: "",
   });
 
+  //---------------------------------------------------------------- GET MANAGEMENT
   useEffect(() => {
     const getGerencias = async () => {
       try {
@@ -35,10 +36,10 @@ export function NewManagementArea() {
         console.error(error);
       }
     };
-
     getGerencias();
   }, []);
 
+  //---------------------------------------------------------------- INPUT CHANGE
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
@@ -64,14 +65,16 @@ export function NewManagementArea() {
     }));
   };
 
+  //-------------------------------------- VALIDATION
   const validateField = (
     name: string,
     value: string | undefined
   ): string | null => {
     return validateRequiredField(value);
-    console.log(name)
+    console.log(name);
   };
 
+  //---------------------------------------------------------------- POST MANAGEMENT
   const handleRegistrarGerencia = async () => {
     try {
       const { NameManagement } = nuevoGerencia;
@@ -96,6 +99,7 @@ export function NewManagementArea() {
           confirmButtonText: "Aceptar",
         });
         setNuevoGerencia({});
+        navigate("/management-area/");
       } else {
         Swal.fire({
           title: "Error",
@@ -115,6 +119,7 @@ export function NewManagementArea() {
     }
   };
 
+  //---------------------------------------------------------------- POST AREA
   const handleRegistrarArea = async () => {
     try {
       const { NameArea, IdManagement } = nuevoArea;

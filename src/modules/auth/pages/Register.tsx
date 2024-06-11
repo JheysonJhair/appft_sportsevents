@@ -2,18 +2,18 @@ import React, { useState, useEffect } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 
-import { enviarVerificacionEmail } from "../../../services/Usuario";
-import { User, ErrorMessages } from "../../../types/User";
-import { fetchGerencias } from "../../../services/Gerencia";
-import { fetchAreasByManagementId } from "../../../services/Area";
-import { fetchUserDataByDNI } from "../../../services/Login";
-import { Management } from "../../../types/Management";
 import {
   validateRequiredField,
   validateDNI,
   validateEmail,
   validatePhoneNumber,
 } from "../../../utils/validations";
+import { Management } from "../../../types/Management";
+import { User, ErrorMessages } from "../../../types/User";
+import { enviarVerificacionEmail } from "../../../services/Usuario";
+import { fetchGerencias } from "../../../services/Gerencia";
+import { fetchAreasByManagementId } from "../../../services/Area";
+import { fetchUserDataByDNI } from "../../../services/Login";
 
 export function Register(): JSX.Element {
   const navigate = useNavigate();
@@ -32,6 +32,7 @@ export function Register(): JSX.Element {
   const [gerencias, setGerencias] = useState<Management[]>([]);
   const [areas, setAreas] = useState<any[]>([]);
 
+  //---------------------------------------------------------------- GET MANAGEMENT
   useEffect(() => {
     const getGerencias = async () => {
       try {
@@ -45,6 +46,7 @@ export function Register(): JSX.Element {
     getGerencias();
   }, []);
 
+  //---------------------------------------------------------------- INPUT CHANGE
   const handleInputChange = async (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
@@ -101,6 +103,7 @@ export function Register(): JSX.Element {
     }
   };
 
+  //------------------------------- VERIFICATION
   const validateField = (name: string, value: string): string | null => {
     switch (name) {
       case "Dni":
@@ -116,6 +119,7 @@ export function Register(): JSX.Element {
     }
   };
 
+  //---------------------------------------------------------------- SUBMIT => VERIFICATION
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
@@ -174,6 +178,7 @@ export function Register(): JSX.Element {
     }
   };
 
+  //------------------------------- RENIEC
   const handleSearchDNI = async () => {
     try {
       const userData = await fetchUserDataByDNI(formData.Dni);

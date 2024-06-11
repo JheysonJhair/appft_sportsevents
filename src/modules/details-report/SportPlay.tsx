@@ -21,6 +21,7 @@ export function SportPlay() {
     []
   );
 
+  //---------------------------------------------------------------- GET FIELD 1 Y FIELD 2 FILTER DAY
   useEffect(() => {
     const interval = setInterval(() => {
       fetchEventsCancha1();
@@ -101,6 +102,8 @@ export function SportPlay() {
       console.error("Error al obtener el horario de la Cancha 2:", error);
     }
   }
+
+  //---------------------------------------------------------------- RENDER
   function renderEventContent(eventInfo: any) {
     return (
       <div>
@@ -147,6 +150,7 @@ export function SportPlay() {
       </div>
     );
   }
+
   function renderSpecialCalendar(
     slotMinTime: any,
     slotMaxTime: any,
@@ -182,6 +186,7 @@ export function SportPlay() {
       </div>
     );
   }
+
   return (
     <div className="page-wrapper">
       <div className="page-content">

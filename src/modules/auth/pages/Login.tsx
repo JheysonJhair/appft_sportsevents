@@ -2,8 +2,8 @@ import React, { useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 
-import { login } from "../../../services/Login";
 import { useAuth } from "../../../hooks/AuthContext";
+import { login } from "../../../services/Login";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -14,6 +14,7 @@ export default function Login() {
 
   const [showPassword, setShowPassword] = useState(false);
 
+  //---------------------------------------------------------------- POST LOGIN
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {

@@ -44,6 +44,7 @@ export function AdimistratorHome() {
     selectedEvent && new Date(selectedEvent.start).getFullYear();
   const formattedDate = `${selectedYear}-${selectedMonth}-${selectedDate}`;
 
+  //---------------------------------------------------------------- GET FIELD 1 AND 2
   useEffect(() => {
     const interval = setInterval(() => {
       fetchEventsCancha1();
@@ -52,18 +53,69 @@ export function AdimistratorHome() {
     return () => clearInterval(interval);
   }, []);
 
-  function handleSelectEvent(event: any) {
-    setSelectedEvent(event);
+  async function fetchEventsCancha1() {
+    try {
+      const horarioCancha1 = await obtenerHorarioCancha1();
+      const initialEventsCancha1: EventData[] = horarioCancha1.map((event) => {
+        const startTime = new Date(`${event.DateDay}T${event.StartTime}`);
+        const color =
+          startTime.getHours() >= 9 && startTime.getHours() < 13
+            ? "#2C3E50"
+            : event.areaIdArea === 1
+            ? "#2C3E50"
+            : "#44a7ea";
+        return {
+          title: event.FirstName,
+          area: event.NameArea,
+          laboratorio: event.NameManagement,
+          jugadores: event.ListPlayer,
+          start: `${event.DateDay}T${event.StartTime}`,
+          end: `${event.DateDay}T${event.EndTime}`,
+          turno: event.Shift,
+          color: color,
+          IdField1Entity: event.IdField1Entity,
+        };
+      });
+
+      setEventsCancha1(initialEventsCancha1);
+    } catch (error) {
+      console.error("Error al obtener el horario de la Cancha 1:", error);
+    }
   }
 
-  function handleCloseModal() {
-    setSelectedEvent(null);
-    setListPlayer("");
-    setSelectedCancha("cancha1");
+  async function fetchEventsCancha2() {
+    try {
+      const horarioCancha2 = await obtenerHorarioCancha2();
+      const initialEventsCancha2: EventData[] = horarioCancha2.map((event) => {
+        const startTime = new Date(`${event.DateDay}T${event.StartTime}`);
+        const color =
+          startTime.getHours() >= 9 && startTime.getHours() < 18
+            ? "#2C3E50"
+            : event.areaIdArea === 1
+            ? "#2C3E50"
+            : "#ed6173";
+        return {
+          title: event.FirstName,
+          area: event.NameArea,
+          laboratorio: event.NameManagement,
+          jugadores: event.ListPlayer,
+          start: `${event.DateDay}T${event.StartTime}`,
+          end: `${event.DateDay}T${event.EndTime}`,
+          turno: event.Shift,
+          color: color,
+          IdField2Entity: event.IdField2Entity,
+        };
+      });
+
+      setEventsCancha2(initialEventsCancha2);
+    } catch (error) {
+      console.error("Error al obtener el horario de la Cancha 2:", error);
+    }
   }
-  function handleCloseModal2() {
-    setAyuda(false);
-    setEventDetails(null);
+
+  //---------------------------------------------------------------- SELECT EVENT
+  function handleSelectEvent(event: any) {
+    setSelectedEvent(event);
   }
 
   async function handleConfirmReservation() {
@@ -149,66 +201,37 @@ export function AdimistratorHome() {
     }
   }
 
-  async function fetchEventsCancha1() {
-    try {
-      const horarioCancha1 = await obtenerHorarioCancha1();
-      const initialEventsCancha1: EventData[] = horarioCancha1.map((event) => {
-        const startTime = new Date(`${event.DateDay}T${event.StartTime}`);
-        const color =
-          startTime.getHours() >= 9 && startTime.getHours() < 13
-            ? "#2C3E50"
-            : event.areaIdArea === 1
-            ? "#2C3E50"
-            : "#44a7ea";
-        return {
-          title: event.FirstName,
-          area: event.NameArea,
-          laboratorio: event.NameManagement,
-          jugadores: event.ListPlayer,
-          start: `${event.DateDay}T${event.StartTime}`,
-          end: `${event.DateDay}T${event.EndTime}`,
-          turno: event.Shift,
-          color: color,
-          IdField1Entity: event.IdField1Entity,
-        };
-      });
+  function handleCloseModal() {
+    setSelectedEvent(null);
+    setListPlayer("");
+    setSelectedCancha("cancha1");
+  }
 
-      setEventsCancha1(initialEventsCancha1);
-    } catch (error) {
-      console.error("Error al obtener el horario de la Cancha 1:", error);
+  //---------------------------------------------------------------- VIEW EVENT
+  async function handleViewDetails(event: any) {
+    const fieldId1 = event.extendedProps.IdField1Entity;
+    const fieldId2 = event.extendedProps.IdField2Entity;
+    try {
+      if (fieldId1) {
+        const response = await obtenerHorarioCancha1PorId(fieldId1);
+        setEventDetails(response);
+        setAyuda(true);
+      } else if (fieldId2) {
+        const response = await obtenerHorarioCancha2PorId(fieldId2);
+        setEventDetails(response);
+        setAyuda(true);
+      }
+    } catch (error: any) {
+      console.error(error);
     }
   }
 
-  async function fetchEventsCancha2() {
-    try {
-      const horarioCancha2 = await obtenerHorarioCancha2();
-      const initialEventsCancha2: EventData[] = horarioCancha2.map((event) => {
-        const startTime = new Date(`${event.DateDay}T${event.StartTime}`);
-        const color =
-          startTime.getHours() >= 9 && startTime.getHours() < 18
-            ? "#2C3E50"
-            : event.areaIdArea === 1
-            ? "#2C3E50"
-            : "#ed6173";
-        return {
-          title: event.FirstName,
-          area: event.NameArea,
-          laboratorio: event.NameManagement,
-          jugadores: event.ListPlayer,
-          start: `${event.DateDay}T${event.StartTime}`,
-          end: `${event.DateDay}T${event.EndTime}`,
-          turno: event.Shift,
-          color: color,
-          IdField2Entity: event.IdField2Entity,
-        };
-      });
-
-      setEventsCancha2(initialEventsCancha2);
-    } catch (error) {
-      console.error("Error al obtener el horario de la Cancha 2:", error);
-    }
+  function handleCloseModal2() {
+    setAyuda(false);
+    setEventDetails(null);
   }
 
+  //---------------------------------------------------------------- DELETE EVENT
   async function handleDelete(event: any) {
     const fieldId1 = event.extendedProps.IdField1Entity;
     const fieldId2 = event.extendedProps.IdField2Entity;
@@ -336,23 +359,7 @@ export function AdimistratorHome() {
     });
   }
 
-  async function handleViewDetails(event: any) {
-    const fieldId1 = event.extendedProps.IdField1Entity;
-    const fieldId2 = event.extendedProps.IdField2Entity;
-    try {
-      if (fieldId1) {
-        const response = await obtenerHorarioCancha1PorId(fieldId1);
-        setEventDetails(response);
-        setAyuda(true);
-      } else if (fieldId2) {
-        const response = await obtenerHorarioCancha2PorId(fieldId2);
-        setEventDetails(response);
-        setAyuda(true);
-      }
-    } catch (error: any) {
-      console.error(error);
-    }
-  }
+  //---------------------------------------------------------------- RENDER
 
   function renderEventContent(eventInfo: any) {
     const truncateText = (text: string, maxLength: number) => {
@@ -438,6 +445,7 @@ export function AdimistratorHome() {
       </div>
     );
   }
+
   function renderSpecialCalendar(
     slotMinTime: any,
     slotMaxTime: any,

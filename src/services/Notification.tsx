@@ -1,37 +1,32 @@
-const API_URL = "https://esappsoccer.ccontrolz.com/api";
 import axios from "axios";
+
+const API_URL = "https://esappsoccer.ccontrolz.com/api";
+
 //---------------------------------------------------------------- GET AREA ID NOTIFICATION
 export const traerNotificacionesArea = async (user: any) => {
   try {
     if (user) {
-      const response = await fetch(
-        `${API_URL}/notification/getAreaById/${user.areaIdArea}`
-      );
+      const response = await fetch(`${API_URL}/notification/getAreaById/${user.areaIdArea}`);
       if (response.ok) {
         const result = await response.json();
         if (result && result.data) {
           return result.data;
         } else {
-          console.error(
-            "Error: No se recibieron datos de notificaciones en el formato esperado"
-          );
+          console.error("API: Error - No se recibieron datos de notificaciones en el formato esperado");
           return [];
         }
       } else {
-        console.error(
-          "Error en la solicitud de notificaciones:",
-          response.statusText
-        );
+        console.error(`API: Error en la solicitud de notificaciones: ${response.statusText}`);
         return [];
       }
     }
   } catch (error) {
-    console.error("Error al obtener notificaciones:", error);
+    console.error("API: Error al obtener notificaciones", error);
     return [];
   }
 };
 
-//---------------------------------------------------------------- POST .NOTIFICATION
+//---------------------------------------------------------------- POST NOTIFICATION
 export async function insertarNotificacion(
   Message: string,
   IdUser: number,
@@ -43,39 +38,34 @@ export async function insertarNotificacion(
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({
-        Message: Message,
-        IdUser: IdUser,
-        IdArea: IdArea,
-      }),
+      body: JSON.stringify({ Message, IdUser, IdArea }),
     });
     if (!response.ok) {
-      throw new Error("Error al insertar la notificación");
+      throw new Error("API: Error al insertar la notificación");
     }
-    const responseData: { msg: string; success: boolean } =
-      await response.json();
+    const responseData: { msg: string; success: boolean } = await response.json();
     return responseData;
   } catch (error) {
-    console.error("Error al insertar la notificación:", error);
-    throw error;
+    console.error("API: Error al insertar la notificación", error);
+    throw new Error(`API: Error al insertar la notificación: ${error}`);
   }
 }
 
-//---------------------------------------------------------------- GET .NOTIFICATION LAST
+//---------------------------------------------------------------- GET LAST NOTIFICATION
 export const getLastNotification = async () => {
   try {
     const response = await fetch(`${API_URL}/notification-all/getLast`);
     if (!response.ok) {
-      throw new Error("Failed to fetch latest notification");
+      throw new Error("API: Error al obtener la última notificación");
     }
     return await response.json();
   } catch (error) {
-    console.error("Error fetching latest notification:", error);
-    return { success: false, msg: "Error fetching latest notification", error };
+    console.error("API: Error al obtener la última notificación", error);
+    return { success: false, msg: "API: Error al obtener la última notificación", error };
   }
 };
 
-//---------------------------------------------------------------- POST .NOTIFICATION LAST
+//---------------------------------------------------------------- POST NOTIFICATION LAST
 export async function insertNotification(
   dateDay: any,
   time: any,
@@ -89,21 +79,20 @@ export async function insertNotification(
     });
     console.log(response.data);
   } catch (error) {
-    console.error("Error al insertar notificación:", error);
+    console.error("API: Error al insertar la notificación", error);
   }
 }
 
 //---------------------------------------------------------------- DELETE NOTIFICATION
 export const eliminarNotificacion = async (id: number) => {
-  console.log("jola"+id)
   try {
     const response = await axios.delete(`${API_URL}/notification/${id}`);
     if (!response.data.success) {
-      throw new Error("Error al eliminar la notificación");
+      throw new Error("API: Error al eliminar la notificación");
     }
     return response.data;
   } catch (error) {
-    console.error("Error al eliminar la notificación:", error);
-    throw error;
+    console.error("API: Error al eliminar la notificación", error);
+    throw new Error(`API: Error al eliminar la notificación: ${error}`);
   }
 };
