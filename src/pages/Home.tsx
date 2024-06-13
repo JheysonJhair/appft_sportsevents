@@ -446,7 +446,7 @@ export function HomePage() {
           tabIndex={-1}
           aria-labelledby="exampleModalLabel"
           aria-hidden="true"
-          style={{ display: "block", marginTop: "90px" }}
+          style={{ display: "block", marginTop: "10px" }}
         >
           <div className="modal-dialog">
             <div className="modal-content">

@@ -288,7 +288,7 @@ export function DayReport() {
                 </div>
                 <div className="col-12">
                   <label htmlFor="input01" className="form-label">
-                    Jugador agredido
+                    Jugador infractor
                   </label>
                   <input
                     type="text"
@@ -299,7 +299,7 @@ export function DayReport() {
                     name="NamePlayer"
                     placeholder="Ingrese nombre del jugador"
                     onChange={handleInputChange}
-                    value={reporte.NamePlayer} // Añade el valor del estado
+                    value={reporte.NamePlayer} 
                   />
                   {errorMessages.NamePlayer && (
                     <div className="invalid-feedback">

@@ -204,6 +204,18 @@ function AppLayout() {
                     <div className="menu-title">Informe</div>
                   </NavLink>
                 </li>
+                <li>
+                  <a
+                    href="../../assets/manual_usuario_administrador_cancha.pdf"
+                    download
+                    target="_blank"
+                  >
+                    <div className="parent-icon">
+                      <i className="bx bx-book" />
+                    </div>
+                    <div className="menu-title">Manual de usuario</div>
+                  </a>
+                </li>
               </>
             )}
             {user?.Rol === 4 && (
@@ -282,21 +294,48 @@ function AppLayout() {
                     </li>
                   </ul>
                 </li>
+                <li>
+                  <a
+                    href="../../assets/manual_usuario_administrador_sistema.pdf"
+                    download
+                    target="_blank"
+                  >
+                    <div className="parent-icon">
+                      <i className="bx bx-book" />
+                    </div>
+                    <div className="menu-title">Manual de usuario</div>
+                  </a>
+                </li>
               </>
             )}
-            <li>
-              <a
-                href="../../assets/manual_usuario.pdf"
-                download
-                target="_blank"
-              >
-                <div className="parent-icon">
-                  <i className="bx bx-book" />
-                </div>
-                <div className="menu-title">Manual de usuario</div>
-              </a>
-            </li>
-
+            {user?.Rol === 1 && (
+              <li>
+                <a
+                  href="../../assets/manual_usuario_gerencia_operaciones_mina.pdf"
+                  download
+                  target="_blank"
+                >
+                  <div className="parent-icon">
+                    <i className="bx bx-book" />
+                  </div>
+                  <div className="menu-title">Manual de usuario</div>
+                </a>
+              </li>
+            )}
+            {user?.Rol === 2 && (
+              <li>
+                <a
+                  href="../../assets/manual_usuario_gerencias.pdf"
+                  download
+                  target="_blank"
+                >
+                  <div className="parent-icon">
+                    <i className="bx bx-book" />
+                  </div>
+                  <div className="menu-title">Manual de usuario</div>
+                </a>
+              </li>
+            )}
             <li>
               <a
                 href="https://www.linkedin.com/in/jheysonjhairpro/"

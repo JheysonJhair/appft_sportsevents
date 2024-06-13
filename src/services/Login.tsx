@@ -19,7 +19,7 @@ export const login = async (loginData: Login) => {
 export const fetchUserDataByDNI = async (dni: any) => {
   try {
     const apiToken =
-      "4120358d7de5e4283fb3128d6feacb73d8f1c8fa7e06db57d963892ca74d6038";
+      "901d54ab5fe9c766c418c0c2557320ce14ddf9fea5439dacf3190f9c6a6b972b";
     const url = `https://apiperu.dev/api/dni/${dni}?api_token=${apiToken}`;
 
     const response = await fetch(url);
