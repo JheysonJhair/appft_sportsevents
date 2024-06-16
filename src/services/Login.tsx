@@ -1,11 +1,13 @@
 import axios from "axios";
 import { Login } from "../types/User";
 
+const API_URL = "https://esappsoccer-production.up.railway.app/api";
+
 //---------------------------------------------------------------- LOGIN
 export const login = async (loginData: Login) => {
   try {
     const response = await axios.post(
-      "https://esappsoccer.ccontrolz.com/api/user/login",
+      `${API_URL}/user/login`,
       loginData
     );
     return response.data;
@@ -16,13 +18,14 @@ export const login = async (loginData: Login) => {
 };
 
 //---------------------------------------------------------------- GET RENIEC
-export const fetchUserDataByDNI = async (dni: any) => {
+export const fetchUserDataByDNI = async (dni: string) => {
   try {
-    const apiToken =
-      "901d54ab5fe9c766c418c0c2557320ce14ddf9fea5439dacf3190f9c6a6b972b";
-    const url = `https://apiperu.dev/api/dni/${dni}?api_token=${apiToken}`;
+    const url = `${API_URL}/user/Reniec/${dni}`;
 
-    const response = await fetch(url);
+    const response = await fetch(url, {
+      method: 'GET'
+    });
+
     if (!response.ok) {
       throw new Error("API: Error al obtener datos del usuario por DNI");
     }

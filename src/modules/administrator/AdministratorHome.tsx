@@ -159,7 +159,7 @@ export function AdimistratorHome() {
         EndWeekend: formatDate2(endOfWeek),
         ListPlayer: listPlayerValue,
       };
-      console.log(horario);
+
       let response: { msg: string; success: boolean };
       if (selectedCancha === "cancha1") {
         response = await crearHorarioCancha1(horario);

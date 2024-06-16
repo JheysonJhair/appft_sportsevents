@@ -185,7 +185,7 @@ export function Register(): JSX.Element {
       setFormData((prevData) => ({
         ...prevData,
         FirstName: userData.nombres,
-        LastName: `${userData.apellido_paterno} ${userData.apellido_materno}`,
+        LastName: `${userData.apellidoPaterno} ${userData.apellidoMaterno}`,
       }));
       Swal.fire({
         title: "Datos Encontrados!",
@@ -213,10 +213,11 @@ export function Register(): JSX.Element {
               <div className="card-body">
                 <div className="py-3 px-4">
                   <div className="mb-1 text-center">
+                    <img src="assets/images/logo_tesel.jpeg" width={200} />
                     <img
+                      className="mx-4"
                       src="assets/images/logo-icon.png"
-                      width={120}
-                      alt="Logo"
+                      width={100}
                     />
                   </div>
                   <div className="text-center mb-4">

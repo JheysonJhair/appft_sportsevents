@@ -7,7 +7,7 @@ interface ApiResponse {
   data: User[];
 }
 
-const API_URL = "https://esappsoccer.ccontrolz.com/api";
+const API_URL = "https://esappsoccer-production.up.railway.app/api";
 
 //---------------------------------------------------------------- GET USER
 export async function obtenerUsuarios(): Promise<User[]> {

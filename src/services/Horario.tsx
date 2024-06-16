@@ -5,7 +5,7 @@ interface ApiResponse {
   success: boolean;
   data: Field[];
 }
-const API_URL = "https://esappsoccer.ccontrolz.com/api";
+const API_URL = "https://esappsoccer-production.up.railway.app/api";
 
 //---------------------------------------------------------------- GET FIELD 1
 export async function obtenerHorarioCancha1(): Promise<Field[]> {
@@ -139,7 +139,7 @@ export async function eliminarHorarioCancha2(
   Rol: number
 ): Promise<{ IdArea: number; msg: string; success: boolean }> {
   try {
-    const url = `https://esappsoccer.ccontrolz.com/api/field2/deleteField`;
+    const url = `${API_URL}/field2/deleteField`;
     const body = {
       IdField,
       Shift,

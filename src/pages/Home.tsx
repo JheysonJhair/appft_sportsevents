@@ -226,7 +226,7 @@ export function HomePage() {
     try {
       const response = await fetchUserDataByDNI(dni);
       if (response) {
-        const playerName = `${response.nombres} ${response.apellido_paterno} ${response.apellido_materno}`;
+        const playerName = `${response.nombres} ${response.apellidoPaterno} ${response.apellidoMaterno}`;
         setListPlayer((prevList) =>
           prevList ? `${prevList}, ${playerName}` : playerName
         );

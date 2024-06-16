@@ -72,7 +72,6 @@ export default function Login() {
         icon: "error",
         confirmButtonText: "Aceptar",
       });
-      console.log("Error al iniciar sesión");
     }
   };
 
@@ -100,7 +99,12 @@ export default function Login() {
           >
             <div>
               <div className="mb-3 text-center">
-                <img src="assets/images/logo-icon.png" width={140} />
+                <img
+                  className="mx-3"
+                  src="assets/images/logo_tesel.jpeg"
+                  width={200}
+                />
+                <img src="assets/images/logo-icon.png" width={100} />
               </div>
               <div className="text-center mb-4">
                 <h5 className="mb-3 fs-4" style={{ fontWeight: "bold" }}>

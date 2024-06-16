@@ -89,9 +89,9 @@ export function DayReport() {
           ...prevReporte,
           NamePlayer:
             response.nombres +
-            response.apellido_paterno +
+            response.apellidoPaterno +
             " " +
-            response.apellido_materno,
+            response.apellidoMaterno,
         }));
       } else {
         Swal.fire({
@@ -299,7 +299,7 @@ export function DayReport() {
                     name="NamePlayer"
                     placeholder="Ingrese nombre del jugador"
                     onChange={handleInputChange}
-                    value={reporte.NamePlayer} 
+                    value={reporte.NamePlayer}
                   />
                   {errorMessages.NamePlayer && (
                     <div className="invalid-feedback">

@@ -67,11 +67,10 @@ export function NewManagementArea() {
 
   //-------------------------------------- VALIDATION
   const validateField = (
-    name: string,
+    _: string,
     value: string | undefined
   ): string | null => {
     return validateRequiredField(value);
-    console.log(name);
   };
 
   //---------------------------------------------------------------- POST MANAGEMENT

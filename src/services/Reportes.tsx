@@ -1,6 +1,6 @@
 import { ReportDay } from "../types/DayReport";
 
-const API_URL = "https://esappsoccer.ccontrolz.com/api";
+const API_URL = "https://esappsoccer-production.up.railway.app/api";
 
 //---------------------------------------------------------------- GET REPORTS
 export const fetchReports = async (): Promise<ReportDay[]> => {

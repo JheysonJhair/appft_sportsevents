@@ -145,19 +145,14 @@ function AppLayout() {
         <div className="sidebar-wrapper" data-simplebar="true">
           <div className="sidebar-header">
             <div>
-              <img
-                src="../../assets/images/logo_small.png"
-                className="logo-icon"
-                alt="logo icon"
-              />
+              <img src="assets/images/logo_tesel.jpeg" width={100} />
             </div>
             <div>
-              <h4
-                className="logo-text text-danger"
-                style={{ fontWeight: "bold", fontSize: "20px" }}
-              >
-                LAS BAMBAS
-              </h4>
+              <img
+                className="mx-4"
+                src="assets/images/logo-icon.png"
+                width={50}
+              />
             </div>
             <div className="toggle-icon ms-auto">
               <i className="bx bx-arrow-back text-danger" />
@@ -579,7 +574,7 @@ function AppLayout() {
         </a>
         <footer className="page-footer">
           <p className="mb-0">
-            Copyright © LAS BAMBAS 2024. Todos los derechos reservados.
+            Copyright © TESEL INDUSTRIAL 2024. Todos los derechos reservados.
           </p>
         </footer>
       </div>

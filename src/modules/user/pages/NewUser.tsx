@@ -53,7 +53,6 @@ export function NewUser() {
 
     if (name === "Rol") {
       setShowAdditionalFields(value === "1" || value === "2");
-      console.log(value);
       let updatedUsuario = { ...nuevoUsuario };
       if (value === "1") {
         const operacionMinaId =
