@@ -52,6 +52,7 @@ export function Reportes() {
       setUserData(userData);
 
       const reservationData = await fetchReservationData(startDate, endDate);
+      console.log(reservationData);
       setReservationData(reservationData);
 
       const reservationData2 = await fetchChannel2Data(startDate, endDate);
@@ -229,7 +230,11 @@ export function Reportes() {
                               " a " +
                               reservation.EndTime}
                           </td>
-                          <td>Operaciones Mina</td>
+                          <td>
+                            {reservation.ListPlayer === "NINGUNO"
+                              ? "Administrador"
+                              : "Operaciones Mina"}
+                          </td>
                           <td>{reservation.ListPlayer}</td>
                         </tr>
                       ))}
@@ -303,6 +308,8 @@ export function Reportes() {
                     <thead>
                       <tr>
                         <th>Fecha</th>
+                        <th>Gerencia</th>
+                        <th>Area</th>
                         <th>Jugador agredido</th>
                         <th>Descripcion de agrecion</th>
                       </tr>
@@ -312,6 +319,8 @@ export function Reportes() {
                         (administratorReports, index) => (
                           <tr key={index}>
                             <td>{administratorReports.Date}</td>
+                            <td>{administratorReports.NameManagement}</td>
+                            <td>{administratorReports.NameArea}</td>
                             <td>{administratorReports.NamePlayer}</td>
                             <td>{administratorReports.Description}</td>
                           </tr>

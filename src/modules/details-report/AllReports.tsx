@@ -54,6 +54,8 @@ export function AllReport() {
                   <tr>
                     <th>Usuario</th>
                     <th>Fecha</th>
+                    <th>Gerencia</th>
+                    <th>Area</th>
                     <th>Nombre del jugador</th>
                     <th>Descripción del evento</th>
                   </tr>
@@ -63,6 +65,8 @@ export function AllReport() {
                     <tr key={index}>
                       <td>ADMIN. CANCHA</td>
                       <td>{report.Date}</td>
+                      <td>{report.NameManagement}</td>
+                      <td>{report.NameArea}</td>
                       <td>{report.NamePlayer}</td>
                       <td>{report.Description}</td>
                     </tr>

@@ -4,6 +4,9 @@ export interface ReportDay {
   IdUser?: number;
   Gerencia?: number;
   Description: string;
+
+  NameManagement?: string;
+  NameArea?: string;
   Date: string;
   NamePlayer: string;
   Dni?: string;

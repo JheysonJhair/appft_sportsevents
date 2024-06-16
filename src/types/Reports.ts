@@ -52,6 +52,8 @@ export interface ReportAdministrator {
   IndViewed: boolean;
   Date: string;
   NamePlayer: string;
+  NameManagement?: string;
+  NameArea?: string;
 }
 
 export interface ReportAdministratorReservation {

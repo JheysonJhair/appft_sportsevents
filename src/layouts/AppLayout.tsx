@@ -145,13 +145,14 @@ function AppLayout() {
         <div className="sidebar-wrapper" data-simplebar="true">
           <div className="sidebar-header">
             <div>
-              <img src="assets/images/logo_tesel.jpeg" width={100} />
+              <img src="assets/images/logo_tesel_min.jpeg" width={40} />
             </div>
             <div>
               <img
-                className="mx-4"
-                src="assets/images/logo-icon.png"
-                width={50}
+                className="logo-text mx-0 my-0"
+                src="assets/images/logoo.jpeg"
+                width={120}
+                height={25}
               />
             </div>
             <div className="toggle-icon ms-auto">
