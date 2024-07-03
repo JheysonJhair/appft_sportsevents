@@ -310,8 +310,8 @@ export function Reportes() {
                         <th>Fecha</th>
                         <th>Gerencia</th>
                         <th>Area</th>
-                        <th>Jugador agredido</th>
-                        <th>Descripcion de agrecion</th>
+                        <th>Nombre del jugador</th>
+                        <th>Descripcion del suceso</th>
                       </tr>
                     </thead>
                     <tbody>

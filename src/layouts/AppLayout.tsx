@@ -150,9 +150,9 @@ function AppLayout() {
             <div>
               <img
                 className="logo-text mx-0 my-0"
-                src="assets/images/logoo.jpeg"
+                src="assets/images/logoo.png"
                 width={120}
-                height={25}
+  
               />
             </div>
             <div className="toggle-icon ms-auto">

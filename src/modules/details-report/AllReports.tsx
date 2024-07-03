@@ -57,7 +57,7 @@ export function AllReport() {
                     <th>Gerencia</th>
                     <th>Area</th>
                     <th>Nombre del jugador</th>
-                    <th>Descripción del evento</th>
+                    <th>Descripción del suceso</th>
                   </tr>
                 </thead>
                 <tbody>
